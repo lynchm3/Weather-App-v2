@@ -1,8 +1,7 @@
-package com.marklynch.weather.model
-import android.util.Log
+package com.marklynch.weather.model.activity
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.marklynch.weather.model.BaseActivityViewModel
 
 class MainActivityViewModel() : BaseActivityViewModel() {
     val liveDataFab = MutableLiveData<String>()
@@ -12,16 +11,5 @@ class MainActivityViewModel() : BaseActivityViewModel() {
         liveDataFab.value = "" + System.currentTimeMillis()
     }
 
-
-}
-
-class TimeChangerViewModel : ViewModel() {
-
-    val timerValue = MutableLiveData<Long>()
-
-    init {
-        Log.e("Model", "initialize")
-        timerValue.value = System.currentTimeMillis()
-    }
 
 }
