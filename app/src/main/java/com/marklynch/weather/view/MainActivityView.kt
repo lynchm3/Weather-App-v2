@@ -10,9 +10,12 @@ import com.marklynch.weather.model.activity.MainActivityViewModel
 import com.marklynch.weather.livedata.network.ConnectionLiveData
 import com.marklynch.weather.model.network.ConnectionModel
 import com.marklynch.weather.model.network.ConnectionType
+import com.marklynch.weather.wavedemo.WebResourceViewModel
 
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
+
+
 
 
 class MainActivityView : BaseActivityView() {
@@ -25,18 +28,34 @@ class MainActivityView : BaseActivityView() {
 
         //FAB
         val model: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        val webResourceViewModel: WebResourceViewModel = ViewModelProviders.of(this).get(WebResourceViewModel::class.java)
 
+        //Crashes on a 403,
+        //TODO find where it was crashing (make up fake url or turn of net or watever and catch the exception FML)
+        webResourceViewModel.response.observe(this,
+                Observer<String> { response ->
+                    response?.let { text.text = it }
+                })
+
+        //TODO DOES CALLING OBSERVE TRIGGER IT AGAIN?
+        //HOOK IT UP TO THE BUTTON AND SEE.....
+        //Is the way the web bit is connected in such a way that if you call observe it gets triggered?
+
+        //Setting text when fab is clicked
+        fab.setOnClickListener { view ->
+//            model.fabClicked(view) <---THE WAY I WAS CALLING ITTTT
+            model.liveDataFab.observe(this,
+                Observer<String> { value ->
+                    value?.let { text.text = it }
+                })
+        }
         model.liveDataFab.observe(this,
             Observer<String> { value ->
                 value?.let { text.text = it }
             })
 
-        fab.setOnClickListener { view ->
-            model.fabClicked(view)
-        }
 
-
-        //ONLINE CHECK
+        //ONLINE CHECK, shows snackbar when connectivity changes
         val connectionLiveData = ConnectionLiveData(applicationContext)
         connectionLiveData.observe(this, Observer<ConnectionModel> {
                             if (it.isConnected) {
@@ -59,10 +78,6 @@ class MainActivityView : BaseActivityView() {
 
 
     }
-
-    ////ONLINE CHECK
-
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
