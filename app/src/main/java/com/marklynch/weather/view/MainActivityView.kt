@@ -26,12 +26,11 @@ class MainActivityView : BaseActivityView() {
         super.onCreate(savedInstanceState)
         setContentView(com.marklynch.weather.R.layout.activity_main_mine)
         setSupportActionBar(toolbar)
-        Log.d("TAG", "onCreate 1")
 
         //TIME
         val timeChangerViewModel = ViewModelProviders.of(this).get(TimeChangerViewModel::class.java)
         val calendar = Calendar.getInstance()
-        timeChangerViewModel.timerValue.observe(this, Observer<Long> { t ->
+        timeChangerViewModel.currentTimeMillis.observe(this, Observer<Long> { t ->
             calendar?.timeInMillis = t!!
             tv_time.text = calendar.time.toString()
         })
@@ -40,19 +39,10 @@ class MainActivityView : BaseActivityView() {
         val rawWebResourceViewModel: RawWebResourceViewModel =
             ViewModelProviders.of(this).get(RawWebResourceViewModel::class.java)
 
-        //Crashes on a 403,
-        //TODO find where it was crashing (make up fake url or turn of net or watever and catch the exception FML)
-        Log.d("TAG", "onCreate 2") //Here we are, fuck my life
-        rawWebResourceViewModel.response.observe(this,
+        rawWebResourceViewModel.rawWebResourceLiveData.observe(this,
             Observer<String> { response ->
                 response?.let { tv_raw_web_resource.text = it }
             })
-        Log.d("TAG", "onCreate 3")
-
-
-        //TODO DOES CALLING OBSERVE TRIGGER IT AGAIN?
-        //HOOK IT UP TO THE BUTTON AND SEE.....
-        //Is the way the web bit is connected in such a way that if you call observe it gets triggered?
 
         //FAB
 //        val model: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)

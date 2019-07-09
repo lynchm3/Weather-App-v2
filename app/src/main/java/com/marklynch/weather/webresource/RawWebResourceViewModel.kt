@@ -1,14 +1,39 @@
 package com.marklynch.weather.webresource
 
+import androidx.lifecycle.ViewModel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class RawWebResourceViewModel(application: Application) : AndroidViewModel(application) {
+class RawWebResourceViewModel : ViewModel() {
 
-    private val webResourceLiveData: RawWebResourceLiveData = RawWebResourceLiveData()
+    val rawWebResourceLiveData: RawWebResourceLiveData = RawWebResourceLiveData()
+}
 
-    val response: LiveData<String>
-        get() = webResourceLiveData.fetchRawWebResourceLiveData()
+class RawWebResourceLiveData : MutableLiveData<String>() {
+
+    private fun fetchRawWebResourceLiveData() {
+
+        val apiService = RetrofitInstance.apiService
+
+        val call = apiService.get
+
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {}
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.body() != null)
+                    postValue(response.body()?.string())
+            }
+
+        })
+    }
+
+    override fun onActive() {
+        super.onActive()
+        fetchRawWebResourceLiveData()
+    }
 }

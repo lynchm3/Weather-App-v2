@@ -9,17 +9,17 @@ import java.util.concurrent.TimeUnit
 
 class TimeChangerViewModel : ViewModel() {
 
-    val timerValue = MutableLiveData<Long>()
+    val currentTimeMillis = MutableLiveData<Long>()
 
     init {
-        timerValue.value = System.currentTimeMillis()
+        currentTimeMillis.value = System.currentTimeMillis()
         startTimer()
     }
 
     private fun startTimer() {
         Observable.interval(1, 1, TimeUnit.SECONDS)
             .subscribe({
-                timerValue.postValue(System.currentTimeMillis())//TODO change to =
+                currentTimeMillis.postValue(System.currentTimeMillis())
             }, Throwable::printStackTrace)
     }
 

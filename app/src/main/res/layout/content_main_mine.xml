@@ -16,21 +16,18 @@
             android:id="@+id/tv_raw_web_resource"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="Raw Web Resource"/>
+            android:singleLine="true"/>
 
     <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="Time"/>
+            android:singleLine="true"/>
 
     <TextView
             android:id="@+id/tv_connection_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="Connection status"/>
+            android:singleLine="true"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
