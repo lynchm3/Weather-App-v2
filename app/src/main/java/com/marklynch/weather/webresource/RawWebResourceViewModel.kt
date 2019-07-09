@@ -15,6 +15,11 @@ class RawWebResourceViewModel : ViewModel() {
 
 class RawWebResourceLiveData : MutableLiveData<String>() {
 
+    override fun onActive() {
+        super.onActive()
+        fetchRawWebResourceLiveData()
+    }
+
     private fun fetchRawWebResourceLiveData() {
 
         val apiService = RetrofitInstance.apiService
@@ -30,10 +35,5 @@ class RawWebResourceLiveData : MutableLiveData<String>() {
             }
 
         })
-    }
-
-    override fun onActive() {
-        super.onActive()
-        fetchRawWebResourceLiveData()
     }
 }

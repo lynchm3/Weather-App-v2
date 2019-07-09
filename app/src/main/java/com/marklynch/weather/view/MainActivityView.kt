@@ -30,7 +30,7 @@ class MainActivityView : BaseActivityView() {
         //TIME
         val timeChangerViewModel = ViewModelProviders.of(this).get(TimeChangerViewModel::class.java)
         val calendar = Calendar.getInstance()
-        timeChangerViewModel.currentTimeMillis.observe(this, Observer<Long> { t ->
+        timeChangerViewModel.currentTimeLiveData.observe(this, Observer<Long> { t ->
             calendar?.timeInMillis = t!!
             tv_time.text = calendar.time.toString()
         })
