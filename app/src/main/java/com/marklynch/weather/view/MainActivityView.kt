@@ -1,7 +1,6 @@
 package com.marklynch.weather.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -11,8 +10,6 @@ import com.marklynch.weather.viewmodel.activity.MainActivityViewModel
 import com.marklynch.weather.livedata.network.ConnectionLiveData
 import com.marklynch.weather.viewmodel.network.ConnectionModel
 import com.marklynch.weather.viewmodel.network.ConnectionType
-import com.marklynch.weather.viewmodel.util.TimeChangerViewModel
-import com.marklynch.weather.webresource.RawWebResourceViewModel
 
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
@@ -27,25 +24,27 @@ class MainActivityView : BaseActivityView() {
         setContentView(com.marklynch.weather.R.layout.activity_main_mine)
         setSupportActionBar(toolbar)
 
+
+        val viewModel: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+
         //TIME
-        val timeChangerViewModel = ViewModelProviders.of(this).get(TimeChangerViewModel::class.java)
+//        val timeChangerViewModel = ViewModelProviders.of(this).get(TimeChangerViewModel::class.java)
         val calendar = Calendar.getInstance()
-        timeChangerViewModel.currentTimeLiveData.observe(this, Observer<Long> { t ->
+        viewModel.currentTimeLiveData.observe(this, Observer<Long> { t ->
             calendar?.timeInMillis = t!!
             tv_time.text = calendar.time.toString()
         })
 
         //Raw web resource
-        val rawWebResourceViewModel: RawWebResourceViewModel =
-            ViewModelProviders.of(this).get(RawWebResourceViewModel::class.java)
+//        val rawWebResourceViewModel: RawWebResourceViewModel =
+//            ViewModelProviders.of(this).get(RawWebResourceViewModel::class.java)
 
-        rawWebResourceViewModel.rawWebResourceLiveData.observe(this,
+        viewModel.rawWebResourceLiveData.observe(this,
             Observer<String> { response ->
                 response?.let { tv_raw_web_resource.text = it }
             })
 
         //FAB
-//        val model: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 //        //Setting text when fab is clicked
 //        fab.setOnClickListener { view ->
 //            //            model.fabClicked(view) <---THE WAY I WAS CALLING ITTTT
