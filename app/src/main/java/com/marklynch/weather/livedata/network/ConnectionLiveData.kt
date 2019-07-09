@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import androidx.lifecycle.LiveData
-import com.marklynch.weather.model.network.ConnectionModel
+import com.marklynch.weather.viewmodel.network.ConnectionModel
 
 class ConnectionLiveData(private val context: Context) : LiveData<ConnectionModel>() {
 
@@ -25,14 +25,14 @@ class ConnectionLiveData(private val context: Context) : LiveData<ConnectionMode
 
                         ConnectivityManager.TYPE_WIFI -> postValue(
                             ConnectionModel(
-                                com.marklynch.weather.model.network.ConnectionType.WIFI_CONNECTION,
+                                com.marklynch.weather.viewmodel.network.ConnectionType.WIFI_CONNECTION,
                                 true
                             )
                         )
 
                         ConnectivityManager.TYPE_MOBILE -> postValue(
                             ConnectionModel(
-                                com.marklynch.weather.model.network.ConnectionType.MOBILE_DATA_CONNECTION,
+                                com.marklynch.weather.viewmodel.network.ConnectionType.MOBILE_DATA_CONNECTION,
                                 true
                             )
                         )
@@ -40,7 +40,7 @@ class ConnectionLiveData(private val context: Context) : LiveData<ConnectionMode
                 } else {
                     postValue(
                         ConnectionModel(
-                            com.marklynch.weather.model.network.ConnectionType.NO_CONNECTION,
+                            com.marklynch.weather.viewmodel.network.ConnectionType.NO_CONNECTION,
                             false
                         )
                     )

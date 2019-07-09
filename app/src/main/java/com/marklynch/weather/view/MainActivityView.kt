@@ -7,14 +7,16 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.marklynch.weather.model.activity.MainActivityViewModel
+import com.marklynch.weather.viewmodel.activity.MainActivityViewModel
 import com.marklynch.weather.livedata.network.ConnectionLiveData
-import com.marklynch.weather.model.network.ConnectionModel
-import com.marklynch.weather.model.network.ConnectionType
+import com.marklynch.weather.viewmodel.network.ConnectionModel
+import com.marklynch.weather.viewmodel.network.ConnectionType
+import com.marklynch.weather.viewmodel.util.TimeChangerViewModel
 import com.marklynch.weather.webresource.RawWebResourceViewModel
 
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
+import java.util.*
 
 
 class MainActivityView : BaseActivityView() {
@@ -26,17 +28,24 @@ class MainActivityView : BaseActivityView() {
         setSupportActionBar(toolbar)
         Log.d("TAG", "onCreate 1")
 
-        //FAB
-        val model: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-        val webResourceViewModel: RawWebResourceViewModel =
+        //TIME
+        val timeChangerViewModel = ViewModelProviders.of(this).get(TimeChangerViewModel::class.java)
+        val calendar = Calendar.getInstance()
+        timeChangerViewModel.timerValue.observe(this, Observer<Long> { t ->
+            calendar?.timeInMillis = t!!
+            tv_time.text = calendar.time.toString()
+        })
+
+        //Raw web resource
+        val rawWebResourceViewModel: RawWebResourceViewModel =
             ViewModelProviders.of(this).get(RawWebResourceViewModel::class.java)
 
         //Crashes on a 403,
         //TODO find where it was crashing (make up fake url or turn of net or watever and catch the exception FML)
         Log.d("TAG", "onCreate 2") //Here we are, fuck my life
-        webResourceViewModel.response.observe(this,
+        rawWebResourceViewModel.response.observe(this,
             Observer<String> { response ->
-                response?.let { text.text = it }
+                response?.let { tv_raw_web_resource.text = it }
             })
         Log.d("TAG", "onCreate 3")
 
@@ -45,18 +54,16 @@ class MainActivityView : BaseActivityView() {
         //HOOK IT UP TO THE BUTTON AND SEE.....
         //Is the way the web bit is connected in such a way that if you call observe it gets triggered?
 
-        //Setting text when fab is clicked
-        fab.setOnClickListener { view ->
-            //            model.fabClicked(view) <---THE WAY I WAS CALLING ITTTT
-            model.liveDataFab.observe(this,
-                Observer<String> { value ->
-                    value?.let { text.text = it }
-                })
-        }
-        model.liveDataFab.observe(this,
-            Observer<String> { value ->
-                value?.let { text.text = it }
-            })
+        //FAB
+//        val model: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+//        //Setting text when fab is clicked
+//        fab.setOnClickListener { view ->
+//            //            model.fabClicked(view) <---THE WAY I WAS CALLING ITTTT
+//            model.liveDataFab.observe(this,
+//                Observer<String> { value ->
+//                    value?.let { text.text = it }
+//                })
+//        }
 
 
         //ONLINE CHECK, shows snackbar when connectivity changes
