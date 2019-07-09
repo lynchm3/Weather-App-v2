@@ -1,6 +1,7 @@
 package com.marklynch.weather.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -10,12 +11,10 @@ import com.marklynch.weather.model.activity.MainActivityViewModel
 import com.marklynch.weather.livedata.network.ConnectionLiveData
 import com.marklynch.weather.model.network.ConnectionModel
 import com.marklynch.weather.model.network.ConnectionType
-import com.marklynch.weather.wavedemo.WebResourceViewModel
+import com.marklynch.weather.webresource.RawWebResourceViewModel
 
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
-
-
 
 
 class MainActivityView : BaseActivityView() {
@@ -25,17 +24,22 @@ class MainActivityView : BaseActivityView() {
         super.onCreate(savedInstanceState)
         setContentView(com.marklynch.weather.R.layout.activity_main_mine)
         setSupportActionBar(toolbar)
+        Log.d("TAG", "onCreate 1")
 
         //FAB
         val model: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-        val webResourceViewModel: WebResourceViewModel = ViewModelProviders.of(this).get(WebResourceViewModel::class.java)
+        val webResourceViewModel: RawWebResourceViewModel =
+            ViewModelProviders.of(this).get(RawWebResourceViewModel::class.java)
 
         //Crashes on a 403,
         //TODO find where it was crashing (make up fake url or turn of net or watever and catch the exception FML)
+        Log.d("TAG", "onCreate 2") //Here we are, fuck my life
         webResourceViewModel.response.observe(this,
-                Observer<String> { response ->
-                    response?.let { text.text = it }
-                })
+            Observer<String> { response ->
+                response?.let { text.text = it }
+            })
+        Log.d("TAG", "onCreate 3")
+
 
         //TODO DOES CALLING OBSERVE TRIGGER IT AGAIN?
         //HOOK IT UP TO THE BUTTON AND SEE.....
@@ -43,7 +47,7 @@ class MainActivityView : BaseActivityView() {
 
         //Setting text when fab is clicked
         fab.setOnClickListener { view ->
-//            model.fabClicked(view) <---THE WAY I WAS CALLING ITTTT
+            //            model.fabClicked(view) <---THE WAY I WAS CALLING ITTTT
             model.liveDataFab.observe(this,
                 Observer<String> { value ->
                     value?.let { text.text = it }
@@ -58,23 +62,22 @@ class MainActivityView : BaseActivityView() {
         //ONLINE CHECK, shows snackbar when connectivity changes
         val connectionLiveData = ConnectionLiveData(applicationContext)
         connectionLiveData.observe(this, Observer<ConnectionModel> {
-                            if (it.isConnected) {
+            if (it.isConnected) {
 
-                                when (it.type) {
+                when (it.type) {
 
-                                    ConnectionType.WIFI_CONNECTION -> Toast.makeText(this, "Wifi turned ON", Toast.LENGTH_SHORT).show()
+                    ConnectionType.WIFI_CONNECTION -> Toast.makeText(this, "Wifi turned ON", Toast.LENGTH_SHORT).show()
 
-                                    ConnectionType.MOBILE_DATA_CONNECTION -> Toast.makeText(
-                                        this,
-                                        "Mobile data turned ON",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            } else {
-                                Toast.makeText(this, "Connection turned OFF", Toast.LENGTH_SHORT).show()
-                            }
+                    ConnectionType.MOBILE_DATA_CONNECTION -> Toast.makeText(
+                        this,
+                        "Mobile data turned ON",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                Toast.makeText(this, "Connection turned OFF", Toast.LENGTH_SHORT).show()
+            }
         })
-
 
 
     }
