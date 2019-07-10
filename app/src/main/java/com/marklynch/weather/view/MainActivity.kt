@@ -5,7 +5,8 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.marklynch.weather.viewmodel.activity.MainActivityViewModel
+import com.marklynch.weather.livedata.permissions.PermissionState
+import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
 import java.util.*
@@ -21,18 +22,27 @@ class MainActivity : BaseActivity() {
 
         val viewModel: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
+
+
+        //Raw web resource
+        viewModel.rawWebResourceLiveData.observe(this,
+            Observer<String> { responseBody ->
+                responseBody?.let { tv_raw_web_resource.text = "Raw Web Resource = ${it}" }
+            })
+
         //Time
         val calendar = Calendar.getInstance()
         viewModel.currentTimeLiveData.observe(this, Observer<Long> { t ->
             calendar.timeInMillis = t!!
-            tv_time.text = calendar.time.toString()
+            tv_time.text = "Time = ${calendar.time}"
         })
 
-        //Raw web resource
-        viewModel.rawWebResourceLiveData.observe(this,
-            Observer<String> { response ->
-                response?.let { tv_raw_web_resource.text = it }
+        //Location Permission
+        viewModel.locationPermissionLiveData.observe(this,
+            Observer<PermissionState> { permissionState ->
+                tv_location_permission.text = "Location Permission State = ${permissionState}"
             })
+
 
         //FAB
 //        //Setting text when fab is clicked
