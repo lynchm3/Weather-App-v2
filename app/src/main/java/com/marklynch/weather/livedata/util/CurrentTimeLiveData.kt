@@ -1,4 +1,4 @@
-package com.marklynch.weather.viewmodel.util
+package com.marklynch.weather.livedata.util
 
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.GlobalScope
