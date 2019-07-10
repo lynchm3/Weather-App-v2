@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="action_settings">Settings</string>
-    <string name="gps_status_enabled">GPS Enabled</string>
-    <string name="gps_status_disabled">GPS Disabled</string>
     <string name="permission_required_title">Location Permission Required</string>
     <string name="permission_required_body">Allow to enable location aware features in-app</string>
     <string name="gps_required_title">Please Enable GPS</string>

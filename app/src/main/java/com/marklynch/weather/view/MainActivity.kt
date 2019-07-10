@@ -5,7 +5,8 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.marklynch.weather.livedata.permissions.PermissionState
+import com.marklynch.weather.livedata.apppermissions.AppPermissionState
+import com.marklynch.weather.livedata.gps.GpsState
 import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
@@ -38,10 +39,17 @@ class MainActivity : BaseActivity() {
         })
 
         //Location Permission
-        viewModel.locationPermissionLiveData.observe(this,
-            Observer<PermissionState> { permissionState ->
+        viewModel.locationAppPermissionLiveData.observe(this,
+            Observer<AppPermissionState> { permissionState ->
                 tv_location_permission.text = "Location Permission State = ${permissionState}"
             })
+
+        //GPS status
+        viewModel.gpsStatusLiveData.observe(this,
+            Observer<GpsState> { gpsState ->
+                tv_gps_state.text = "GPS State = ${gpsState}"
+            })
+
 
 
         //FAB
