@@ -6,9 +6,11 @@ import com.marklynch.weather.livedata.gps.GpsStatusLiveData
 import com.marklynch.weather.livedata.apppermissions.AppPermissionLiveData
 import com.marklynch.weather.livedata.apppermissions.locationPermission
 import com.marklynch.weather.livedata.location.LocationLiveData
+import com.marklynch.weather.livedata.sharedpreferences.IntSharedPreferencesLiveData
 import com.marklynch.weather.livedata.util.CurrentTimeLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.livedata.webresource.RawWebResourceLiveData
+import com.marklynch.weather.view.MainActivity
 
 class MainActivityViewModel(application: Application) : BaseActivityViewModel(application) {
     val liveDataFab = MutableLiveData<String>()
@@ -30,4 +32,7 @@ class MainActivityViewModel(application: Application) : BaseActivityViewModel(ap
 
     //Weather
     val weatherLiveData = WeatherLiveData()
+
+    //Shared pref Int
+    val intSharedPreferencesLiveData = IntSharedPreferencesLiveData(application, MainActivity.companion.testSharedPref)
 }

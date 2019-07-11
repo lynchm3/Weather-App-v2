@@ -1,6 +1,7 @@
 package com.marklynch.weather.view
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
@@ -12,6 +13,9 @@ import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import java.util.*
 
 
@@ -24,7 +28,6 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         val viewModel: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-
 
         //Raw web resource
         viewModel.rawWebResourceLiveData.observe(this,
@@ -42,13 +45,21 @@ class MainActivity : BaseActivity() {
         //Location Permission
         viewModel.locationAppPermissionLiveData.observe(this,
             Observer<AppPermissionState> { permissionState ->
-                tv_location_permission.text = "Location Permission State = ${permissionState}"
+                when (permissionState) {
+                    AppPermissionState.Granted -> tv_location_permission.text =
+                        "Location Permission State = ${permissionState}"
+                    AppPermissionState.Denied -> tv_location_permission.text =
+                        "Location Permission State = ${permissionState}"
+                }
             })
 
         //GPS status
         viewModel.gpsStatusLiveData.observe(this,
             Observer<GpsState> { gpsState ->
-                tv_gps_state.text = "GPS State = ${gpsState}"
+                when (gpsState) {
+                    GpsState.Enabled -> tv_gps_state.text = "GPS State = ${gpsState}"
+                    GpsState.Disabled -> tv_gps_state.text = "GPS State = ${gpsState}"
+                }
             })
 
         //Location
@@ -79,7 +90,25 @@ class MainActivity : BaseActivity() {
                         "\n" +
                         "Pressure: " +
                         weatherResponse.main?.pressure
-            }"})
+                }"
+            })
+
+        //Shared Preferences Int
+        //Test thread that increments the shared pref
+        GlobalScope.async {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+            sharedPreferences.edit().putInt(companion.testSharedPref, 0).apply()
+            while (true) {
+                delay(1000)
+                val sharedPrefIntValue = sharedPreferences.getInt(companion.testSharedPref, 0)
+                sharedPreferences.edit().putInt(companion.testSharedPref, sharedPrefIntValue + 1).apply()
+            }
+        }
+
+        viewModel.intSharedPreferencesLiveData.observe(this,
+            Observer<Int> { sharedPreference ->
+                shared_preference.text = "Shared Preference = ${sharedPreference}"
+            })
 
         //FAB
 //        //Setting text when fab is clicked
@@ -129,5 +158,9 @@ class MainActivity : BaseActivity() {
             com.marklynch.weather.R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    object companion {
+        val testSharedPref = "testSharedPref"
     }
 }
