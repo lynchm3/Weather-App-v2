@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.location.LocationResult
 import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.gps.GpsState
+import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
@@ -58,9 +59,27 @@ class MainActivity : BaseActivity() {
 
         //Weather
         viewModel.weatherLiveData.observe(this,
-            Observer<String> { weather ->
-                tv_weather.text = "Weather = ${weather}"
-            })
+            Observer<WeatherResponse> { weatherResponse ->
+                tv_weather.text = "Weather = ${
+
+                "Country: " +
+                        weatherResponse.sys?.country +
+                        "\n" +
+                        "Temperature: " +
+                        weatherResponse.main?.temp +
+                        "\n" +
+                        "Temperature(Min): " +
+                        weatherResponse.main?.temp_min +
+                        "\n" +
+                        "Temperature(Max): " +
+                        weatherResponse.main?.temp_max +
+                        "\n" +
+                        "Humidity: " +
+                        weatherResponse.main?.humidity +
+                        "\n" +
+                        "Pressure: " +
+                        weatherResponse.main?.pressure
+            }"})
 
         //FAB
 //        //Setting text when fab is clicked
