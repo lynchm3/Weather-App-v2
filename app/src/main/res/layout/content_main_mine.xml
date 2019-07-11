@@ -37,6 +37,13 @@
             android:singleLine="true"/>
 
     <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="GPS..."/>
+
+    <TextView
             android:id="@+id/tv_connection_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

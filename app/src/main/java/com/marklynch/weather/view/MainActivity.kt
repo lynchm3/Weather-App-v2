@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.gms.location.LocationResult
 import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.gps.GpsState
 import com.marklynch.weather.viewmodel.MainActivityViewModel
@@ -22,7 +23,6 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         val viewModel: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-
 
 
         //Raw web resource
@@ -50,7 +50,11 @@ class MainActivity : BaseActivity() {
                 tv_gps_state.text = "GPS State = ${gpsState}"
             })
 
-
+        //Location
+        viewModel.locationLiveData.observe(this,
+            Observer<LocationResult> { location ->
+                tv_location.text = "GPS Location = ${location}"
+            })
 
         //FAB
 //        //Setting text when fab is clicked
@@ -86,6 +90,10 @@ class MainActivity : BaseActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(com.marklynch.weather.R.menu.menu_main, menu)
         return true
@@ -96,9 +104,5 @@ class MainActivity : BaseActivity() {
             com.marklynch.weather.R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    fun return123(): Int{
-        return 123
     }
 }

@@ -1,12 +1,11 @@
 package com.marklynch.weather.livedata.util
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 
-class CurrentTimeLiveData : MutableLiveData<Long>() {
+class CurrentTimeLiveData : LiveData<Long>() {
 
     override fun onActive() {
         super.onActive()

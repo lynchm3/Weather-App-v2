@@ -1,12 +1,12 @@
 package com.marklynch.weather.webresource
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RawWebResourceLiveData : MutableLiveData<String>() {
+class RawWebResourceLiveData : LiveData<String>() {
 
     override fun onActive() {
         super.onActive()

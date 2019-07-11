@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.marklynch.weather.livedata.gps.GpsStatusLiveData
 import com.marklynch.weather.livedata.apppermissions.AppPermissionLiveData
 import com.marklynch.weather.livedata.apppermissions.locationPermission
+import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.util.CurrentTimeLiveData
 import com.marklynch.weather.webresource.RawWebResourceLiveData
 
@@ -22,6 +23,9 @@ class MainActivityViewModel(application: Application) : BaseActivityViewModel(ap
 
     //GPS status
     val gpsStatusLiveData = GpsStatusLiveData(application)
+
+    //Location
+    val locationLiveData = LocationLiveData(application)
 
     fun fabClicked() {
 //        this.activty.showSnackBar(view, "Setting main text")
