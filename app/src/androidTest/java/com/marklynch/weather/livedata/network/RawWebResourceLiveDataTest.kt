@@ -2,7 +2,7 @@ package com.marklynch.weather.livedata.network
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.marklynch.weather.livedata.observeXTimes
-import com.marklynch.weather.webresource.RawWebResourceLiveData
+import com.marklynch.weather.livedata.webresource.RawWebResourceLiveData
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test

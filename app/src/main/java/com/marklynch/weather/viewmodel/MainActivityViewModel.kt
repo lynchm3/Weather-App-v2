@@ -7,7 +7,8 @@ import com.marklynch.weather.livedata.apppermissions.AppPermissionLiveData
 import com.marklynch.weather.livedata.apppermissions.locationPermission
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.util.CurrentTimeLiveData
-import com.marklynch.weather.webresource.RawWebResourceLiveData
+import com.marklynch.weather.livedata.weather.WeatherLiveData
+import com.marklynch.weather.livedata.webresource.RawWebResourceLiveData
 
 class MainActivityViewModel(application: Application) : BaseActivityViewModel(application) {
     val liveDataFab = MutableLiveData<String>()
@@ -27,36 +28,6 @@ class MainActivityViewModel(application: Application) : BaseActivityViewModel(ap
     //Location
     val locationLiveData = LocationLiveData(application)
 
-    fun fabClicked() {
-//        this.activty.showSnackBar(view, "Setting main text")
-        liveDataFab.value = "" + System.currentTimeMillis()
-    }
-
-
-
-
-    //LOCATION STUFF
-//    private val locationServiceListener = LocationServiceListener(application, Intent(application,
-//        LocationService::class.java)
-//    )
-//
-//    private val notificationsUtil = NotificationsUtil(application,
-//        application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//    )
-//
-//    val gpsStatusLiveData = GpsStatusLiveData(application)
-//
-//    val locationPermissionStatusLiveData = AppPermissionLiveData(
-//        application,
-//        Manifest.permission.ACCESS_FINE_LOCATION
-//    )
-//
-//    fun startLocationTracking() = locationServiceListener.subscribeToLocationUpdates()
-//
-//    fun stopLocationTracking() {
-//        locationServiceListener.unsubscribeFromLocationUpdates()
-//        notificationsUtil.cancelAlertNotification()
-//    }
-
-
+    //Weather
+    val weatherLiveData = WeatherLiveData()
 }

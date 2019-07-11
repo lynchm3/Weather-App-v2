@@ -1,10 +1,12 @@
-package com.marklynch.weather.webresource
+package com.marklynch.weather.livedata.webresource
 
 import androidx.lifecycle.LiveData
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.http.GET
 
 class RawWebResourceLiveData : LiveData<String>() {
 
@@ -15,7 +17,9 @@ class RawWebResourceLiveData : LiveData<String>() {
 
     fun fetchRawWebResource() {
 
-        val apiService = RetrofitInstance.apiService
+        val retrofit = getRetrofitInstance("https://www.google.com")
+
+        val apiService = retrofit!!.create(RawWebResourceLiveData.RestApiService::class.java)
 
         val call = apiService.get
 
@@ -30,5 +34,17 @@ class RawWebResourceLiveData : LiveData<String>() {
             }
 
         })
+    }
+
+    fun getRetrofitInstance(baseUrl: String): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            //.addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    interface RestApiService {
+        @get:GET(".")
+        val get: Call<ResponseBody>
     }
 }

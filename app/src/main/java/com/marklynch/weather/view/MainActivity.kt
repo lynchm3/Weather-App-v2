@@ -56,6 +56,12 @@ class MainActivity : BaseActivity() {
                 tv_location.text = "GPS Location = ${location}"
             })
 
+        //Weather
+        viewModel.weatherLiveData.observe(this,
+            Observer<String> { weather ->
+                tv_weather.text = "Weather = ${weather}"
+            })
+
         //FAB
 //        //Setting text when fab is clicked
 //        fab.setOnClickListener { view ->
