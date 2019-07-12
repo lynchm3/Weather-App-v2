@@ -10,7 +10,7 @@ android {
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.marklynch.weather"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -34,6 +34,10 @@ android {
             includeAndroidResources = true
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
@@ -50,5 +54,8 @@ dependencies {
     //Android test implementation
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.arch.core:core-testing:2.0.0'
-//    androidTestImplementation 'org.robolectric:robolectric:4.3'
+    androidTestImplementation ('org.robolectric:robolectric:4.3')
+    {
+        exclude group: 'org.apache.maven'
+    }
 }
