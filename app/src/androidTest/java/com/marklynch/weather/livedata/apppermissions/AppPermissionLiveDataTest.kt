@@ -1,6 +1,7 @@
 package com.marklynch.weather.livedata.apppermissions
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.core.app.ActivityCompat
 import androidx.test.InstrumentationRegistry
 import com.marklynch.weather.livedata.observeInfinite
 import com.marklynch.weather.livedata.observeXTimes
@@ -32,14 +33,14 @@ class AppPermissionLiveDataTest {
         var observeCountForOnceOffObserver = 0
 
         appPermissionLiveData.observeInfinite {
-            assertNotNull(it)
+            checkAppPermissionStateCorrect(it)
             observeCountForInfiniteObserver++
         }
 
         assertEquals(2, observeCountForInfiniteObserver)
 
         appPermissionLiveData.observeXTimes(1) {
-            assertNotNull(it)
+            checkAppPermissionStateCorrect(it)
             observeCountForOnceOffObserver++
         }
 
@@ -52,10 +53,19 @@ class AppPermissionLiveDataTest {
 
         var observeCount = 0
         appPermissionLiveData.observeXTimes(1) {
-            assertNotNull(it)
+            checkAppPermissionStateCorrect(it)
             observeCount++
         }
         assertEquals(1, observeCount)
         assertFalse("Check live data has no more observers", appPermissionLiveData.hasActiveObservers())
+    }
+
+    private fun checkAppPermissionStateCorrect(appPermissionState: AppPermissionState)
+    {
+        val expectedAppPermissionState = if(ActivityCompat.checkSelfPermission(
+                InstrumentationRegistry.getTargetContext(),
+                locationPermission) == 0) AppPermissionState.Granted else AppPermissionState.Denied
+
+        assertEquals(expectedAppPermissionState, appPermissionState)
     }
 }
