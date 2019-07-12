@@ -17,19 +17,19 @@ class RawWebResourceLiveDataTest {
     fun testOnActive() {
         val rawWebResourceLiveData = RawWebResourceLiveData()
         assertNull("Check live data value is null to start with", rawWebResourceLiveData.value)
-        validateObservation(rawWebResourceLiveData)
+        validateSingleObservation(rawWebResourceLiveData)
     }
 
     @Test
     fun testFetchWebResource() {
         val rawWebResourceLiveData = RawWebResourceLiveData()
         assertNull("Check live data value is null to start with", rawWebResourceLiveData.value)
-        validateObservation(rawWebResourceLiveData)
+        validateSingleObservation(rawWebResourceLiveData)
         rawWebResourceLiveData.fetchRawWebResource()
-        validateObservation(rawWebResourceLiveData)
+        validateSingleObservation(rawWebResourceLiveData)
     }
 
-    private fun validateObservation(rawWebResourceLiveData: RawWebResourceLiveData) {
+    private fun validateSingleObservation(rawWebResourceLiveData: RawWebResourceLiveData) {
 
         var observeCount = 0
         rawWebResourceLiveData.observeXTimes(1) {

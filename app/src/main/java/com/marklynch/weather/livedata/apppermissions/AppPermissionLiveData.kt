@@ -26,15 +26,22 @@ class AppPermissionLiveData(
         checkPermission()
     }
 
-    private fun checkPermission() {
+    fun checkPermission() {
         if (isPermissionGranted(context, permissionToCheck))
             postValue(AppPermissionState.Granted)
         else
             postValue(AppPermissionState.Denied)
     }
 
-    private fun isPermissionGranted(context: Context, permissionToCheck: String): Boolean = ActivityCompat.checkSelfPermission(
-        context,
-        permissionToCheck
-    ) == PackageManager.PERMISSION_GRANTED
+    private fun isPermissionGranted(context: Context, permissionToCheck: String): Boolean {
+        return checkSelfPermisssion(context, permissionToCheck) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun checkSelfPermisssion(context: Context, permissionToCheck: String) : Int
+    {
+        return ActivityCompat.checkSelfPermission(
+            context,
+            permissionToCheck
+        )
+    }
 }

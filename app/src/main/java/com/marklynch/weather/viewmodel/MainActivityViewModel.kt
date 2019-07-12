@@ -24,7 +24,7 @@ class MainActivityViewModel(application: Application) : BaseActivityViewModel(ap
     //Location permission
     val locationAppPermissionLiveData = AppPermissionLiveData(application,locationPermission)
 
-    //GPS status
+    //GPS statusm
     val gpsStatusLiveData = GpsStatusLiveData(application)
 
     //Location
