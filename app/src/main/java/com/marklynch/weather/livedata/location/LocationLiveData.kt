@@ -1,18 +1,41 @@
 package com.marklynch.weather.livedata.location
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.location.LocationManager
+import android.os.Build
 import android.os.Looper
+import android.provider.Settings
 import android.text.format.DateUtils
 import androidx.lifecycle.LiveData
 import com.google.android.gms.location.*
+import com.marklynch.weather.livedata.apppermissions.getPermissionState
+import com.marklynch.weather.livedata.apppermissions.locationPermission
 
-class LocationLiveData(private val context: Context) : LiveData<LocationResult>() {
+class LocationLiveData(private val context: Context) : LiveData<LocationInformation>() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var locationRequest: LocationRequest
 
-    val locationUpdateInterval = 5 * DateUtils.SECOND_IN_MILLIS
+    private val locationUpdateInterval = 5 * DateUtils.SECOND_IN_MILLIS
+
+    private var locationResult:LocationResult? = null
+
+    private val locationPermissionState
+        get() = getPermissionState(context, locationPermission)
+
+    private val gpsEnabled
+        get() = getGpsState(context)
+
+    private val gpsSwitchStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent)
+        {
+            postValue(LocationInformation(locationPermissionState, gpsEnabled, locationResult))
+        }
+    }
 
     override fun onActive() {
         super.onActive()
@@ -24,19 +47,33 @@ class LocationLiveData(private val context: Context) : LiveData<LocationResult>(
             priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         }
 
+        registerGpsStateReceiver()
+
+        postValue(LocationInformation(locationPermissionState, gpsEnabled, locationResult))
+
         registerForLocationTracking()
     }
 
     override fun onInactive() {
         super.onInactive()
+        unregisterGpsStateReceiver()
         unregisterFromLocationTracking()
     }
 
     private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            postValue(locationResult)
+        override fun onLocationResult(newLocationResult: LocationResult) {
+            locationResult = newLocationResult
+            postValue(LocationInformation(locationPermissionState, gpsEnabled, locationResult))
         }
     }
+
+
+    private fun registerGpsStateReceiver() = context.registerReceiver(
+        gpsSwitchStateReceiver,
+        IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
+    )
+
+    private fun unregisterGpsStateReceiver() = context.unregisterReceiver(gpsSwitchStateReceiver)
 
     private fun registerForLocationTracking() {
         try {
@@ -55,5 +92,28 @@ class LocationLiveData(private val context: Context) : LiveData<LocationResult>(
         } catch (unlikely: SecurityException) {
             error("Error when unregisterLocationUpdated()")
         }
+    }
+
+
+
+
+    fun getGpsState(context: Context): GpsState {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                return GpsState.Enabled
+        } else {
+            try {
+                if (Settings.Secure.getInt(
+                        context.contentResolver,
+                        Settings.Secure.LOCATION_MODE
+                    ) != Settings.Secure.LOCATION_MODE_OFF
+                )
+                    return GpsState.Enabled
+            } catch (e: Settings.SettingNotFoundException) {
+                return GpsState.Disabled
+            }
+        }
+        return GpsState.Disabled
     }
 }

@@ -6,9 +6,9 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.location.LocationResult
 import com.marklynch.weather.livedata.apppermissions.AppPermissionState
-import com.marklynch.weather.livedata.gps.GpsState
+import com.marklynch.weather.livedata.location.GpsState
+import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main_mine.*
@@ -42,30 +42,15 @@ class MainActivity : BaseActivity() {
             tv_time.text = "Time = ${calendar.time}"
         })
 
-        //Location Permission
-        viewModel.locationAppPermissionLiveData.observe(this,
-            Observer<AppPermissionState> { permissionState ->
-                when (permissionState) {
-                    AppPermissionState.Granted -> tv_location_permission.text =
-                        "Location Permission State = ${permissionState}"
-                    AppPermissionState.Denied -> tv_location_permission.text =
-                        "Location Permission State = ${permissionState}"
-                }
-            })
-
-        //GPS status
-        viewModel.gpsStatusLiveData.observe(this,
-            Observer<GpsState> { gpsState ->
-                when (gpsState) {
-                    GpsState.Enabled -> tv_gps_state.text = "GPS State = ${gpsState}"
-                    GpsState.Disabled -> tv_gps_state.text = "GPS State = ${gpsState}"
-                }
-            })
-
         //Location
         viewModel.locationLiveData.observe(this,
-            Observer<LocationResult> { location ->
-                tv_location.text = "GPS Location = ${location}"
+            Observer<LocationInformation> { location ->
+                when {
+                    location.locationPermission != AppPermissionState.Granted -> tv_location.text = "GPS Location = Please allow location permission"
+                    location.gpsState != GpsState.Enabled -> tv_location.text = "GPS Location = GPS is turned off"
+                    location.locationResult == null -> tv_location.text = "GPS Location = Getting location..."
+                    else -> tv_location.text = "GPS Location = ${location.locationResult}"
+                }
             })
 
         //Weather
