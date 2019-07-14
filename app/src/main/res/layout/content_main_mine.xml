@@ -50,7 +50,7 @@
             android:singleLine="true"/>
 
     <TextView
-            android:id="@+id/shared_preference"
+            android:id="@+id/tv_shared_preference"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"/>

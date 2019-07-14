@@ -71,26 +71,28 @@ class MainActivity : BaseActivity() {
         //Weather
         viewModel.weatherLiveData.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
-                tv_weather.text = "Weather = ${
+                weatherResponse?.let {
+                    tv_weather.text = "Weather = ${
 
-                "Country: " +
-                        weatherResponse.sys?.country +
-                        "\n" +
-                        "Temperature: " +
-                        weatherResponse.main?.temp +
-                        "\n" +
-                        "Temperature(Min): " +
-                        weatherResponse.main?.temp_min +
-                        "\n" +
-                        "Temperature(Max): " +
-                        weatherResponse.main?.temp_max +
-                        "\n" +
-                        "Humidity: " +
-                        weatherResponse.main?.humidity +
-                        "\n" +
-                        "Pressure: " +
-                        weatherResponse.main?.pressure
-                }"
+                    "Country: " +
+                            weatherResponse.sys?.country +
+                            "\n" +
+                            "Temperature: " +
+                            weatherResponse.main?.temp +
+                            "\n" +
+                            "Temperature(Min): " +
+                            weatherResponse.main?.temp_min +
+                            "\n" +
+                            "Temperature(Max): " +
+                            weatherResponse.main?.temp_max +
+                            "\n" +
+                            "Humidity: " +
+                            weatherResponse.main?.humidity +
+                            "\n" +
+                            "Pressure: " +
+                            weatherResponse.main?.pressure
+                    }"
+                }
             })
 
         //Shared Preferences Int
@@ -107,7 +109,7 @@ class MainActivity : BaseActivity() {
 
         viewModel.intSharedPreferencesLiveData.observe(this,
             Observer<Int> { sharedPreference ->
-                shared_preference.text = "Shared Preference = ${sharedPreference}"
+                tv_shared_preference.text = "Shared Preference = ${sharedPreference}"
             })
 
         //FAB

@@ -50,7 +50,6 @@ class WeatherLiveData : LiveData<WeatherResponse>() {
 
                 postValue(weatherResponse)
             }
-
         })
     }
 
