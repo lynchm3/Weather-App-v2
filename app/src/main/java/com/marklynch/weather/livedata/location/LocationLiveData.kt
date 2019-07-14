@@ -12,13 +12,15 @@ class LocationLiveData(private val context: Context) : LiveData<LocationResult>(
 
     private lateinit var locationRequest: LocationRequest
 
+    val locationUpdateInterval = 5 * DateUtils.SECOND_IN_MILLIS
+
     override fun onActive() {
         super.onActive()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
         locationRequest = LocationRequest.create().apply {
-            interval = 5 * DateUtils.SECOND_IN_MILLIS
+            interval = locationUpdateInterval
             priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         }
 

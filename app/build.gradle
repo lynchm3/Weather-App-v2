@@ -52,6 +52,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     //Android test implementation
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.arch.core:core-testing:2.0.0'
     androidTestImplementation ('org.robolectric:robolectric:4.3')
