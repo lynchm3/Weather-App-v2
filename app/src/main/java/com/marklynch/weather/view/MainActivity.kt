@@ -1,9 +1,14 @@
 package com.marklynch.weather.view
 
+import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.marklynch.weather.R
@@ -22,6 +27,7 @@ import java.util.*
 
 class MainActivity : BaseActivity() {
 
+    private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +53,14 @@ class MainActivity : BaseActivity() {
         viewModel.locationLiveData.observe(this,
             Observer<LocationInformation> { location ->
                 when {
-                    location.locationPermission != AppPermissionState.Granted -> tv_location.text = getString(R.string.fine_location_permission_denied)
-                    location.gpsState != GpsState.Enabled -> tv_location.text = getString(R.string.fine_location_permission_denied)
+                    location.locationPermission != AppPermissionState.Granted -> {
+                        tv_location.text = getString(R.string.fine_location_permission_denied)
+                        showLocationPermissionNeededDialog()
+                    }
+                    location.gpsState != GpsState.Enabled -> {
+                        tv_location.text = getString(R.string.fine_location_permission_denied)
+                        showGpsNotEnabledDialog()
+                    }
                     location.locationResult == null -> tv_location.text = getString(R.string.getting_location)
                     else -> tv_location.text = "${location.locationResult}"
                 }
@@ -132,8 +144,50 @@ class MainActivity : BaseActivity() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun showGpsNotEnabledDialog() {
+        if (alertDialog?.isShowing == true) {
+            return
+        }
+
+        alertDialog = AlertDialog.Builder(this)
+            .setTitle(R.string.gps_required_title)
+            .setMessage(R.string.gps_required_body)
+            .setPositiveButton(R.string.action_settings) { _, _ ->
+                // Open app's settings.
+                val intent = Intent().apply {
+                    action = Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                }
+                startActivity(intent)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun hideGpsNotEnabledDialog() {
+        if (alertDialog?.isShowing == true) alertDialog?.dismiss()
+    }
+
+    private fun showLocationPermissionNeededDialog() {
+        if (alertDialog?.isShowing == true) {
+            return
+        }
+
+        alertDialog = AlertDialog.Builder(this)
+            .setTitle(R.string.permission_required_title)
+            .setMessage(R.string.permission_required_body)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    0
+                )
+            }
+            .setCancelable(false) //to disable outside click for cancel
+            .create()
+
+        alertDialog?.apply {
+            show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

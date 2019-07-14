@@ -5,4 +5,8 @@
     <string name="fine_location_permission_denied">Fine Location Permission Denied</string>
     <string name="location_setting_turned_off">Location Setting Off</string>
     <string name="getting_location">Getting Location</string>
+    <string name="gps_required_title">GPS required</string>
+    <string name="gps_required_body">GPS Requied</string>
+    <string name="permission_required_title">Location permission required</string>
+    <string name="permission_required_body">Location permission required</string>
 </resources>
