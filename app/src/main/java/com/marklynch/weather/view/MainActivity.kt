@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.marklynch.weather.R
 import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
@@ -46,10 +47,10 @@ class MainActivity : BaseActivity() {
         viewModel.locationLiveData.observe(this,
             Observer<LocationInformation> { location ->
                 when {
-                    location.locationPermission != AppPermissionState.Granted -> tv_location.text = "GPS Location = Please allow location permission"
-                    location.gpsState != GpsState.Enabled -> tv_location.text = "GPS Location = GPS is turned off"
-                    location.locationResult == null -> tv_location.text = "GPS Location = Getting location..."
-                    else -> tv_location.text = "GPS Location = ${location.locationResult}"
+                    location.locationPermission != AppPermissionState.Granted -> tv_location.text = getString(R.string.fine_location_permission_denied)
+                    location.gpsState != GpsState.Enabled -> tv_location.text = getString(R.string.fine_location_permission_denied)
+                    location.locationResult == null -> tv_location.text = getString(R.string.getting_location)
+                    else -> tv_location.text = "${location.locationResult}"
                 }
             })
 
