@@ -21,13 +21,13 @@ class WeatherResponse {
     @SerializedName("clouds")
     var clouds: Clouds? = null
     @SerializedName("dt")
-    var dt: Float = 0.toFloat()
+    var dt = 0.0
     @SerializedName("id")
     var id: Int = 0
     @SerializedName("name")
     var name: String? = null
     @SerializedName("cod")
-    var cod: Float = 0.toFloat()
+    var cod = 0.0
 }
 
 class Weather {
@@ -43,32 +43,32 @@ class Weather {
 
 class Clouds {
     @SerializedName("all")
-    var all: Float = 0.toFloat()
+    var all = 0.0
 }
 
 class Rain {
     @SerializedName("3h")
-    var h3: Float = 0.toFloat()
+    var h3 = 0.0
 }
 
 class Wind {
     @SerializedName("speed")
-    var speed: Float = 0.toFloat()
+    var speed = 0.0
     @SerializedName("deg")
-    var deg: Float = 0.toFloat()
+    var deg = 0.0
 }
 
 class Main {
     @SerializedName("temp")
-    var temp: Float = 0.toFloat()
+    var temp = 0.0
     @SerializedName("humidity")
-    var humidity: Float = 0.toFloat()
+    var humidity = 0.0
     @SerializedName("pressure")
-    var pressure: Float = 0.toFloat()
+    var pressure = 0.0
     @SerializedName("temp_min")
-    var temp_min: Float = 0.toFloat()
+    var temp_min = 0.0
     @SerializedName("temp_max")
-    var temp_max: Float = 0.toFloat()
+    var temp_max = 0.0
 }
 
 class Sys {
@@ -82,7 +82,7 @@ class Sys {
 
 class Coord {
     @SerializedName("lon")
-    var lon: Float = 0.toFloat()
+    var lon = 0.0
     @SerializedName("lat")
-    var lat: Float = 0.toFloat()
+    var lat = 0.0
 }

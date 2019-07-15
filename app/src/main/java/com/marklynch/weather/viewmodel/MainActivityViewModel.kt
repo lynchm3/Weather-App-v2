@@ -3,10 +3,12 @@ package com.marklynch.weather.viewmodel
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.marklynch.weather.livedata.location.LocationLiveData
+import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
 import com.marklynch.weather.livedata.sharedpreferences.IntSharedPreferencesLiveData
 import com.marklynch.weather.livedata.util.CurrentTimeLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.livedata.webresource.RawWebResourceLiveData
+import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.view.MainActivity
 
 class MainActivityViewModel(application: Application) : BaseActivityViewModel(application) {
@@ -23,6 +25,8 @@ class MainActivityViewModel(application: Application) : BaseActivityViewModel(ap
 
     //Weather
     val weatherLiveData = WeatherLiveData()
+
+    val useCelciusSharedPreferencesLiveData = BooleanSharedPreferencesLiveData(application, SHARED_PREFERENCES_USE_CELCIUS)
 
     //Shared pref Int
     val intSharedPreferencesLiveData = IntSharedPreferencesLiveData(application, MainActivity.companion.testSharedPref)

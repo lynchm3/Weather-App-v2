@@ -55,4 +55,4 @@ class WeatherLiveData : LiveData<WeatherResponse>() {
     }
 }
 
-fun farenheitToCelcius(fahrenheit: Double) = (fahrenheit - 32) * 5 / 9
+fun farenheitToCelcius(fahrenheit: Double?) = if(fahrenheit == null) 0.0 else (fahrenheit - 32) * 5 / 9

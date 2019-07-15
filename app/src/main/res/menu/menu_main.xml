@@ -2,8 +2,12 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.marklynch.weather.MainActivity">
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
+    <item android:id="@+id/action_use_celsius"
+          android:title="@string/action_use_celsius"
           android:orderInCategory="100"
-          app:showAsAction="never"/>
+          app:showAsAction="always"/>
+    <item android:id="@+id/action_use_fahrenheit"
+          android:title="@string/action_use_fahrenheit"
+          android:orderInCategory="100"
+          app:showAsAction="always"/>
 </menu>

@@ -16,17 +16,17 @@ import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.weather.WeatherResponse
+import com.marklynch.weather.livedata.weather.farenheitToCelcius
+import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import java.util.*
 
 
 class MainActivity : BaseActivity() {
 
+    val viewModel: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
     private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,6 @@ class MainActivity : BaseActivity() {
         setContentView(com.marklynch.weather.R.layout.activity_main_mine)
         setSupportActionBar(toolbar)
 
-        val viewModel: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
         //Raw web resource
         viewModel.rawWebResourceLiveData.observe(this,
@@ -61,10 +60,15 @@ class MainActivity : BaseActivity() {
                         tv_location.text = getString(R.string.location_setting_turned_off)
                         showGpsNotEnabledDialog()
                     }
-                    locationInformation.locationResult == null -> tv_location.text = getString(R.string.getting_location)
+                    locationInformation.locationResult == null -> tv_location.text =
+                        getString(R.string.getting_location)
                     else -> {
-                        tv_location.text = "${locationInformation.locationResult.locations[0].latitude},${locationInformation.locationResult.locations[0].longitude}"
-                        viewModel.weatherLiveData.fetchWeather(locationInformation.locationResult.locations[0].latitude,locationInformation.locationResult.locations[0].longitude)
+                        tv_location.text =
+                            "${locationInformation.locationResult.locations[0].latitude},${locationInformation.locationResult.locations[0].longitude}"
+                        viewModel.weatherLiveData.fetchWeather(
+                            locationInformation.locationResult.locations[0].latitude,
+                            locationInformation.locationResult.locations[0].longitude
+                        )
                     }
                 }
             })
@@ -73,28 +77,18 @@ class MainActivity : BaseActivity() {
         viewModel.weatherLiveData.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
                 weatherResponse?.let {
-                    tv_weather.text = "Weather = ${
-
-                    "Country: " +
-                            weatherResponse.sys?.country +
-                            "\n" +
-                            "Temperature: " +
-                            weatherResponse.main?.temp +
-                            "\n" +
-                            "Temperature(Min): " +
-                            weatherResponse.main?.temp_min +
-                            "\n" +
-                            "Temperature(Max): " +
-                            weatherResponse.main?.temp_max +
-                            "\n" +
-                            "Humidity: " +
-                            weatherResponse.main?.humidity +
-                            "\n" +
-                            "Pressure: " +
-                            weatherResponse.main?.pressure
-                    }"
+                    updateWeather()
                 }
             })
+
+
+        //Weather
+        viewModel.useCelciusSharedPreferencesLiveData.observe(this,
+            Observer<Boolean> { useCelcius ->
+                updateWeather()
+            }
+        )
+
 
         //Shared Preferences Int
         //Test thread that increments the shared pref
@@ -108,10 +102,10 @@ class MainActivity : BaseActivity() {
 //            }
 //        }
 
-        viewModel.intSharedPreferencesLiveData.observe(this,
-            Observer<Int> { sharedPreference ->
-                tv_shared_preference.text = "Shared Preference = ${sharedPreference}"
-            })
+//        viewModel.intSharedPreferencesLiveData.observe(this,
+//            Observer<Int> { sharedPreference ->
+//                tv_shared_preference.text = "Shared Preference = ${sharedPreference}"
+//            })
 
         //FAB
 //        //Setting text when fab is clicked
@@ -143,6 +137,49 @@ class MainActivity : BaseActivity() {
 //                Toast.makeText(this, "Connection turned OFF", Toast.LENGTH_SHORT).show()
 //            }
 //        })
+
+
+    }
+
+    fun updateWeather()
+    {
+
+        if(viewModel.weatherLiveData.value == null)
+            return
+        val weatherResponse = viewModel.weatherLiveData.value
+        val useCelcius = viewModel.useCelciusSharedPreferencesLiveData.value
+        var temp = ""
+        if(useCelcius == null
+            || !useCelcius)
+        {
+            temp = "" + viewModel.weatherLiveData.value?.main?.temp + "°F"
+        }
+        else
+        {
+            temp = "" + farenheitToCelcius(viewModel.weatherLiveData.value?.main?.temp) + "°C"
+        }
+
+        tv_weather.text = "Weather = ${
+
+        "Country: " +
+                weatherResponse?.sys?.country +
+                "\n" +
+                "Temperature: " +
+                temp +
+                "\n" +
+                "Temperature(Min): " +
+                weatherResponse?.main?.temp_min +
+                "\n" +
+                "Temperature(Max): " +
+                weatherResponse?.main?.temp_max +
+                "\n" +
+                "Humidity: " +
+                weatherResponse?.main?.humidity +
+                "\n" +
+                "Pressure: " +
+                weatherResponse?.main?.pressure
+        }"
+
 
 
     }
@@ -200,7 +237,16 @@ class MainActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            com.marklynch.weather.R.id.action_settings -> true
+            R.id.action_use_celsius -> {
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putBoolean(SHARED_PREFERENCES_USE_CELCIUS, true)
+                return true
+            }
+            R.id.action_use_fahrenheit -> {
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putBoolean(SHARED_PREFERENCES_USE_CELCIUS, false)
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
