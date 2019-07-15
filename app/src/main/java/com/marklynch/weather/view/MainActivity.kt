@@ -16,7 +16,6 @@ import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.weather.WeatherResponse
-import com.marklynch.weather.livedata.weather.farenheitToCelcius
 import com.marklynch.weather.livedata.weather.kelvinToCelcius
 import com.marklynch.weather.livedata.weather.kelvinToFahrenheit
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
@@ -25,6 +24,11 @@ import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
 import java.util.*
 import kotlin.math.roundToInt
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.SpannableString
+import android.graphics.Typeface
+import android.text.style.StyleSpan
 
 
 class MainActivity : BaseActivity() {
@@ -152,18 +156,23 @@ class MainActivity : BaseActivity() {
             return
         val weatherResponse = viewModel?.weatherLiveData?.value
         val useCelcius = viewModel?.useCelciusSharedPreferencesLiveData?.value
-        var temp = ""
+        var temperatureText = ""
         if(useCelcius == null
             || !useCelcius)
         {
-            temp = "" + kelvinToFahrenheit(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°F"
+            temperatureText = "" + kelvinToFahrenheit(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°F"
         }
         else
         {
-            temp = "" + kelvinToCelcius(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°C"
+            temperatureText = "" + kelvinToCelcius(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°C"
         }
 
-        tv_temperature.text = temp
+        val styledTemperatureText = SpannableString(temperatureText)
+        styledTemperatureText.setSpan(RelativeSizeSpan(0.5f), temperatureText.length-2, temperatureText.length, 0)
+        styledTemperatureText.setSpan(ForegroundColorSpan(getResources().getColor(R.color.lightGrey)), temperatureText.length-2, temperatureText.length, 0)// set color
+        styledTemperatureText.setSpan(StyleSpan(Typeface.BOLD),0, temperatureText.length-2, 0)
+
+        tv_temperature.text = styledTemperatureText
 
         tv_weather.text = "Weather = ${
 
@@ -171,7 +180,7 @@ class MainActivity : BaseActivity() {
                 weatherResponse?.sys?.country +
                 "\n" +
                 "Temperature: " +
-                temp +
+                temperatureText +
                 "\n" +
                 "Temperature(Min): " +
                 weatherResponse?.main?.temp_min +
