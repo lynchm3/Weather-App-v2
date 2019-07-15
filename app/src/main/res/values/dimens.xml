@@ -1,3 +1,7 @@
 <resources>
+
+    <!-- Main Activity-->
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="temperature_text_size">128sp</dimen>
+
 </resources>

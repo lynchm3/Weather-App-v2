@@ -17,6 +17,8 @@ import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.livedata.weather.farenheitToCelcius
+import com.marklynch.weather.livedata.weather.kelvinToCelcius
+import com.marklynch.weather.livedata.weather.kelvinToFahrenheit
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main_mine.*
@@ -154,12 +156,14 @@ class MainActivity : BaseActivity() {
         if(useCelcius == null
             || !useCelcius)
         {
-            temp = "" + viewModel?.weatherLiveData?.value?.main?.temp?.roundToInt() + "°F"
+            temp = "" + kelvinToFahrenheit(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°F"
         }
         else
         {
-            temp = "" + farenheitToCelcius(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°C"
+            temp = "" + kelvinToCelcius(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°C"
         }
+
+        tv_temperature.text = temp
 
         tv_weather.text = "Weather = ${
 

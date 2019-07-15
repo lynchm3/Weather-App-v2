@@ -1,6 +1,5 @@
 package com.marklynch.weather.livedata.weather
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import retrofit2.Call
 import retrofit2.Callback
@@ -53,3 +52,5 @@ class WeatherLiveData : LiveData<WeatherResponse>() {
 }
 
 fun farenheitToCelcius(fahrenheit: Double?) = if(fahrenheit == null) 0.0 else (fahrenheit - 32) * 5 / 9
+fun kelvinToCelcius(kelvin: Double?) = if(kelvin == null) 0.0 else kelvin - 273.15
+fun kelvinToFahrenheit(kelvin: Double?) = if(kelvin == null) 0.0 else kelvin * 9/5 - 459.67
