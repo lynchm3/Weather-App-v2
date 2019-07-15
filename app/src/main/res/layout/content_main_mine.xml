@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:showIn="@layout/activity_main_mine"
+        tools:showIn="@layout/activity_main"
         tools:context=".view.MainActivity">
 
     <TextView
@@ -18,29 +18,18 @@
             android:layout_gravity="center_horizontal"
             android:textSize="@dimen/temperature_text_size"/>
 
-    <TextView
-            android:id="@+id/tv_raw_web_resource"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"/>
+    <!--<ImageView-->
+            <!--android:id="@+id/iv_temperature"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal"/>-->
 
     <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"/>
-
-    <TextView
-            android:id="@+id/tv_location"
+            android:id="@+id/tv_weather_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:text="GPS..."/>
-
-    <TextView
-            android:id="@+id/tv_weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    <!--android:singleLine="true"/>-->
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/weather_description_text_size"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

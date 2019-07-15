@@ -12,13 +12,6 @@ import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.view.MainActivity
 
 class MainActivityViewModel(application: Application) : BaseActivityViewModel(application) {
-    val liveDataFab = MutableLiveData<String>()
-
-    //Time
-    val currentTimeLiveData = CurrentTimeLiveData()
-
-    //Raw web resource
-    val rawWebResourceLiveData = RawWebResourceLiveData()
 
     //Location
     val locationLiveData = LocationLiveData(application)
@@ -26,8 +19,6 @@ class MainActivityViewModel(application: Application) : BaseActivityViewModel(ap
     //Weather
     val weatherLiveData = WeatherLiveData()
 
+    //Shared Preference for setting whether to use degrees C or F
     val useCelciusSharedPreferencesLiveData = BooleanSharedPreferencesLiveData(application, SHARED_PREFERENCES_USE_CELCIUS)
-
-    //Shared pref Int
-    val intSharedPreferencesLiveData = IntSharedPreferencesLiveData(application, MainActivity.companion.testSharedPref)
 }

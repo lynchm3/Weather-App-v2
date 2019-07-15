@@ -2,9 +2,14 @@ package com.marklynch.weather.view
 
 import android.Manifest
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
@@ -20,15 +25,10 @@ import com.marklynch.weather.livedata.weather.kelvinToCelcius
 import com.marklynch.weather.livedata.weather.kelvinToFahrenheit
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.viewmodel.MainActivityViewModel
-import kotlinx.android.synthetic.main.activity_main_mine.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main_mine.*
 import java.util.*
 import kotlin.math.roundToInt
-import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
-import android.text.SpannableString
-import android.graphics.Typeface
-import android.text.style.StyleSpan
 
 
 class MainActivity : BaseActivity() {
@@ -38,47 +38,22 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.marklynch.weather.R.layout.activity_main_mine)
+        setContentView(com.marklynch.weather.R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-
-
-        //Raw web resource
-        viewModel?.rawWebResourceLiveData?.observe(this,
-            Observer<String> { responseBody ->
-                responseBody?.let { tv_raw_web_resource.text = "Raw Web Resource = ${it}" }
-            })
-
-        //Time
-        val calendar = Calendar.getInstance()
-        viewModel?.currentTimeLiveData?.observe(this, Observer<Long> { t ->
-            calendar.timeInMillis = t!!
-            tv_time.text = "Time = ${calendar.time}"
-        })
 
         //Location
         viewModel?.locationLiveData?.observe(this,
             Observer<LocationInformation> { locationInformation ->
                 when {
-                    locationInformation.locationPermission != AppPermissionState.Granted -> {
-                        tv_location.text = getString(R.string.fine_location_permission_denied)
-                        showLocationPermissionNeededDialog()
-                    }
-                    locationInformation.gpsState != GpsState.Enabled -> {
-                        tv_location.text = getString(R.string.location_setting_turned_off)
-                        showGpsNotEnabledDialog()
-                    }
-                    locationInformation.locationResult == null -> tv_location.text =
-                        getString(R.string.getting_location)
-                    else -> {
-                        tv_location.text =
-                            "${locationInformation.locationResult.locations[0].latitude},${locationInformation.locationResult.locations[0].longitude}"
-                        viewModel?.weatherLiveData?.fetchWeather(
-                            locationInformation.locationResult.locations[0].latitude,
-                            locationInformation.locationResult.locations[0].longitude
+                    locationInformation.locationPermission != AppPermissionState.Granted -> showLocationPermissionNeededDialog()
+                    locationInformation.gpsState != GpsState.Enabled -> showGpsNotEnabledDialog()
+//                    locationInformation.locationResult == null -> ?????
+                    else -> viewModel?.weatherLiveData?.fetchWeather(
+                            locationInformation.locationResult?.locations?.getOrNull(0)?.latitude ?: 0.0,
+                        locationInformation.locationResult?.locations?.getOrNull(0)?.longitude ?: 0.0
                         )
-                    }
                 }
             })
 
@@ -150,52 +125,42 @@ class MainActivity : BaseActivity() {
 
     }
 
-    fun updateWeather()
-    {
-        if(viewModel?.weatherLiveData?.value == null)
+    fun updateWeather() {
+        if (viewModel?.weatherLiveData?.value == null)
             return
         val weatherResponse = viewModel?.weatherLiveData?.value
         val useCelcius = viewModel?.useCelciusSharedPreferencesLiveData?.value
         var temperatureText = ""
-        if(useCelcius == null
-            || !useCelcius)
-        {
+        if (useCelcius == null
+            || !useCelcius
+        ) {
             temperatureText = "" + kelvinToFahrenheit(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°F"
-        }
-        else
-        {
+        } else {
             temperatureText = "" + kelvinToCelcius(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°C"
         }
 
         val styledTemperatureText = SpannableString(temperatureText)
-        styledTemperatureText.setSpan(RelativeSizeSpan(0.5f), temperatureText.length-2, temperatureText.length, 0)
-        styledTemperatureText.setSpan(ForegroundColorSpan(getResources().getColor(R.color.lightGrey)), temperatureText.length-2, temperatureText.length, 0)// set color
-        styledTemperatureText.setSpan(StyleSpan(Typeface.BOLD),0, temperatureText.length-2, 0)
+        styledTemperatureText.setSpan(RelativeSizeSpan(0.5f), temperatureText.length - 2, temperatureText.length, 0)
+        styledTemperatureText.setSpan(
+            ForegroundColorSpan(getResources().getColor(R.color.lightGrey)),
+            temperatureText.length - 2,
+            temperatureText.length,
+            0
+        )// set color
+
+        styledTemperatureText.setSpan(StyleSpan(Typeface.BOLD), 0, temperatureText.length - 2, 0)
 
         tv_temperature.text = styledTemperatureText
 
-        tv_weather.text = "Weather = ${
+//        iv_temperature.setImageResource(mapWeatherCodeToDrawable.get(weatherResponse?.weather?.getOrNull(0)?.icon) ?: R.drawable.weather01d)
 
-        "Country: " +
-                weatherResponse?.sys?.country +
-                "\n" +
-                "Temperature: " +
-                temperatureText +
-                "\n" +
-                "Temperature(Min): " +
-                weatherResponse?.main?.temp_min +
-                "\n" +
-                "Temperature(Max): " +
-                weatherResponse?.main?.temp_max +
-                "\n" +
-                "Humidity: " +
-                weatherResponse?.main?.humidity +
-                "\n" +
-                "Pressure: " +
-                weatherResponse?.main?.pressure
-        }"
-
-
+        tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
+        tv_weather_description.setCompoundDrawables(
+            resources.getDrawable(
+                mapWeatherCodeToDrawable.get(weatherResponse?.weather?.getOrNull(0)?.icon) ?: R.drawable.weather01d
+            ),
+            null, null, null
+        )
 
     }
 
@@ -266,7 +231,27 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    object companion {
-        val testSharedPref = "testSharedPref"
-    }
+    val mapWeatherCodeToDrawable: Map<String, Int> = mapOf(
+        "01d" to R.drawable.weather01d,
+        "01n" to R.drawable.weather01n,
+        "02d" to R.drawable.weather02d,
+        "02n" to R.drawable.weather02n,
+        "03d" to R.drawable.weather03d,
+        "03n" to R.drawable.weather03n,
+        "04d" to R.drawable.weather04d,
+        "04n" to R.drawable.weather04n,
+        "09d" to R.drawable.weather09d,
+        "09n" to R.drawable.weather09n,
+        "10d" to R.drawable.weather10d,
+        "10n" to R.drawable.weather10n,
+        "11d" to R.drawable.weather11d,
+        "11n" to R.drawable.weather11n,
+        "13d" to R.drawable.weather13d,
+        "13n" to R.drawable.weather13n,
+        "50d" to R.drawable.weather50d,
+        "50n" to R.drawable.weather50n
+    )
 }
+
+fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
+

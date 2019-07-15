@@ -62,8 +62,6 @@ class MainActivityTest {
         val tv_time = activity.findViewById<TextView>(R.id.tv_time)
         val tv_location = activity.findViewById<TextView>(R.id.tv_location)
         val tv_weather = activity.findViewById<TextView>(R.id.tv_weather)
-        val tv_shared_preference = activity.findViewById<TextView>(R.id.tv_shared_preference)
-        val tv_connection_status = activity.findViewById<TextView>(R.id.tv_connection_status)
 
         Thread.sleep(1_000)
 
@@ -71,8 +69,6 @@ class MainActivityTest {
         Log.i("UNITTEST", "tv_time.text = ${tv_time.text}")
         Log.i("UNITTEST", "tv_location.text = ${tv_location.text}")
         Log.i("UNITTEST", "tv_weather.text = ${tv_weather.text}")
-        Log.i("UNITTEST", "tv_shared_preference.text = ${tv_shared_preference.text}")
-        Log.i("UNITTEST", "tv_connection_status.text = ${tv_connection_status.text}")
     }
 
     @Test
