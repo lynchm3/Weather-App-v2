@@ -51,18 +51,21 @@ class MainActivity : BaseActivity() {
 
         //Location
         viewModel.locationLiveData.observe(this,
-            Observer<LocationInformation> { location ->
+            Observer<LocationInformation> { locationInformation ->
                 when {
-                    location.locationPermission != AppPermissionState.Granted -> {
+                    locationInformation.locationPermission != AppPermissionState.Granted -> {
                         tv_location.text = getString(R.string.fine_location_permission_denied)
                         showLocationPermissionNeededDialog()
                     }
-                    location.gpsState != GpsState.Enabled -> {
-                        tv_location.text = getString(R.string.fine_location_permission_denied)
+                    locationInformation.gpsState != GpsState.Enabled -> {
+                        tv_location.text = getString(R.string.location_setting_turned_off)
                         showGpsNotEnabledDialog()
                     }
-                    location.locationResult == null -> tv_location.text = getString(R.string.getting_location)
-                    else -> tv_location.text = "${location.locationResult}"
+                    locationInformation.locationResult == null -> tv_location.text = getString(R.string.getting_location)
+                    else -> {
+                        tv_location.text = "${locationInformation.locationResult.locations[0].latitude},${locationInformation.locationResult.locations[0].longitude}"
+                        viewModel.weatherLiveData.fetchWeather(locationInformation.locationResult.locations[0].latitude,locationInformation.locationResult.locations[0].longitude)
+                    }
                 }
             })
 
@@ -95,15 +98,15 @@ class MainActivity : BaseActivity() {
 
         //Shared Preferences Int
         //Test thread that increments the shared pref
-        GlobalScope.async {
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-            sharedPreferences.edit().putInt(companion.testSharedPref, 0).apply()
-            while (true) {
-                delay(1000)
-                val sharedPrefIntValue = sharedPreferences.getInt(companion.testSharedPref, 0)
-                sharedPreferences.edit().putInt(companion.testSharedPref, sharedPrefIntValue + 1).apply()
-            }
-        }
+//        GlobalScope.async {
+//            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+//            sharedPreferences.edit().putInt(companion.testSharedPref, 0).apply()
+//            while (true) {
+//                delay(1000)
+//                val sharedPrefIntValue = sharedPreferences.getInt(companion.testSharedPref, 0)
+//                sharedPreferences.edit().putInt(companion.testSharedPref, sharedPrefIntValue + 1).apply()
+//            }
+//        }
 
         viewModel.intSharedPreferencesLiveData.observe(this,
             Observer<Int> { sharedPreference ->

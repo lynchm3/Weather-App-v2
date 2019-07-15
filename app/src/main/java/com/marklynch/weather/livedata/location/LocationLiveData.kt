@@ -9,10 +9,13 @@ import android.os.Build
 import android.os.Looper
 import android.provider.Settings
 import android.text.format.DateUtils
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.android.gms.location.*
+import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.apppermissions.getPermissionState
 import com.marklynch.weather.livedata.apppermissions.locationPermission
+
 
 class LocationLiveData(private val context: Context) : LiveData<LocationInformation>() {
 
@@ -22,18 +25,19 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
 
     private val locationUpdateInterval = 5 * DateUtils.SECOND_IN_MILLIS
 
-    private var locationResult:LocationResult? = null
+    private var locationResult: LocationResult? = null
 
     private val locationPermissionState
         get() = getPermissionState(context, locationPermission)
 
-    private val gpsEnabled
+    private val gpsState
         get() = getGpsState(context)
 
     private val gpsSwitchStateReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent)
-        {
-            postValue(LocationInformation(locationPermissionState, gpsEnabled, locationResult))
+        override fun onReceive(context: Context, intent: Intent) {
+            postValue(LocationInformation(locationPermissionState, gpsState, locationResult))
+            if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
+                fetchLocation()
         }
     }
 
@@ -42,16 +46,12 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-        locationRequest = LocationRequest.create().apply {
-            interval = locationUpdateInterval
-            priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        }
-
         registerGpsStateReceiver()
 
-        postValue(LocationInformation(locationPermissionState, gpsEnabled, locationResult))
+        postValue(LocationInformation(locationPermissionState, gpsState, locationResult))
 
-        registerForLocationTracking()
+        if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
+            fetchLocation()
     }
 
     override fun onInactive() {
@@ -63,7 +63,7 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(newLocationResult: LocationResult) {
             locationResult = newLocationResult
-            postValue(LocationInformation(locationPermissionState, gpsEnabled, locationResult))
+            postValue(LocationInformation(locationPermissionState, gpsState, locationResult))
         }
     }
 
@@ -75,10 +75,13 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
 
     private fun unregisterGpsStateReceiver() = context.unregisterReceiver(gpsSwitchStateReceiver)
 
-    private fun registerForLocationTracking() {
+    private fun fetchLocation() {
         try {
             fusedLocationClient.requestLocationUpdates(
-                locationRequest, locationCallback,
+                LocationRequest.create().apply {
+                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                    numUpdates = 1
+                }, locationCallback,
                 Looper.myLooper()
             )
         } catch (unlikely: SecurityException) {
@@ -93,9 +96,6 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
             error("Error when unregisterLocationUpdated()")
         }
     }
-
-
-
 
     fun getGpsState(context: Context): GpsState {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
