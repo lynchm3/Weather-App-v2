@@ -164,6 +164,12 @@ class MainActivity : BaseActivity() {
 
         tv_location_name.text = weatherResponse?.name
 
+//        tv_humidity.text = "Humidity" + (weatherResponse?.main?.humidity) + "%"
+
+        tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity.toString())
+
+//        tv_humidity.text = String.format(getString(R.string.humidity_percentage), weatherResponse?.main?.humidity);
+
     }
 
     private fun showGpsNotEnabledDialog() {

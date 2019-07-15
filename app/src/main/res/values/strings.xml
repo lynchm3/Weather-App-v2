@@ -4,6 +4,8 @@
     <string name="action_use_celsius">Use °C</string>
     <string name="action_use_fahrenheit">Use °F</string>
 
+    <string name="humidity_percentage">Humidity %1$s%%</string>
+
     <string name="fine_location_permission_denied">Fine Location Permission Denied</string>
     <string name="location_setting_turned_off">Location Setting Off</string>
     <string name="getting_location">Getting Location</string>
