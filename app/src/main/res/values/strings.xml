@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weather</string>
+    <string name="app_name">The Weather</string>
     <string name="action_settings">Settings</string>
     <string name="action_use_celsius">Use °C</string>
     <string name="action_use_fahrenheit">Use °F</string>

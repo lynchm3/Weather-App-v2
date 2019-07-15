@@ -27,7 +27,6 @@ import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main_mine.*
-import java.util.*
 import kotlin.math.roundToInt
 
 
@@ -131,12 +130,13 @@ class MainActivity : BaseActivity() {
         val weatherResponse = viewModel?.weatherLiveData?.value
         val useCelcius = viewModel?.useCelciusSharedPreferencesLiveData?.value
         var temperatureText = ""
-        if (useCelcius == null
-            || !useCelcius
-        ) {
-            temperatureText = "" + kelvinToFahrenheit(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°F"
+        var temperatureTextUnit = ""
+        if (useCelcius == null || !useCelcius) {
+            temperatureText = kelvinToFahrenheit(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt().toString()
+            temperatureTextUnit = "°F"
         } else {
-            temperatureText = "" + kelvinToCelcius(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°C"
+            temperatureText = kelvinToCelcius(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt().toString()
+            temperatureTextUnit = "°C"
         }
 
         val styledTemperatureText = SpannableString(temperatureText)
@@ -147,12 +147,12 @@ class MainActivity : BaseActivity() {
             temperatureText.length,
             0
         )// set color
-
         styledTemperatureText.setSpan(StyleSpan(Typeface.BOLD), 0, temperatureText.length - 2, 0)
 
-        tv_temperature.text = styledTemperatureText
+        tv_temperature.text = temperatureText
+        tv_temperature_unit.text = temperatureTextUnit
 
-//        iv_temperature.setImageResource(mapWeatherCodeToDrawable.get(weatherResponse?.weather?.getOrNull(0)?.icon) ?: R.drawable.weather01d)
+        iv_weather_description.setImageResource(mapWeatherCodeToDrawable.get(weatherResponse?.weather?.getOrNull(0)?.icon) ?: R.drawable.weather01d)
 
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
         tv_weather_description.setCompoundDrawables(
@@ -161,6 +161,8 @@ class MainActivity : BaseActivity() {
             ),
             null, null, null
         )
+
+        tv_location_name.text = weatherResponse?.name
 
     }
 

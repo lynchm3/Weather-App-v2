@@ -3,6 +3,9 @@
     <!-- Main Activity-->
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="temperature_text_size">128sp</dimen>
+    <dimen name="temperature_unit_text_size">64sp</dimen>
     <dimen name="weather_description_text_size">32sp</dimen>
+    <dimen name="location_name_text_size">32sp</dimen>
+    <dimen name="temperature_unit_margin_top">24dp</dimen>
 
 </resources>
