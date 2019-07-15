@@ -22,11 +22,12 @@ import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main_mine.*
 import kotlinx.android.synthetic.main.content_main_mine.*
 import java.util.*
+import kotlin.math.roundToInt
 
 
 class MainActivity : BaseActivity() {
 
-    val viewModel: MainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+    private var viewModel: MainActivityViewModel? = null
     private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,22 +35,24 @@ class MainActivity : BaseActivity() {
         setContentView(com.marklynch.weather.R.layout.activity_main_mine)
         setSupportActionBar(toolbar)
 
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+
 
         //Raw web resource
-        viewModel.rawWebResourceLiveData.observe(this,
+        viewModel?.rawWebResourceLiveData?.observe(this,
             Observer<String> { responseBody ->
                 responseBody?.let { tv_raw_web_resource.text = "Raw Web Resource = ${it}" }
             })
 
         //Time
         val calendar = Calendar.getInstance()
-        viewModel.currentTimeLiveData.observe(this, Observer<Long> { t ->
+        viewModel?.currentTimeLiveData?.observe(this, Observer<Long> { t ->
             calendar.timeInMillis = t!!
             tv_time.text = "Time = ${calendar.time}"
         })
 
         //Location
-        viewModel.locationLiveData.observe(this,
+        viewModel?.locationLiveData?.observe(this,
             Observer<LocationInformation> { locationInformation ->
                 when {
                     locationInformation.locationPermission != AppPermissionState.Granted -> {
@@ -65,7 +68,7 @@ class MainActivity : BaseActivity() {
                     else -> {
                         tv_location.text =
                             "${locationInformation.locationResult.locations[0].latitude},${locationInformation.locationResult.locations[0].longitude}"
-                        viewModel.weatherLiveData.fetchWeather(
+                        viewModel?.weatherLiveData?.fetchWeather(
                             locationInformation.locationResult.locations[0].latitude,
                             locationInformation.locationResult.locations[0].longitude
                         )
@@ -74,7 +77,7 @@ class MainActivity : BaseActivity() {
             })
 
         //Weather
-        viewModel.weatherLiveData.observe(this,
+        viewModel?.weatherLiveData?.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
                 weatherResponse?.let {
                     updateWeather()
@@ -83,7 +86,7 @@ class MainActivity : BaseActivity() {
 
 
         //Weather
-        viewModel.useCelciusSharedPreferencesLiveData.observe(this,
+        viewModel?.useCelciusSharedPreferencesLiveData?.observe(this,
             Observer<Boolean> { useCelcius ->
                 updateWeather()
             }
@@ -143,20 +146,19 @@ class MainActivity : BaseActivity() {
 
     fun updateWeather()
     {
-
-        if(viewModel.weatherLiveData.value == null)
+        if(viewModel?.weatherLiveData?.value == null)
             return
-        val weatherResponse = viewModel.weatherLiveData.value
-        val useCelcius = viewModel.useCelciusSharedPreferencesLiveData.value
+        val weatherResponse = viewModel?.weatherLiveData?.value
+        val useCelcius = viewModel?.useCelciusSharedPreferencesLiveData?.value
         var temp = ""
         if(useCelcius == null
             || !useCelcius)
         {
-            temp = "" + viewModel.weatherLiveData.value?.main?.temp + "°F"
+            temp = "" + viewModel?.weatherLiveData?.value?.main?.temp?.roundToInt() + "°F"
         }
         else
         {
-            temp = "" + farenheitToCelcius(viewModel.weatherLiveData.value?.main?.temp) + "°C"
+            temp = "" + farenheitToCelcius(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt() + "°C"
         }
 
         tv_weather.text = "Weather = ${
@@ -239,12 +241,12 @@ class MainActivity : BaseActivity() {
         return when (item.itemId) {
             R.id.action_use_celsius -> {
                 PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putBoolean(SHARED_PREFERENCES_USE_CELCIUS, true)
+                    .putBoolean(SHARED_PREFERENCES_USE_CELCIUS, true).apply()
                 return true
             }
             R.id.action_use_fahrenheit -> {
                 PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putBoolean(SHARED_PREFERENCES_USE_CELCIUS, false)
+                    .putBoolean(SHARED_PREFERENCES_USE_CELCIUS, false).apply()
                 return true
             }
             else -> super.onOptionsItemSelected(item)

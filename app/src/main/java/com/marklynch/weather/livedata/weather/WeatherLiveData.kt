@@ -28,9 +28,6 @@ class WeatherLiveData : LiveData<WeatherResponse>() {
 
         call.enqueue(object : Callback<WeatherResponse> {
             override fun onFailure(call: Call<WeatherResponse>?, t: Throwable?) {
-                Log.i("Weather", "onFailure")
-                Log.i("Weather", "t = $t")
-                Log.i("Weather", "call = $call")
                 postValue(null)
             }
 

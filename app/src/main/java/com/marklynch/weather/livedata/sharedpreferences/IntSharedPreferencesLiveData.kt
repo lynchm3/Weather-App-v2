@@ -7,6 +7,6 @@ class IntSharedPreferencesLiveData(
     sharedPreferencesKey: String
 ) : SharedPreferencesLiveData<Int>(context, sharedPreferencesKey) {
     override fun setLiveDataValue(sharedPreferencesKey: String) {
-        value = sharedPreferences.getInt(sharedPreferencesKey,0)
+        postValue(sharedPreferences.getInt(sharedPreferencesKey,0))
     }
 }

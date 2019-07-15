@@ -7,6 +7,6 @@ class BooleanSharedPreferencesLiveData(
     sharedPreferencesKey: String
 ) : SharedPreferencesLiveData<Boolean>(context, sharedPreferencesKey) {
     override fun setLiveDataValue(sharedPreferencesKey: String) {
-        value = sharedPreferences.getBoolean(sharedPreferencesKey,false)
+        postValue(sharedPreferences.getBoolean(sharedPreferencesKey,false))
     }
 }
