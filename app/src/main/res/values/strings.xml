@@ -4,7 +4,15 @@
     <string name="action_use_celsius">Use °C</string>
     <string name="action_use_fahrenheit">Use °F</string>
 
-    <string name="humidity_percentage">Humidity %1$s%%</string>
+
+    <string name="degreesF">°F</string>
+    <string name="degreesC">°C</string>
+    <string name="minimum_temperature_F">Min %1$d°F</string>
+    <string name="maximum_temperature_F">Max %1$d°F</string>
+    <string name="minimum_temperature_C">Min %1$d°C</string>
+    <string name="maximum_temperature_C">Max %1$d°C</string>
+    <string name="humidity_percentage">Humidity %1$d%%</string>
+
 
     <string name="fine_location_permission_denied">Fine Location Permission Denied</string>
     <string name="location_setting_turned_off">Location Setting Off</string>

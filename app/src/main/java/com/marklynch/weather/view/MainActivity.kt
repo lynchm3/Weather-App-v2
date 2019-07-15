@@ -129,28 +129,18 @@ class MainActivity : BaseActivity() {
             return
         val weatherResponse = viewModel?.weatherLiveData?.value
         val useCelcius = viewModel?.useCelciusSharedPreferencesLiveData?.value
-        var temperatureText = ""
-        var temperatureTextUnit = ""
+        
         if (useCelcius == null || !useCelcius) {
-            temperatureText = kelvinToFahrenheit(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt().toString()
-            temperatureTextUnit = "°F"
+            tv_temperature.text = kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
+            tv_temperature_unit.text = getString(R.string.degreesF)
+            tv_maximum_temperature.text = getString(R.string.maximum_temperature_F, kelvinToFahrenheit(weatherResponse?.main?.temp_max).roundToInt())
+            tv_minimum_temperature.text = getString(R.string.minimum_temperature_F, kelvinToFahrenheit(weatherResponse?.main?.temp_min).roundToInt())
         } else {
-            temperatureText = kelvinToCelcius(viewModel?.weatherLiveData?.value?.main?.temp).roundToInt().toString()
-            temperatureTextUnit = "°C"
+            tv_temperature.text = kelvinToCelcius(weatherResponse?.main?.temp).roundToInt().toString()
+            tv_temperature_unit.text = getString(R.string.degreesC)
+            tv_maximum_temperature.text = getString(R.string.maximum_temperature_C, kelvinToCelcius(weatherResponse?.main?.temp_max).roundToInt())
+            tv_minimum_temperature.text = getString(R.string.minimum_temperature_C, kelvinToCelcius(weatherResponse?.main?.temp_min).roundToInt())
         }
-
-        val styledTemperatureText = SpannableString(temperatureText)
-        styledTemperatureText.setSpan(RelativeSizeSpan(0.5f), temperatureText.length - 2, temperatureText.length, 0)
-        styledTemperatureText.setSpan(
-            ForegroundColorSpan(getResources().getColor(R.color.lightGrey)),
-            temperatureText.length - 2,
-            temperatureText.length,
-            0
-        )// set color
-        styledTemperatureText.setSpan(StyleSpan(Typeface.BOLD), 0, temperatureText.length - 2, 0)
-
-        tv_temperature.text = temperatureText
-        tv_temperature_unit.text = temperatureTextUnit
 
         iv_weather_description.setImageResource(mapWeatherCodeToDrawable.get(weatherResponse?.weather?.getOrNull(0)?.icon) ?: R.drawable.weather01d)
 
@@ -164,11 +154,7 @@ class MainActivity : BaseActivity() {
 
         tv_location_name.text = weatherResponse?.name
 
-//        tv_humidity.text = "Humidity" + (weatherResponse?.main?.humidity) + "%"
-
-        tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity.toString())
-
-//        tv_humidity.text = String.format(getString(R.string.humidity_percentage), weatherResponse?.main?.humidity);
+        tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
 
     }
 
