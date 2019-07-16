@@ -148,7 +148,6 @@ class MainActivity : BaseActivity() {
     }
 
     fun fetchLocation() {
-        ll_weather_info.visibility = View.GONE
         viewModel?.locationLiveData?.fetchLocation()
     }
 
