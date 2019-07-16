@@ -5,7 +5,7 @@
     <dimen name="temperature_text_size">128sp</dimen>
     <dimen name="temperature_unit_text_size">64sp</dimen>
     <dimen name="weather_description_text_size">32sp</dimen>
-    <dimen name="location_name_text_size">32sp</dimen>
+    <dimen name="location_and_time_text_size">32sp</dimen>
     <dimen name="humidity_text_size">32sp</dimen>
     <dimen name="maximum_temperature_text_size">32sp</dimen>
     <dimen name="minimum_temperature_text_size">32sp</dimen>

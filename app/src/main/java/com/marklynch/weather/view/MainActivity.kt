@@ -7,7 +7,6 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -23,8 +22,8 @@ import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
 import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main_mine.*
+import java.util.*
 import kotlin.math.roundToInt
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 
 class MainActivity : BaseActivity() {
@@ -215,7 +214,7 @@ class MainActivity : BaseActivity() {
             null, null, null
         )
 
-        tv_location_name.text = weatherResponse?.name
+        tv_location_and_time.text = getString(R.string.location_and_time,weatherResponse?.name, "${Date().hours}:${Date().minutes}")
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
         tv_cloudiness.text = getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
 
