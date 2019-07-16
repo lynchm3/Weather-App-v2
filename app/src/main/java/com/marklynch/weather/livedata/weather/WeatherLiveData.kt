@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import kotlin.math.roundToInt
 
 
 class WeatherLiveData : LiveData<WeatherResponse>() {
@@ -18,6 +19,9 @@ class WeatherLiveData : LiveData<WeatherResponse>() {
     }
 
     fun fetchWeather(lat: Double = 0.0, lon: Double = 0.0) {
+
+        if(lat == 0.0 && lon == 0.0)
+            return
 
         val retrofit = getRetrofitInstance("https://api.openweathermap.org")
 
@@ -54,3 +58,6 @@ class WeatherLiveData : LiveData<WeatherResponse>() {
 fun farenheitToCelcius(fahrenheit: Double?) = if(fahrenheit == null) 0.0 else (fahrenheit - 32) * 5 / 9
 fun kelvinToCelcius(kelvin: Double?) = if(kelvin == null) 0.0 else kelvin - 273.15
 fun kelvinToFahrenheit(kelvin: Double?) = if(kelvin == null) 0.0 else kelvin * 9/5 - 459.67
+
+fun metresPerSecondToKmPerHour(metresPerSecond: Double) = (metresPerSecond * 3.6)
+fun metresPerSecondToMilesPerHour(metresPerSecond: Double) = (metresPerSecond * 2.23694)

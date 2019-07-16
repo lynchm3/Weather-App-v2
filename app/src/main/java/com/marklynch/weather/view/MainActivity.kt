@@ -15,9 +15,7 @@ import com.marklynch.weather.R
 import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
-import com.marklynch.weather.livedata.weather.WeatherResponse
-import com.marklynch.weather.livedata.weather.kelvinToCelcius
-import com.marklynch.weather.livedata.weather.kelvinToFahrenheit
+import com.marklynch.weather.livedata.weather.*
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
 import com.marklynch.weather.viewmodel.MainActivityViewModel
@@ -44,7 +42,6 @@ class MainActivity : BaseActivity() {
                 when {
                     locationInformation.locationPermission != AppPermissionState.Granted -> showLocationPermissionNeededDialog()
                     locationInformation.gpsState != GpsState.Enabled -> showGpsNotEnabledDialog()
-//                    locationInformation.locationResult == null -> ?????
                     else -> viewModel?.weatherLiveData?.fetchWeather(
                         locationInformation.locationResult?.locations?.getOrNull(0)?.latitude ?: 0.0,
                         locationInformation.locationResult?.locations?.getOrNull(0)?.longitude ?: 0.0
@@ -55,9 +52,12 @@ class MainActivity : BaseActivity() {
         //Weather
         viewModel?.weatherLiveData?.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
-                weatherResponse?.let {
-                    updateWeather()
-                }
+//                weatherResponse?.let {
+                    if(weatherResponse == null)
+                        showNoNetworkConnectionDialog()
+                    else
+                        updateWeather()
+//                }
             })
 
 
@@ -69,7 +69,6 @@ class MainActivity : BaseActivity() {
         )
 
         //km / mi settings
-        //SHARED_PREFERENCES_USE_KM
         viewModel?.useKmSharedPreferencesLiveData?.observe(this,
             Observer<Boolean> {
                 updateWeather()
@@ -156,11 +155,11 @@ class MainActivity : BaseActivity() {
 
         if(useKm == null || !useKm)
         {
-            tv_wind.text = getString(R.string.wind_mi, weatherResponse?.wind?.speed?.roundToInt(), directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0))
+            tv_wind.text = getString(R.string.wind_mi, metresPerSecondToMilesPerHour(weatherResponse?.wind?.speed ?:0.0).roundToInt(), directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0))
         }
         else
         {
-            tv_wind.text = getString(R.string.wind_km, weatherResponse?.wind?.speed?.roundToInt(), directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0))
+            tv_wind.text = getString(R.string.wind_km, metresPerSecondToKmPerHour(weatherResponse?.wind?.speed ?:0.0).roundToInt(), directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0))
         }
 
         iv_weather_description.setImageResource(
@@ -179,6 +178,19 @@ class MainActivity : BaseActivity() {
 
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
 
+    }
+
+    private fun showNoNetworkConnectionDialog() {
+        if (alertDialog?.isShowing == true) {
+            return
+        }
+
+        alertDialog = AlertDialog.Builder(this)
+            .setTitle(R.string.no_network_title)
+            .setMessage(R.string.no_network_body)
+            .setPositiveButton(R.string.action_ok) { _, _ ->
+            }
+            .show()
     }
 
     private fun showGpsNotEnabledDialog() {

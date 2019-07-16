@@ -21,10 +21,6 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private lateinit var locationRequest: LocationRequest
-
-    private val locationUpdateInterval = 5 * DateUtils.SECOND_IN_MILLIS
-
     private var locationResult: LocationResult? = null
 
     private val locationPermissionState
