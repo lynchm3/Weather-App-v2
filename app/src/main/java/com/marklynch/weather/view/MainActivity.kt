@@ -7,6 +7,7 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -141,6 +142,9 @@ class MainActivity : BaseActivity() {
     }
 
     fun fetchLocation() {
+        ll_weather_info.visibility = View.GONE
+        tv_messaging.visibility = View.VISIBLE
+        tv_messaging.text = getString(R.string.loading)
         viewModel?.locationLiveData?.fetchLocation()
     }
 
@@ -157,6 +161,10 @@ class MainActivity : BaseActivity() {
     fun updateWeatherUI() {
         if (viewModel?.weatherLiveData?.value == null)
             return
+
+        ll_weather_info.visibility = View.VISIBLE
+        tv_messaging.visibility = View.GONE
+
         val weatherResponse = viewModel?.weatherLiveData?.value
         val useCelcius = viewModel?.useCelciusSharedPreferencesLiveData?.value
         val useKm = viewModel?.useKmSharedPreferencesLiveData?.value
