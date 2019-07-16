@@ -2,6 +2,7 @@ package com.marklynch.weather.di
 
 import com.marklynch.weather.BuildConfig
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
+import com.marklynch.weather.livedata.sharedpreferences.IntSharedPreferencesLiveData
 import com.marklynch.weather.livedata.sharedpreferences.SharedPreferencesLiveData
 import com.marklynch.weather.log.ProductionTree
 import org.koin.android.ext.koin.androidContext
@@ -21,7 +22,7 @@ private val appModule = module {
 
 private val dataModule = module {
     single<BooleanSharedPreferencesLiveData>()
-    single<BooleanSharedPreferencesLiveData>()
+    single<IntSharedPreferencesLiveData>()
 }
 
 val appModules = listOf(appModule, dataModule)

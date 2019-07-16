@@ -6,8 +6,8 @@ import android.preference.PreferenceManager
 import androidx.lifecycle.LiveData
 
 abstract class SharedPreferencesLiveData<T>(
-    private val context: Context,
-    private val sharedPreferencesKey: String
+    val context: Context,
+    val sharedPreferencesKey: String
 ) : LiveData<T>() {
 
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)

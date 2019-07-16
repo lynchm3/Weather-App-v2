@@ -10,7 +10,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.marklynch.weather.R
 import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.location.GpsState
@@ -26,7 +25,6 @@ import org.koin.android.ext.android.inject
 import java.util.*
 import kotlin.math.roundToInt
 
-
 class MainActivity : BaseActivity() {
 
     private val viewModel: MainViewModel by inject()
@@ -39,27 +37,22 @@ class MainActivity : BaseActivity() {
 
         pullToRefresh.isRefreshing = true
 
-//        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
         //Network
-        viewModel?.networkInfoLiveData?.observe(this,
+        viewModel.networkInfoLiveData.observe(this,
             Observer<ConnectionType> { connectionType ->
-                when (connectionType) {
-                    ConnectionType.MOBILE_DATA_CONNECTION, ConnectionType.WIFI_CONNECTION -> fetchWeather()
-                }
+                if (connectionType == ConnectionType.MOBILE_DATA_CONNECTION || connectionType == ConnectionType.WIFI_CONNECTION)
+                    fetchWeather()
             })
 
         //Location
-        viewModel?.locationLiveData?.observe(this,
+        viewModel.locationLiveData.observe(this,
             Observer<LocationInformation> { locationInformation ->
                 when {
-                    locationInformation.locationPermission != AppPermissionState.Granted ->
-                    {
+                    locationInformation.locationPermission != AppPermissionState.Granted -> {
                         showLocationPermissionNeededDialog()
                         pullToRefresh.isRefreshing = false
                     }
-                    locationInformation.gpsState != GpsState.Enabled ->
-                    {
+                    locationInformation.gpsState != GpsState.Enabled -> {
                         showGpsNotEnabledDialog()
                         pullToRefresh.isRefreshing = false
                     }
@@ -68,27 +61,24 @@ class MainActivity : BaseActivity() {
             })
 
         //Weather
-        viewModel?.weatherLiveData?.observe(this,
+        viewModel.weatherLiveData.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
-                //                weatherResponse?.let {
                 pullToRefresh.isRefreshing = false
                 if (weatherResponse == null)
                     showNoNetworkConnectionDialog()
                 else
                     updateWeatherUI()
-//                }
             })
 
-
         //Fahrenheit/Celcius setting
-        viewModel?.useCelciusSharedPreferencesLiveData?.observe(this,
+        viewModel.useCelciusSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 updateWeatherUI()
             }
         )
 
         //km / mi settings
-        viewModel?.useKmSharedPreferencesLiveData?.observe(this,
+        viewModel.useKmSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 updateWeatherUI()
             }
@@ -97,77 +87,28 @@ class MainActivity : BaseActivity() {
         pullToRefresh.setOnRefreshListener {
             fetchLocation()
         }
-
-        //Shared Preferences Int
-        //Test thread that increments the shared pref
-//        GlobalScope.async {
-//            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-//            sharedPreferences.edit().putInt(companion.testSharedPref, 0).apply()
-//            while (true) {
-//                delay(1000)
-//                val sharedPrefIntValue = sharedPreferences.getInt(companion.testSharedPref, 0)
-//                sharedPreferences.edit().putInt(companion.testSharedPref, sharedPrefIntValue + 1).apply()
-//            }
-//        }
-
-//        viewModel.intSharedPreferencesLiveData.observe(this,
-//            Observer<Int> { sharedPreference ->
-//                tv_shared_preference.text = "Shared Preference = ${sharedPreference}"
-//            })
-
-        //FAB
-//        //Setting text when fab is clicked
-//        fab.setOnClickListener { view ->
-//            //            model.fabClicked(view) <---THE WAY I WAS CALLING ITTTT
-//            model.liveDataFab.observe(this,
-//                Observer<String> { value ->
-//                    value?.let { text.text = it }
-//                })
-//        }
-
-
-        //ONLINE CHECK, shows snackbar when connectivity changes
-//        val networkInfoLiveData = NetworkInfoLiveData(applicationContext)
-//        networkInfoLiveData.observe(this, Observer<ConnectionModel> {
-//            if (it.isConnected) {
-//
-//                when (it.type) {
-//
-//                    ConnectionType.WIFI_CONNECTION -> Toast.makeText(this, "Wifi turned ON", Toast.LENGTH_SHORT).show()
-//
-//                    ConnectionType.MOBILE_DATA_CONNECTION -> Toast.makeText(
-//                        this,
-//                        "Mobile data turned ON",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            } else {
-//                Toast.makeText(this, "Connection turned OFF", Toast.LENGTH_SHORT).show()
-//            }
-//        })
     }
 
-    fun fetchLocation() {
-        viewModel?.locationLiveData?.fetchLocation()
+    private fun fetchLocation() {
+        viewModel.locationLiveData.fetchLocation()
     }
 
-    fun fetchWeather() {
-        viewModel?.weatherLiveData?.fetchWeather(
-            viewModel?.locationLiveData?.value?.locationResult?.locations?.getOrNull(0)?.latitude
+    private fun fetchWeather() {
+        viewModel.weatherLiveData.fetchWeather(
+            viewModel.locationLiveData.value?.locationResult?.locations?.getOrNull(0)?.latitude
                 ?: 0.0,
-            viewModel?.locationLiveData?.value?.locationResult?.locations?.getOrNull(0)?.longitude
+            viewModel.locationLiveData.value?.locationResult?.locations?.getOrNull(0)?.longitude
                 ?: 0.0
         )
     }
 
-
-    fun updateWeatherUI() {
-        if (viewModel?.weatherLiveData?.value == null)
+    private fun updateWeatherUI() {
+        if (viewModel.weatherLiveData.value == null)
             return
 
-        val weatherResponse = viewModel?.weatherLiveData?.value
-        val useCelcius = viewModel?.useCelciusSharedPreferencesLiveData?.value
-        val useKm = viewModel?.useKmSharedPreferencesLiveData?.value
+        val weatherResponse = viewModel.weatherLiveData.value
+        val useCelcius = viewModel.useCelciusSharedPreferencesLiveData.value
+        val useKm = viewModel.useKmSharedPreferencesLiveData.value
 
         if (useCelcius == null || !useCelcius) {
             tv_temperature.text = kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
@@ -204,18 +145,13 @@ class MainActivity : BaseActivity() {
         }
 
         iv_weather_description.setImageResource(
-            mapWeatherCodeToDrawable.get(weatherResponse?.weather?.getOrNull(0)?.icon) ?: R.drawable.weather01d
+            mapWeatherCodeToDrawable[weatherResponse?.weather?.getOrNull(0)?.icon] ?: R.drawable.weather01d
         )
 
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
-        tv_weather_description.setCompoundDrawables(
-            resources.getDrawable(
-                mapWeatherCodeToDrawable.get(weatherResponse?.weather?.getOrNull(0)?.icon) ?: R.drawable.weather01d
-            ),
-            null, null, null
-        )
 
-        tv_location_and_time.text = getString(R.string.location_and_time,weatherResponse?.name, "${Date().hours}:${Date().minutes}")
+        tv_location_and_time.text =
+            getString(R.string.location_and_time, weatherResponse?.name, "${Date().hours}:${Date().minutes}")
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
         tv_cloudiness.text = getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
 
@@ -259,10 +195,6 @@ class MainActivity : BaseActivity() {
             .show()
     }
 
-    private fun hideGpsNotEnabledDialog() {
-        if (alertDialog?.isShowing == true) alertDialog?.dismiss()
-    }
-
     private fun showLocationPermissionNeededDialog() {
         if (alertDialog?.isShowing == true) {
             return
@@ -294,30 +226,26 @@ class MainActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_use_celsius -> {
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putBoolean(SHARED_PREFERENCES_USE_CELCIUS, true).apply()
+                viewModel.useCelciusSharedPreferencesLiveData.setSharedPreference(true)
                 return true
             }
             R.id.action_use_fahrenheit -> {
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putBoolean(SHARED_PREFERENCES_USE_CELCIUS, false).apply()
+                viewModel.useCelciusSharedPreferencesLiveData.setSharedPreference(false)
                 return true
             }
             R.id.action_use_km -> {
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putBoolean(SHARED_PREFERENCES_USE_KM, true).apply()
+                viewModel.useKmSharedPreferencesLiveData.setSharedPreference(true)
                 return true
             }
             R.id.action_use_mi -> {
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putBoolean(SHARED_PREFERENCES_USE_KM, false).apply()
+                viewModel.useKmSharedPreferencesLiveData.setSharedPreference(false)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    val mapWeatherCodeToDrawable: Map<String, Int> = mapOf(
+    private val mapWeatherCodeToDrawable: Map<String, Int> = mapOf(
         "01d" to R.drawable.weather01d,
         "01n" to R.drawable.weather01n,
         "02d" to R.drawable.weather02d,
@@ -338,9 +266,9 @@ class MainActivity : BaseActivity() {
         "50n" to R.drawable.weather50n
     )
 
-    fun directionInDegreesToCardinalDirection(directionInDegrees: Double): String {
+    private fun directionInDegreesToCardinalDirection(directionInDegrees: Double): String {
         val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW", "N")
-        return directions[Math.round(directionInDegrees % 360 / 45).toInt()]
+        return directions[(directionInDegrees % 360 / 45).roundToInt()]
     }
 
 }
