@@ -15,6 +15,7 @@ import com.marklynch.weather.R
 import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
+import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.livedata.weather.*
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
@@ -37,6 +38,21 @@ class MainActivity : BaseActivity() {
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
         //Location
+        viewModel?.networkInfoLiveData?.observe(this,
+            Observer<ConnectionType> { connectionType ->
+                when (connectionType) {
+                    ConnectionType.MOBILE_DATA_CONNECTION, ConnectionType.WIFI_CONNECTION -> {
+                        viewModel?.weatherLiveData?.fetchWeather(
+                            viewModel?.locationLiveData?.value?.locationResult?.locations?.getOrNull(0)?.latitude
+                                ?: 0.0,
+                            viewModel?.locationLiveData?.value?.locationResult?.locations?.getOrNull(0)?.longitude
+                                ?: 0.0
+                        )
+                    }
+                }
+            })
+
+        //Location
         viewModel?.locationLiveData?.observe(this,
             Observer<LocationInformation> { locationInformation ->
                 when {
@@ -52,11 +68,11 @@ class MainActivity : BaseActivity() {
         //Weather
         viewModel?.weatherLiveData?.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
-//                weatherResponse?.let {
-                    if(weatherResponse == null)
-                        showNoNetworkConnectionDialog()
-                    else
-                        updateWeather()
+                //                weatherResponse?.let {
+                if (weatherResponse == null)
+                    showNoNetworkConnectionDialog()
+                else
+                    updateWeather()
 //                }
             })
 
@@ -104,8 +120,8 @@ class MainActivity : BaseActivity() {
 
 
         //ONLINE CHECK, shows snackbar when connectivity changes
-//        val connectionLiveData = ConnectionLiveData(applicationContext)
-//        connectionLiveData.observe(this, Observer<ConnectionModel> {
+//        val networkInfoLiveData = NetworkInfoLiveData(applicationContext)
+//        networkInfoLiveData.observe(this, Observer<ConnectionModel> {
 //            if (it.isConnected) {
 //
 //                when (it.type) {
@@ -153,13 +169,18 @@ class MainActivity : BaseActivity() {
                 getString(R.string.minimum_temperature_C, kelvinToCelcius(weatherResponse?.main?.temp_min).roundToInt())
         }
 
-        if(useKm == null || !useKm)
-        {
-            tv_wind.text = getString(R.string.wind_mi, metresPerSecondToMilesPerHour(weatherResponse?.wind?.speed ?:0.0).roundToInt(), directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0))
-        }
-        else
-        {
-            tv_wind.text = getString(R.string.wind_km, metresPerSecondToKmPerHour(weatherResponse?.wind?.speed ?:0.0).roundToInt(), directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0))
+        if (useKm == null || !useKm) {
+            tv_wind.text = getString(
+                R.string.wind_mi,
+                metresPerSecondToMilesPerHour(weatherResponse?.wind?.speed ?: 0.0).roundToInt(),
+                directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0)
+            )
+        } else {
+            tv_wind.text = getString(
+                R.string.wind_km,
+                metresPerSecondToKmPerHour(weatherResponse?.wind?.speed ?: 0.0).roundToInt(),
+                directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0)
+            )
         }
 
         iv_weather_description.setImageResource(
@@ -188,8 +209,14 @@ class MainActivity : BaseActivity() {
         alertDialog = AlertDialog.Builder(this)
             .setTitle(R.string.no_network_title)
             .setMessage(R.string.no_network_body)
-            .setPositiveButton(R.string.action_ok) { _, _ ->
+            .setPositiveButton(R.string.action_settings) { _, _ ->
+                // Open app's settings.
+                val intent = Intent().apply {
+                    action = Settings.ACTION_WIFI_SETTINGS
+                }
+                startActivity(intent)
             }
+            .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
