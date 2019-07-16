@@ -2,14 +2,9 @@ package com.marklynch.weather.view
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
-import android.text.style.StyleSpan
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
@@ -24,6 +19,7 @@ import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.livedata.weather.kelvinToCelcius
 import com.marklynch.weather.livedata.weather.kelvinToFahrenheit
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
+import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
 import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main_mine.*
@@ -50,9 +46,9 @@ class MainActivity : BaseActivity() {
                     locationInformation.gpsState != GpsState.Enabled -> showGpsNotEnabledDialog()
 //                    locationInformation.locationResult == null -> ?????
                     else -> viewModel?.weatherLiveData?.fetchWeather(
-                            locationInformation.locationResult?.locations?.getOrNull(0)?.latitude ?: 0.0,
+                        locationInformation.locationResult?.locations?.getOrNull(0)?.latitude ?: 0.0,
                         locationInformation.locationResult?.locations?.getOrNull(0)?.longitude ?: 0.0
-                        )
+                    )
                 }
             })
 
@@ -65,13 +61,20 @@ class MainActivity : BaseActivity() {
             })
 
 
-        //Weather
+        //Fahrenheit/Celcius setting
         viewModel?.useCelciusSharedPreferencesLiveData?.observe(this,
-            Observer<Boolean> { useCelcius ->
+            Observer<Boolean> {
                 updateWeather()
             }
         )
 
+        //km / mi settings
+        //SHARED_PREFERENCES_USE_KM
+        viewModel?.useKmSharedPreferencesLiveData?.observe(this,
+            Observer<Boolean> {
+                updateWeather()
+            }
+        )
 
         //Shared Preferences Int
         //Test thread that increments the shared pref
@@ -129,20 +132,40 @@ class MainActivity : BaseActivity() {
             return
         val weatherResponse = viewModel?.weatherLiveData?.value
         val useCelcius = viewModel?.useCelciusSharedPreferencesLiveData?.value
-        
+        val useKm = viewModel?.useKmSharedPreferencesLiveData?.value
+
         if (useCelcius == null || !useCelcius) {
             tv_temperature.text = kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
             tv_temperature_unit.text = getString(R.string.degreesF)
-            tv_maximum_temperature.text = getString(R.string.maximum_temperature_F, kelvinToFahrenheit(weatherResponse?.main?.temp_max).roundToInt())
-            tv_minimum_temperature.text = getString(R.string.minimum_temperature_F, kelvinToFahrenheit(weatherResponse?.main?.temp_min).roundToInt())
+            tv_maximum_temperature.text = getString(
+                R.string.maximum_temperature_F,
+                kelvinToFahrenheit(weatherResponse?.main?.temp_max).roundToInt()
+            )
+            tv_minimum_temperature.text = getString(
+                R.string.minimum_temperature_F,
+                kelvinToFahrenheit(weatherResponse?.main?.temp_min).roundToInt()
+            )
         } else {
             tv_temperature.text = kelvinToCelcius(weatherResponse?.main?.temp).roundToInt().toString()
             tv_temperature_unit.text = getString(R.string.degreesC)
-            tv_maximum_temperature.text = getString(R.string.maximum_temperature_C, kelvinToCelcius(weatherResponse?.main?.temp_max).roundToInt())
-            tv_minimum_temperature.text = getString(R.string.minimum_temperature_C, kelvinToCelcius(weatherResponse?.main?.temp_min).roundToInt())
+            tv_maximum_temperature.text =
+                getString(R.string.maximum_temperature_C, kelvinToCelcius(weatherResponse?.main?.temp_max).roundToInt())
+            tv_minimum_temperature.text =
+                getString(R.string.minimum_temperature_C, kelvinToCelcius(weatherResponse?.main?.temp_min).roundToInt())
         }
 
-        iv_weather_description.setImageResource(mapWeatherCodeToDrawable.get(weatherResponse?.weather?.getOrNull(0)?.icon) ?: R.drawable.weather01d)
+        if(useKm == null || !useKm)
+        {
+            tv_wind.text = getString(R.string.wind_mi, weatherResponse?.wind?.speed?.roundToInt(), directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0))
+        }
+        else
+        {
+            tv_wind.text = getString(R.string.wind_km, weatherResponse?.wind?.speed?.roundToInt(), directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0))
+        }
+
+        iv_weather_description.setImageResource(
+            mapWeatherCodeToDrawable.get(weatherResponse?.weather?.getOrNull(0)?.icon) ?: R.drawable.weather01d
+        )
 
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
         tv_weather_description.setCompoundDrawables(
@@ -221,6 +244,16 @@ class MainActivity : BaseActivity() {
                     .putBoolean(SHARED_PREFERENCES_USE_CELCIUS, false).apply()
                 return true
             }
+            R.id.action_use_km -> {
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putBoolean(SHARED_PREFERENCES_USE_KM, true).apply()
+                return true
+            }
+            R.id.action_use_mi -> {
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putBoolean(SHARED_PREFERENCES_USE_KM, false).apply()
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -245,6 +278,12 @@ class MainActivity : BaseActivity() {
         "50d" to R.drawable.weather50d,
         "50n" to R.drawable.weather50n
     )
+
+    fun directionInDegreesToCardinalDirection(directionInDegrees: Double): String {
+        val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW", "N")
+        return directions[Math.round(directionInDegrees % 360 / 45).toInt()]
+    }
+
 }
 
 fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")

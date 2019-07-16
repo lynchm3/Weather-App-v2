@@ -10,4 +10,12 @@
           android:title="@string/action_use_fahrenheit"
           android:orderInCategory="100"
           app:showAsAction="always"/>
+    <item android:id="@+id/action_use_km"
+          android:title="@string/action_use_km"
+          android:orderInCategory="100"
+          app:showAsAction="always"/>
+    <item android:id="@+id/action_use_mi"
+          android:title="@string/action_use_mi"
+          android:orderInCategory="100"
+          app:showAsAction="always"/>
 </menu>

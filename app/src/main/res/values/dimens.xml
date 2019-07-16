@@ -9,8 +9,7 @@
     <dimen name="humidity_text_size">32sp</dimen>
     <dimen name="maximum_temperature_text_size">32sp</dimen>
     <dimen name="minimum_temperature_text_size">32sp</dimen>
+    <dimen name="wind_text_size">32sp</dimen>
     <dimen name="temperature_unit_margin_top">24dp</dimen>
-
-
 
 </resources>
