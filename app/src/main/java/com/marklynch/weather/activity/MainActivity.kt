@@ -3,7 +3,6 @@ package com.marklynch.weather.activity
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
@@ -16,8 +15,6 @@ import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.livedata.weather.*
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
 import com.marklynch.weather.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main_mine.*
@@ -73,6 +70,7 @@ class MainActivity : BaseActivity() {
         //Fahrenheit/Celcius setting
         viewModel.useCelciusSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
+                invalidateOptionsMenu()
                 updateWeatherUI()
             }
         )
@@ -80,6 +78,7 @@ class MainActivity : BaseActivity() {
         //km / mi settings
         viewModel.useKmSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
+                invalidateOptionsMenu()
                 updateWeatherUI()
             }
         )
@@ -220,25 +219,37 @@ class MainActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        if (viewModel.useCelciusSharedPreferencesLiveData.value == true) {
+            menu.findItem(R.id.action_use_celsius).isVisible = false
+        } else {
+            menu.findItem(R.id.action_use_fahrenheit).isVisible = false
+        }
+        if (viewModel.useKmSharedPreferencesLiveData.value == true) {
+            menu.findItem(R.id.action_use_km).isVisible = false
+        } else {
+            menu.findItem(R.id.action_use_mi).isVisible = false
+        }
+
+
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_use_celsius -> {
-                viewModel.useCelciusSharedPreferencesLiveData.setSharedPreference(true)
+                viewModel.setUseCelcius(true)
                 return true
             }
             R.id.action_use_fahrenheit -> {
-                viewModel.useCelciusSharedPreferencesLiveData.setSharedPreference(false)
+                viewModel.setUseCelcius(false)
                 return true
             }
             R.id.action_use_km -> {
-                viewModel.useKmSharedPreferencesLiveData.setSharedPreference(true)
+                viewModel.setUseKm(true)
                 return true
             }
             R.id.action_use_mi -> {
-                viewModel.useKmSharedPreferencesLiveData.setSharedPreference(false)
+                viewModel.setUseKm(false)
                 return true
             }
             else -> super.onOptionsItemSelected(item)

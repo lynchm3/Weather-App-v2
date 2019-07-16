@@ -25,4 +25,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     //Shared Preference for setting whether to use degrees km or mi
     val useKmSharedPreferencesLiveData = BooleanSharedPreferencesLiveData(application, SHARED_PREFERENCES_USE_KM)
+
+    fun setUseCelcius(useCelcius:Boolean)
+    {
+        useCelciusSharedPreferencesLiveData.setSharedPreference(useCelcius)
+    }
+
+    fun setUseKm(useKm:Boolean)
+    {
+        useKmSharedPreferencesLiveData.setSharedPreference(useKm)
+    }
 }
