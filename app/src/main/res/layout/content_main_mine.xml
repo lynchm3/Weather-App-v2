@@ -20,14 +20,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/loading"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:visibility="gone"/>
 
         <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/ll_weather_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="vertical">
 
             <!-- Temperature -->
 
