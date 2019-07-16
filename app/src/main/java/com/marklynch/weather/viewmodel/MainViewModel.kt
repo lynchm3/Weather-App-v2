@@ -1,6 +1,7 @@
 package com.marklynch.weather.viewmodel
 
 import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
@@ -8,7 +9,7 @@ import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
 
-class MainActivityViewModel(application: Application) : BaseActivityViewModel(application) {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     //Location
     val locationLiveData = LocationLiveData(application)

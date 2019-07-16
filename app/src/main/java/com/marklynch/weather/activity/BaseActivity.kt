@@ -1,4 +1,4 @@
-package com.marklynch.weather.view
+package com.marklynch.weather.activity
 
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;

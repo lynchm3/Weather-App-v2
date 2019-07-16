@@ -1,4 +1,4 @@
-package com.marklynch.weather.view
+package com.marklynch.weather.activity
 
 import android.Manifest
 import android.content.Intent
@@ -19,16 +19,17 @@ import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.livedata.weather.*
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELCIUS
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
-import com.marklynch.weather.viewmodel.MainActivityViewModel
+import com.marklynch.weather.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main_mine.*
+import org.koin.android.ext.android.inject
 import java.util.*
 import kotlin.math.roundToInt
 
 
 class MainActivity : BaseActivity() {
 
-    private var viewModel: MainActivityViewModel? = null
+    private val viewModel: MainViewModel by inject()
     private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +39,7 @@ class MainActivity : BaseActivity() {
 
         pullToRefresh.isRefreshing = true
 
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+//        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         //Network
         viewModel?.networkInfoLiveData?.observe(this,
