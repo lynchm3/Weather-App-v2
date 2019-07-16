@@ -37,9 +37,11 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        pullToRefresh.isRefreshing = true
+
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
-        //Location
+        //Network
         viewModel?.networkInfoLiveData?.observe(this,
             Observer<ConnectionType> { connectionType ->
                 when (connectionType) {
@@ -51,8 +53,16 @@ class MainActivity : BaseActivity() {
         viewModel?.locationLiveData?.observe(this,
             Observer<LocationInformation> { locationInformation ->
                 when {
-                    locationInformation.locationPermission != AppPermissionState.Granted -> showLocationPermissionNeededDialog()
-                    locationInformation.gpsState != GpsState.Enabled -> showGpsNotEnabledDialog()
+                    locationInformation.locationPermission != AppPermissionState.Granted ->
+                    {
+                        showLocationPermissionNeededDialog()
+                        pullToRefresh.isRefreshing = false
+                    }
+                    locationInformation.gpsState != GpsState.Enabled ->
+                    {
+                        showGpsNotEnabledDialog()
+                        pullToRefresh.isRefreshing = false
+                    }
                     else -> fetchWeather()
                 }
             })
@@ -61,6 +71,7 @@ class MainActivity : BaseActivity() {
         viewModel?.weatherLiveData?.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
                 //                weatherResponse?.let {
+                pullToRefresh.isRefreshing = false
                 if (weatherResponse == null)
                     showNoNetworkConnectionDialog()
                 else
@@ -83,11 +94,8 @@ class MainActivity : BaseActivity() {
             }
         )
 
-
-        val pullToRefresh = findViewById<SwipeRefreshLayout>(R.id.pullToRefresh)
         pullToRefresh.setOnRefreshListener {
             fetchLocation()
-            pullToRefresh.isRefreshing = false
         }
 
         //Shared Preferences Int
@@ -137,8 +145,6 @@ class MainActivity : BaseActivity() {
 //                Toast.makeText(this, "Connection turned OFF", Toast.LENGTH_SHORT).show()
 //            }
 //        })
-
-
     }
 
     fun fetchLocation() {
