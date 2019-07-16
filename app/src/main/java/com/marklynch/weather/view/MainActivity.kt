@@ -23,6 +23,7 @@ import com.marklynch.weather.viewmodel.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main_mine.*
 import kotlin.math.roundToInt
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 
 class MainActivity : BaseActivity() {
@@ -32,7 +33,7 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.marklynch.weather.R.layout.activity_main)
+        setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
@@ -41,14 +42,7 @@ class MainActivity : BaseActivity() {
         viewModel?.networkInfoLiveData?.observe(this,
             Observer<ConnectionType> { connectionType ->
                 when (connectionType) {
-                    ConnectionType.MOBILE_DATA_CONNECTION, ConnectionType.WIFI_CONNECTION -> {
-                        viewModel?.weatherLiveData?.fetchWeather(
-                            viewModel?.locationLiveData?.value?.locationResult?.locations?.getOrNull(0)?.latitude
-                                ?: 0.0,
-                            viewModel?.locationLiveData?.value?.locationResult?.locations?.getOrNull(0)?.longitude
-                                ?: 0.0
-                        )
-                    }
+                    ConnectionType.MOBILE_DATA_CONNECTION, ConnectionType.WIFI_CONNECTION -> fetchWeather()
                 }
             })
 
@@ -58,10 +52,7 @@ class MainActivity : BaseActivity() {
                 when {
                     locationInformation.locationPermission != AppPermissionState.Granted -> showLocationPermissionNeededDialog()
                     locationInformation.gpsState != GpsState.Enabled -> showGpsNotEnabledDialog()
-                    else -> viewModel?.weatherLiveData?.fetchWeather(
-                        locationInformation.locationResult?.locations?.getOrNull(0)?.latitude ?: 0.0,
-                        locationInformation.locationResult?.locations?.getOrNull(0)?.longitude ?: 0.0
-                    )
+                    else -> fetchWeather()
                 }
             })
 
@@ -72,7 +63,7 @@ class MainActivity : BaseActivity() {
                 if (weatherResponse == null)
                     showNoNetworkConnectionDialog()
                 else
-                    updateWeather()
+                    updateWeatherUI()
 //                }
             })
 
@@ -80,16 +71,23 @@ class MainActivity : BaseActivity() {
         //Fahrenheit/Celcius setting
         viewModel?.useCelciusSharedPreferencesLiveData?.observe(this,
             Observer<Boolean> {
-                updateWeather()
+                updateWeatherUI()
             }
         )
 
         //km / mi settings
         viewModel?.useKmSharedPreferencesLiveData?.observe(this,
             Observer<Boolean> {
-                updateWeather()
+                updateWeatherUI()
             }
         )
+
+
+        val pullToRefresh = findViewById<SwipeRefreshLayout>(R.id.pullToRefresh)
+        pullToRefresh.setOnRefreshListener {
+            fetchLocation()
+            pullToRefresh.isRefreshing = false
+        }
 
         //Shared Preferences Int
         //Test thread that increments the shared pref
@@ -142,7 +140,21 @@ class MainActivity : BaseActivity() {
 
     }
 
-    fun updateWeather() {
+    fun fetchLocation() {
+        viewModel?.locationLiveData?.fetchLocation()
+    }
+
+    fun fetchWeather() {
+        viewModel?.weatherLiveData?.fetchWeather(
+            viewModel?.locationLiveData?.value?.locationResult?.locations?.getOrNull(0)?.latitude
+                ?: 0.0,
+            viewModel?.locationLiveData?.value?.locationResult?.locations?.getOrNull(0)?.longitude
+                ?: 0.0
+        )
+    }
+
+
+    fun updateWeatherUI() {
         if (viewModel?.weatherLiveData?.value == null)
             return
         val weatherResponse = viewModel?.weatherLiveData?.value
@@ -267,7 +279,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(com.marklynch.weather.R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 

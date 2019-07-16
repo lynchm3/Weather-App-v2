@@ -71,7 +71,7 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
 
     private fun unregisterGpsStateReceiver() = context.unregisterReceiver(gpsSwitchStateReceiver)
 
-    private fun fetchLocation() {
+    fun fetchLocation() {
         try {
             fusedLocationClient.requestLocationUpdates(
                 LocationRequest.create().apply {
