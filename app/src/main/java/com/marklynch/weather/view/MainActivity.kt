@@ -216,8 +216,8 @@ class MainActivity : BaseActivity() {
         )
 
         tv_location_name.text = weatherResponse?.name
-
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
+        tv_cloudiness.text = getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
 
     }
 

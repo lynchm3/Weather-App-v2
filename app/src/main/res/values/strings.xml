@@ -10,6 +10,9 @@
 
     <string name="degreesF">°F</string>
     <string name="degreesC">°C</string>
+
+
+    <!-- Main Activity -->
     <string name="minimum_temperature_F">Min %1$d°F</string>
     <string name="maximum_temperature_F">Max %1$d°F</string>
     <string name="minimum_temperature_C">Min %1$d°C</string>
@@ -17,6 +20,7 @@
     <string name="humidity_percentage">Humidity %1$d%%</string>
     <string name="wind_mi">Wind %1$dmph %2$s</string>
     <string name="wind_km">Wind %1$dkm/h %2$s</string>
+    <string name="cloudiness_percentage">Cloudiness %1$d%%</string>
 
 
     <string name="fine_location_permission_denied">Fine Location Permission Denied</string>
