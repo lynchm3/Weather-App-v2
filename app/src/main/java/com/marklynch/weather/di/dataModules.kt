@@ -1,11 +1,11 @@
 package com.marklynch.weather.di
 
 import com.marklynch.weather.BuildConfig
+import com.marklynch.weather.livedata.location.LocationLiveData
+import com.marklynch.weather.livedata.network.NetworkInfoLiveData
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
-import com.marklynch.weather.livedata.sharedpreferences.IntSharedPreferencesLiveData
-import com.marklynch.weather.livedata.sharedpreferences.SharedPreferencesLiveData
+import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.log.ProductionTree
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module.module
 import org.koin.experimental.builder.single
 import timber.log.Timber
@@ -21,8 +21,16 @@ private val appModule = module {
 }
 
 private val dataModule = module {
-    single<BooleanSharedPreferencesLiveData>()
-    single<IntSharedPreferencesLiveData>()
+    single { (sharedPreferencesKey: String) ->
+        BooleanSharedPreferencesLiveData(
+            get(),
+            sharedPreferencesKey
+        )
+    }
+
+    single<LocationLiveData>()
+    single<WeatherLiveData>()
+    single<NetworkInfoLiveData>()
 }
 
 val appModules = listOf(appModule, dataModule)

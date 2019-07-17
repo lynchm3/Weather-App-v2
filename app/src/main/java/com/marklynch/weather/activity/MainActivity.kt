@@ -67,8 +67,8 @@ class MainActivity : BaseActivity() {
                     updateWeatherUI()
             })
 
-        //Fahrenheit/Celcius setting
-        viewModel.useCelciusSharedPreferencesLiveData.observe(this,
+        //Fahrenheit/Celsius setting
+        viewModel.useCelsiusSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 invalidateOptionsMenu()
                 updateWeatherUI()
@@ -106,10 +106,10 @@ class MainActivity : BaseActivity() {
             return
 
         val weatherResponse = viewModel.weatherLiveData.value
-        val useCelcius = viewModel.useCelciusSharedPreferencesLiveData.value
+        val useCelsius = viewModel.useCelsiusSharedPreferencesLiveData.value
         val useKm = viewModel.useKmSharedPreferencesLiveData.value
 
-        if (useCelcius == null || !useCelcius) {
+        if (useCelsius == null || !useCelsius) {
             tv_temperature.text = kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
             tv_temperature_unit.text = getString(R.string.degreesF)
             tv_maximum_temperature.text = getString(
@@ -121,12 +121,12 @@ class MainActivity : BaseActivity() {
                 kelvinToFahrenheit(weatherResponse?.main?.temp_min).roundToInt()
             )
         } else {
-            tv_temperature.text = kelvinToCelcius(weatherResponse?.main?.temp).roundToInt().toString()
+            tv_temperature.text = kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
             tv_temperature_unit.text = getString(R.string.degreesC)
             tv_maximum_temperature.text =
-                getString(R.string.maximum_temperature_C, kelvinToCelcius(weatherResponse?.main?.temp_max).roundToInt())
+                getString(R.string.maximum_temperature_C, kelvinToCelsius(weatherResponse?.main?.temp_max).roundToInt())
             tv_minimum_temperature.text =
-                getString(R.string.minimum_temperature_C, kelvinToCelcius(weatherResponse?.main?.temp_min).roundToInt())
+                getString(R.string.minimum_temperature_C, kelvinToCelsius(weatherResponse?.main?.temp_min).roundToInt())
         }
 
         if (useKm == null || !useKm) {
@@ -219,7 +219,7 @@ class MainActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        if (viewModel.useCelciusSharedPreferencesLiveData.value == true) {
+        if (viewModel.useCelsiusSharedPreferencesLiveData.value == true) {
             menu.findItem(R.id.action_use_celsius).isVisible = false
         } else {
             menu.findItem(R.id.action_use_fahrenheit).isVisible = false
@@ -237,11 +237,11 @@ class MainActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_use_celsius -> {
-                viewModel.setUseCelcius(true)
+                viewModel.setUseCelsius(true)
                 return true
             }
             R.id.action_use_fahrenheit -> {
-                viewModel.setUseCelcius(false)
+                viewModel.setUseCelsius(false)
                 return true
             }
             R.id.action_use_km -> {

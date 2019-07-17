@@ -10,10 +10,10 @@ abstract class SharedPreferencesLiveData<T>(
     val sharedPreferencesKey: String
 ) : LiveData<T>() {
 
-    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val sharedPreferences:SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val onSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
-            sharedPreferences, key ->
+            _, key ->
         if (key == sharedPreferencesKey) {
             setLiveDataValue(sharedPreferencesKey)
         }
