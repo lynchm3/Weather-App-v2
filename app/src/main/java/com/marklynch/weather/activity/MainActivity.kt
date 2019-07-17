@@ -38,7 +38,7 @@ class MainActivity : BaseActivity() {
         viewModel.networkInfoLiveData.observe(this,
             Observer<ConnectionType> { connectionType ->
                 if (connectionType == ConnectionType.MOBILE_DATA_CONNECTION || connectionType == ConnectionType.WIFI_CONNECTION)
-                    fetchWeather()
+                    viewModel.fetchWeather()
             })
 
         //Location
@@ -53,7 +53,7 @@ class MainActivity : BaseActivity() {
                         showGpsNotEnabledDialog()
                         pullToRefresh.isRefreshing = false
                     }
-                    else -> fetchWeather()
+                    else -> viewModel.fetchWeather()
                 }
             })
 
@@ -84,30 +84,17 @@ class MainActivity : BaseActivity() {
         )
 
         pullToRefresh.setOnRefreshListener {
-            fetchLocation()
+            viewModel.fetchLocation()
         }
     }
 
-    private fun fetchLocation() {
-        viewModel.locationLiveData.fetchLocation()
-    }
-
-    private fun fetchWeather() {
-        viewModel.weatherLiveData.fetchWeather(
-            viewModel.locationLiveData.value?.locationResult?.locations?.getOrNull(0)?.latitude
-                ?: 0.0,
-            viewModel.locationLiveData.value?.locationResult?.locations?.getOrNull(0)?.longitude
-                ?: 0.0
-        )
-    }
-
     private fun updateWeatherUI() {
-        if (viewModel.weatherLiveData.value == null)
+        if (viewModel.getWeather() == null)
             return
 
-        val weatherResponse = viewModel.weatherLiveData.value
-        val useCelsius = viewModel.useCelsiusSharedPreferencesLiveData.value
-        val useKm = viewModel.useKmSharedPreferencesLiveData.value
+        val weatherResponse = viewModel.getWeather()
+        val useCelsius = viewModel.isUseCelsius()
+        val useKm = viewModel.isUseKm()
 
         if (useCelsius == null || !useCelsius) {
             tv_temperature.text = kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
@@ -219,12 +206,12 @@ class MainActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        if (viewModel.useCelsiusSharedPreferencesLiveData.value == true) {
+        if (viewModel.isUseCelsius() == true) {
             menu.findItem(R.id.action_use_celsius).isVisible = false
         } else {
             menu.findItem(R.id.action_use_fahrenheit).isVisible = false
         }
-        if (viewModel.useKmSharedPreferencesLiveData.value == true) {
+        if (viewModel.isUseCelsius() == true) {
             menu.findItem(R.id.action_use_km).isVisible = false
         } else {
             menu.findItem(R.id.action_use_mi).isVisible = false

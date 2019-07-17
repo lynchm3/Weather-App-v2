@@ -2,6 +2,8 @@ package com.marklynch.weather.livedata.sharedpreferences
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
+import com.marklynch.weather.MainApplication
 import com.marklynch.weather.livedata.observeXTimes
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
@@ -18,7 +20,7 @@ class BooleanSharedPreferencesLiveDataTest {
     fun `Test`() {
 
         val booleanKey = "Some boolean key"
-        val booleanSharedPreferencesLiveData = BooleanSharedPreferencesLiveData(InstrumentationRegistry.getTargetContext(), booleanKey)
+        val booleanSharedPreferencesLiveData = BooleanSharedPreferencesLiveData(ApplicationProvider.getApplicationContext<MainApplication>(), booleanKey)
 
         Assert.assertNull(booleanSharedPreferencesLiveData.value)
 

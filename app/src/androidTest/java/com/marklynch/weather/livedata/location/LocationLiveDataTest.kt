@@ -30,7 +30,7 @@
 //    fun testOnActive() {
 //        Log.i("UNITTEST", "LocationLiveDataTest.testOnActive")
 //        Looper.prepare()
-//        val locationLiveData = LocationLiveData(InstrumentationRegistry.getTargetContext())
+//        val locationLiveData = LocationLiveData(ApplicationProvider.getApplicationContext<MainApplication>())
 //        assertNull(locationLiveData.value)
 //        validateSingleObservation(locationLiveData)
 //

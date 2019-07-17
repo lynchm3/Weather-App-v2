@@ -3,6 +3,8 @@ package com.marklynch.weather.livedata.apppermissions
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.app.ActivityCompat
 import androidx.test.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
+import com.marklynch.weather.MainApplication
 import com.marklynch.weather.livedata.observeInfinite
 import com.marklynch.weather.livedata.observeXTimes
 import org.junit.Assert.*
@@ -18,7 +20,7 @@ class AppPermissionLiveDataTest {
     @Test
     fun testOnActive() {
         val appPermissionLiveData =
-            AppPermissionLiveData(InstrumentationRegistry.getTargetContext(), locationPermission)
+            AppPermissionLiveData(ApplicationProvider.getApplicationContext<MainApplication>(), locationPermission)
         assertNull(appPermissionLiveData.value)
         validateSingleObservation(appPermissionLiveData)
     }
@@ -26,7 +28,7 @@ class AppPermissionLiveDataTest {
     @Test
     fun testNewObserveTriggersRecheck() {
         val appPermissionLiveData =
-            AppPermissionLiveData(InstrumentationRegistry.getTargetContext(), locationPermission)
+            AppPermissionLiveData(ApplicationProvider.getApplicationContext<MainApplication>(), locationPermission)
         assertNull(appPermissionLiveData.value)
 
         var observeCountForInfiniteObserver = 0
@@ -63,7 +65,7 @@ class AppPermissionLiveDataTest {
     private fun checkAppPermissionStateCorrect(appPermissionState: AppPermissionState)
     {
         val expectedAppPermissionState = if(ActivityCompat.checkSelfPermission(
-                InstrumentationRegistry.getTargetContext(),
+                ApplicationProvider.getApplicationContext<MainApplication>(),
                 locationPermission) == 0) AppPermissionState.Granted else AppPermissionState.Denied
 
         assertEquals(expectedAppPermissionState, appPermissionState)
