@@ -10,6 +10,7 @@ import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELSIUS
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
 import org.koin.core.parameter.parametersOf
 import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
 import org.koin.standalone.inject
 
 open class MainViewModel(application: Application) : AndroidViewModel(application), KoinComponent {
