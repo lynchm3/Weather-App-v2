@@ -1,20 +1,18 @@
 package com.marklynch.weather.livedata.location
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
 import android.provider.Settings
-import android.text.format.DateUtils
-import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import com.google.android.gms.location.*
-import com.marklynch.weather.livedata.apppermissions.AppPermissionState
-import com.marklynch.weather.livedata.apppermissions.getPermissionState
-import com.marklynch.weather.livedata.apppermissions.locationPermission
 
 
 class LocationLiveData(private val context: Context) : LiveData<LocationInformation>() {
@@ -22,6 +20,10 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private var locationResult: LocationResult? = null
+
+    enum class AppPermissionState { Granted, Denied }
+
+    val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
 
     private val locationPermissionState
         get() = getPermissionState(context, locationPermission)
@@ -112,4 +114,15 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
         }
         return GpsState.Disabled
     }
+
+    fun getPermissionState(context: Context, permissionToCheck: String): AppPermissionState =
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                permissionToCheck
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+            AppPermissionState.Granted
+        else
+            AppPermissionState.Denied
 }

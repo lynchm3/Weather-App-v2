@@ -5,7 +5,7 @@
 //import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 //import androidx.test.InstrumentationRegistry
 //import com.google.android.gms.location.LocationResult
-//import com.marklynch.weather.livedata.observeXTimes
+//import com.marklynch.weather.livedata1.observeXTimes
 //import com.marklynch.weather.view.MainActivity
 //import org.junit.Assert.assertNull
 //import org.junit.Before

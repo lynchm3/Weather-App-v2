@@ -6,9 +6,10 @@ import com.marklynch.weather.livedata.webresource.RawWebResourceLiveData
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import org.koin.test.KoinTest
 
 
-class RawWebResourceLiveDataTest {
+class RawWebResourceLiveDataTest : KoinTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()

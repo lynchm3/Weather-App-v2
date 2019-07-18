@@ -5,10 +5,10 @@ import com.marklynch.weather.livedata.observeXTimes
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import org.koin.test.KoinTest
 
 
-
-class CurrentTimeLiveDataTest {
+class CurrentTimeLiveDataTest : KoinTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()

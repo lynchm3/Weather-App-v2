@@ -10,9 +10,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.marklynch.weather.R
-import com.marklynch.weather.livedata.apppermissions.AppPermissionState
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
+import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.livedata.weather.*
 import com.marklynch.weather.viewmodel.MainViewModel
@@ -45,7 +45,7 @@ class MainActivity : BaseActivity() {
         viewModel.locationLiveData.observe(this,
             Observer<LocationInformation> { locationInformation ->
                 when {
-                    locationInformation.locationPermission != AppPermissionState.Granted -> {
+                    locationInformation.locationPermission != LocationLiveData.AppPermissionState.Granted -> {
                         showLocationPermissionNeededDialog()
                         pullToRefresh.isRefreshing = false
                     }

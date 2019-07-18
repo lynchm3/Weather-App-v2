@@ -1,19 +1,19 @@
 package com.marklynch.weather.livedata.sharedpreferences
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
 
 class BooleanSharedPreferencesLiveData(
-    context: Context,
     sharedPreferencesKey: String
-) : SharedPreferencesLiveData<Boolean>(context, sharedPreferencesKey) {
+) : SharedPreferencesLiveData<Boolean>(sharedPreferencesKey), KoinComponent {
     override fun setLiveDataValue(sharedPreferencesKey: String) {
         postValue(sharedPreferences.getBoolean(sharedPreferencesKey, false))
     }
 
     fun setSharedPreference(value: Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit()
-            .putBoolean(sharedPreferencesKey, value).apply()
-
+        get<SharedPreferences.Editor>().putBoolean(sharedPreferencesKey, value).apply()
     }
 }

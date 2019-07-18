@@ -1,5 +1,7 @@
 package com.marklynch.weather.di
 
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.marklynch.weather.BuildConfig
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
@@ -21,11 +23,19 @@ private val appModule = module {
 }
 
 private val dataModule = module {
-    single { (sharedPreferencesKey: String) ->
+
+    single <BooleanSharedPreferencesLiveData> { (sharedPreferencesKey: String) ->
         BooleanSharedPreferencesLiveData(
-            get(),
             sharedPreferencesKey
         )
+    }
+
+    single <SharedPreferences>{
+        PreferenceManager.getDefaultSharedPreferences(get())
+    }
+
+    single <SharedPreferences.Editor>{
+        get<SharedPreferences>().edit()
     }
 
     single<LocationLiveData>()

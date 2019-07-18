@@ -1,16 +1,15 @@
 package com.marklynch.weather.livedata.sharedpreferences
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import androidx.lifecycle.LiveData
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
 
 abstract class SharedPreferencesLiveData<T>(
-    val context: Context,
     val sharedPreferencesKey: String
-) : LiveData<T>() {
+) : LiveData<T>(), KoinComponent {
 
-    val sharedPreferences:SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val sharedPreferences:SharedPreferences = get()
 
     private val onSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
             _, key ->
