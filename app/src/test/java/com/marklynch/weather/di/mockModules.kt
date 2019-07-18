@@ -1,17 +1,82 @@
 package com.marklynch.weather.di
 
 import android.app.Application
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.location.LocationManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.tasks.Task
+import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
-import com.nhaarman.mockitokotlin2.*
+import com.marklynch.weather.utils.AppPermissionState
+import com.marklynch.weather.utils.PermissionsChecker
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.anyOrNull
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.mock
 import org.koin.dsl.module.module
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito
 
 val mockModuleApplication = module(override = true) {
-    single { Mockito.mock(Application::class.java) }
-    single { Mockito.mock(Context::class.java) }
+    single { mock<Application> {} }
+    single {
+        mock<Context> {
+            on { checkSelfPermission(any()) } doAnswer { PackageManager.PERMISSION_DENIED }
+        }
+        mock<Context> {
+            on { registerReceiver(any(),any()) } doAnswer {
+                val broadcastReceiver = it.arguments[0] as BroadcastReceiver
+                broadcastReceiver.onReceive(get(), Intent())
+                null
+            }
+        }
+    }
+}
+
+var mockLocationProviderIsEnabled = true
+val mockModuleLocationManager = module(override = true) {
+    single<LocationManager> {
+        mock<LocationManager> {
+            on { isProviderEnabled(any()) } doAnswer {
+               mockLocationProviderIsEnabled
+            }
+        }
+    }
+}
+
+var locationCallbackRef: LocationCallback= object : LocationCallback() {
+    override fun onLocationResult(newLocationResult: LocationResult) {
+        println("locationCallbackRef wasn't set :(")
+    }
+}
+
+val mockModuleFusedLocationProviderClient = module(override = true) {
+    single {
+        mock<FusedLocationProviderClient> {
+            on { requestLocationUpdates(any(), any(), any()) } doAnswer {
+                locationCallbackRef = it.arguments[1] as LocationCallback
+                null
+            }
+            on { requestLocationUpdates(any(), any())} doAnswer {
+                locationCallbackRef = it.arguments[1] as LocationCallback
+                null
+            }
+        }
+    }
+}
+
+var mockAppPermissionState = AppPermissionState.Denied
+val mockModulePermissionsChecker = module(override = true) {
+    single {
+        mock<PermissionsChecker> {
+            on { getPermissionState(any(), any()) } doAnswer { mockAppPermissionState }
+        }
+    }
 }
 
 var mockSharedPrefString = ""

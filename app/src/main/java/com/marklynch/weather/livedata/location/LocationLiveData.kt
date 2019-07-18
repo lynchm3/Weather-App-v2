@@ -5,31 +5,39 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
 import android.provider.Settings
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.marklynch.weather.livedata.weather.Sys
+import com.marklynch.weather.utils.AppPermissionState
+import com.marklynch.weather.utils.PermissionsChecker
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
+import java.lang.reflect.Array.setInt
+import java.lang.reflect.AccessibleObject.setAccessible
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 
-class LocationLiveData(private val context: Context) : LiveData<LocationInformation>() {
+class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private var locationResult: LocationResult? = null
 
-    enum class AppPermissionState { Granted, Denied }
-
-    val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
+    private val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
 
     private val locationPermissionState
-        get() = getPermissionState(context, locationPermission)
+        get() = get<PermissionsChecker>().getPermissionState(get(), locationPermission)
 
     private val gpsState
-        get() = getGpsState(context)
+        get() = getGpsState(get())
 
     private val gpsSwitchStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -42,7 +50,7 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
     override fun onActive() {
         super.onActive()
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+        fusedLocationClient = get()
 
         registerGpsStateReceiver()
 
@@ -66,12 +74,12 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
     }
 
 
-    private fun registerGpsStateReceiver() = context.registerReceiver(
+    private fun registerGpsStateReceiver() = get<Context>().registerReceiver(
         gpsSwitchStateReceiver,
         IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
     )
 
-    private fun unregisterGpsStateReceiver() = context.unregisterReceiver(gpsSwitchStateReceiver)
+    private fun unregisterGpsStateReceiver() = get<Context>().unregisterReceiver(gpsSwitchStateReceiver)
 
     fun fetchLocation() {
         try {
@@ -79,7 +87,8 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
                 LocationRequest.create().apply {
                     priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                     numUpdates = 1
-                }, locationCallback,
+                },
+                locationCallback,
                 Looper.myLooper()
             )
         } catch (unlikely: SecurityException) {
@@ -95,9 +104,9 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
         }
     }
 
-    fun getGpsState(context: Context): GpsState {
+    private fun getGpsState(context: Context): GpsState {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val locationManager:LocationManager = get()
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
                 return GpsState.Enabled
         } else {
@@ -114,15 +123,4 @@ class LocationLiveData(private val context: Context) : LiveData<LocationInformat
         }
         return GpsState.Disabled
     }
-
-    fun getPermissionState(context: Context, permissionToCheck: String): AppPermissionState =
-
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                permissionToCheck
-            ) == PackageManager.PERMISSION_GRANTED
-        )
-            AppPermissionState.Granted
-        else
-            AppPermissionState.Denied
 }

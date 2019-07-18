@@ -3,8 +3,7 @@ package com.marklynch.weather.livedata.sharedpreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.marklynch.weather.di.*
 import com.marklynch.weather.livedata.observeXTimes
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
+import junit.framework.Assert.*
 import org.junit.*
 import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.stopKoin
@@ -18,7 +17,7 @@ class BooleanSharedPreferencesLiveDataTest : KoinTest {
     @Before
     fun setup() {
         val moduleList =
-                    appModules +
+            appModules +
                     activityModules +
                     mockModuleApplication +
                     mockModuleSharedPreferences +
@@ -32,27 +31,38 @@ class BooleanSharedPreferencesLiveDataTest : KoinTest {
     }
 
     @Test
-    fun `Test`() {
+    fun `Test setting and observing true`() {
 
-        val booleanKey = "Some boolean key"
         val booleanSharedPreferencesLiveData =
-            BooleanSharedPreferencesLiveData(
-                booleanKey
-            )
-
-        Assert.assertNull(booleanSharedPreferencesLiveData.value)
+            BooleanSharedPreferencesLiveData("")
 
         booleanSharedPreferencesLiveData.setSharedPreference(true)
 
+        var observations = 0
         booleanSharedPreferencesLiveData.observeXTimes(1) {
+            observations++
             assertTrue(it)
         }
 
+        assertEquals(1,observations)
+
+    }
+
+    @Test
+    fun `Test setting and observing false`() {
+
+        val booleanSharedPreferencesLiveData =
+            BooleanSharedPreferencesLiveData("")
+
         booleanSharedPreferencesLiveData.setSharedPreference(false)
 
+        var observations = 0
         booleanSharedPreferencesLiveData.observeXTimes(1) {
+            observations++
             assertFalse(it)
         }
+
+        assertEquals(1,observations)
     }
 
 }

@@ -9,6 +9,7 @@ import org.koin.standalone.get
 class BooleanSharedPreferencesLiveData(
     sharedPreferencesKey: String
 ) : SharedPreferencesLiveData<Boolean>(sharedPreferencesKey), KoinComponent {
+
     override fun setLiveDataValue(sharedPreferencesKey: String) {
         postValue(sharedPreferences.getBoolean(sharedPreferencesKey, false))
     }
