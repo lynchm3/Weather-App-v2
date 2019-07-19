@@ -2,8 +2,6 @@ package com.marklynch.weather.livedata.weather
 
 import com.google.gson.annotations.SerializedName
 
-import java.util.ArrayList
-
 class WeatherResponse {
 
     @SerializedName("coord")
@@ -28,6 +26,12 @@ class WeatherResponse {
     var name: String? = null
     @SerializedName("cod")
     var cod = 0.0
+
+    override fun toString(): String {
+        return "WeatherResponse(coord=$coord, sys=$sys, weather=$weather, main=$main, wind=$wind, rain=$rain, clouds=$clouds, dt=$dt, id=$id, name=$name, cod=$cod)"
+    }
+
+
 }
 
 class Weather {
@@ -39,16 +43,28 @@ class Weather {
     var description: String? = null
     @SerializedName("icon")
     var icon: String? = null
+
+    override fun toString(): String {
+        return "Weather(id=$id, main=$main, description=$description, icon=$icon)"
+    }
 }
 
 class Clouds {
     @SerializedName("all")
     var all = 0.0
+
+    override fun toString(): String {
+        return "Clouds(all=$all)"
+    }
 }
 
 class Rain {
     @SerializedName("3h")
     var h3 = 0.0
+
+    override fun toString(): String {
+        return "Rain(h3=$h3)"
+    }
 }
 
 class Wind {
@@ -56,6 +72,10 @@ class Wind {
     var speed = 0.0
     @SerializedName("deg")
     var deg = 0.0
+
+    override fun toString(): String {
+        return "Wind(speed=$speed, deg=$deg)"
+    }
 }
 
 class Main {
@@ -69,6 +89,10 @@ class Main {
     var temp_min = 0.0
     @SerializedName("temp_max")
     var temp_max = 0.0
+
+    override fun toString(): String {
+        return "Main(temp=$temp, humidity=$humidity, pressure=$pressure, temp_min=$temp_min, temp_max=$temp_max)"
+    }
 }
 
 class Sys {
@@ -78,6 +102,10 @@ class Sys {
     var sunrise: Long = 0
     @SerializedName("sunset")
     var sunset: Long = 0
+
+    override fun toString(): String {
+        return "Sys(country=$country, sunrise=$sunrise, sunset=$sunset)"
+    }
 }
 
 class Coord {
@@ -85,4 +113,8 @@ class Coord {
     var lon = 0.0
     @SerializedName("lat")
     var lat = 0.0
+
+    override fun toString(): String {
+        return "Coord(lon=$lon, lat=$lat)"
+    }
 }

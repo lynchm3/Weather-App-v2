@@ -133,7 +133,7 @@ class LocationLiveDataTest : KoinTest {
 
         val locationResultPassed = LocationResult.create(listOf())
 
-        locationCallbackRef.onLocationResult(locationResultPassed)
+        locationLiveData.locationCallback.onLocationResult(locationResultPassed)
 
         locationLiveData.observeXTimes(1) {
             observations++

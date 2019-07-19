@@ -15,7 +15,7 @@ import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.livedata.weather.*
-import com.marklynch.weather.utils.AppPermissionState
+import com.marklynch.weather.utils.*
 import com.marklynch.weather.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main_mine.*

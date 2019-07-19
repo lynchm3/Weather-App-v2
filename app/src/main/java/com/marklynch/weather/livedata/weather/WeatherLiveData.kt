@@ -1,6 +1,9 @@
 package com.marklynch.weather.livedata.weather
 
 import androidx.lifecycle.LiveData
+import okhttp3.HttpUrl
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -8,26 +11,27 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import kotlin.math.roundToInt
 
 
-class WeatherLiveData : LiveData<WeatherResponse>() {
+class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
 
     override fun onActive() {
         super.onActive()
 //        fetchWeather()
     }
 
+    val appId = "74f01822a2b8950db2986d7e28a5978a"
+
     fun fetchWeather(lat: Double = 0.0, lon: Double = 0.0) {
 
-        if(lat == 0.0 && lon == 0.0)
+        if (lat == 0.0 && lon == 0.0)
             return
-
+        
         val retrofit = getRetrofitInstance("https://api.openweathermap.org")
 
         val apiService = retrofit!!.create(RestApiService::class.java)
 
-        val call = apiService.getCurrentWeatherData(lat, lon, "74f01822a2b8950db2986d7e28a5978a")
+        val call = apiService.getCurrentWeatherData(lat, lon, appId)
 
         call.enqueue(object : Callback<WeatherResponse> {
             override fun onFailure(call: Call<WeatherResponse>?, t: Throwable?) {
@@ -43,7 +47,7 @@ class WeatherLiveData : LiveData<WeatherResponse>() {
 
     private fun getRetrofitInstance(baseUrl: String): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(get<HttpUrl>(baseUrl))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -51,13 +55,5 @@ class WeatherLiveData : LiveData<WeatherResponse>() {
     interface RestApiService {
         @GET("data/2.5/weather?")
         fun getCurrentWeatherData(@Query("lat") lat: Double, @Query("lon") lon: Double, @Query("appid") app_id: String): Call<WeatherResponse>
-
     }
 }
-
-fun farenheitToCelsius(fahrenheit: Double?) = if(fahrenheit == null) 0.0 else (fahrenheit - 32) * 5 / 9
-fun kelvinToCelsius(kelvin: Double?) = if(kelvin == null) 0.0 else kelvin - 273.15
-fun kelvinToFahrenheit(kelvin: Double?) = if(kelvin == null) 0.0 else kelvin * 9/5 - 459.67
-
-fun metresPerSecondToKmPerHour(metresPerSecond: Double) = (metresPerSecond * 3.6)
-fun metresPerSecondToMilesPerHour(metresPerSecond: Double) = (metresPerSecond * 2.23694)

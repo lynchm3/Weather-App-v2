@@ -10,8 +10,6 @@ import android.location.LocationManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.tasks.Task
-import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
 import com.marklynch.weather.utils.AppPermissionState
 import com.marklynch.weather.utils.PermissionsChecker
@@ -19,6 +17,9 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.mockwebserver.MockWebServer
 import org.koin.dsl.module.module
 import org.mockito.ArgumentMatchers
 
@@ -29,7 +30,7 @@ val mockModuleApplication = module(override = true) {
             on { checkSelfPermission(any()) } doAnswer { PackageManager.PERMISSION_DENIED }
         }
         mock<Context> {
-            on { registerReceiver(any(),any()) } doAnswer {
+            on { registerReceiver(any(), any()) } doAnswer {
                 val broadcastReceiver = it.arguments[0] as BroadcastReceiver
                 broadcastReceiver.onReceive(get(), Intent())
                 null
@@ -43,13 +44,13 @@ val mockModuleLocationManager = module(override = true) {
     single<LocationManager> {
         mock<LocationManager> {
             on { isProviderEnabled(any()) } doAnswer {
-               mockLocationProviderIsEnabled
+                mockLocationProviderIsEnabled
             }
         }
     }
 }
 
-var locationCallbackRef: LocationCallback= object : LocationCallback() {
+var locationCallbackRef: LocationCallback = object : LocationCallback() {
     override fun onLocationResult(newLocationResult: LocationResult) {
         println("locationCallbackRef wasn't set :(")
     }
@@ -62,11 +63,19 @@ val mockModuleFusedLocationProviderClient = module(override = true) {
                 locationCallbackRef = it.arguments[1] as LocationCallback
                 null
             }
-            on { requestLocationUpdates(any(), any())} doAnswer {
+            on { requestLocationUpdates(any(), any()) } doAnswer {
                 locationCallbackRef = it.arguments[1] as LocationCallback
                 null
             }
         }
+    }
+}
+
+
+var mockWebServer: MockWebServer? = null
+val mockModuleHttpUrl = module(override = true) {
+    single<HttpUrl> { (baseUrl: String) ->
+        mockWebServer?.url(baseUrl) ?: throw IllegalArgumentException("Illegal URL: $baseUrl")
     }
 }
 

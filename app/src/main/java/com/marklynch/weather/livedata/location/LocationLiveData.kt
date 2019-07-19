@@ -14,15 +14,10 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.marklynch.weather.livedata.weather.Sys
 import com.marklynch.weather.utils.AppPermissionState
 import com.marklynch.weather.utils.PermissionsChecker
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
-import java.lang.reflect.Array.setInt
-import java.lang.reflect.AccessibleObject.setAccessible
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 
 
 class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
@@ -66,7 +61,7 @@ class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
         unregisterFromLocationTracking()
     }
 
-    private val locationCallback = object : LocationCallback() {
+    val locationCallback = object : LocationCallback() {
         override fun onLocationResult(newLocationResult: LocationResult) {
             locationResult = newLocationResult
             postValue(LocationInformation(locationPermissionState, gpsState, locationResult))
@@ -106,7 +101,7 @@ class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
     private fun getGpsState(context: Context): GpsState {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val locationManager:LocationManager = get()
+            val locationManager: LocationManager = get()
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
                 return GpsState.Enabled
         } else {
