@@ -75,7 +75,7 @@ val mockModuleFusedLocationProviderClient = module(override = true) {
 var mockWebServer: MockWebServer? = null
 val mockModuleHttpUrl = module(override = true) {
     single<HttpUrl> { (baseUrl: String) ->
-        mockWebServer?.url(baseUrl) ?: throw IllegalArgumentException("Illegal URL: $baseUrl")
+        mockWebServer?.url("") ?: throw IllegalArgumentException("Illegal URL: \"\"")
     }
 }
 

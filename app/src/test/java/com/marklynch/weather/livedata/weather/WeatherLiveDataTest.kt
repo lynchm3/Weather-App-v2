@@ -1,10 +1,11 @@
 package com.marklynch.weather.livedata.weather
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.marklynch.weather.di.*
 import com.marklynch.weather.livedata.observeXTimes
-import junit.framework.Assert.*
-import okhttp3.HttpUrl
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertNull
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -13,10 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.stopKoin
-import org.koin.standalone.get
 import org.koin.test.KoinTest
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class WeatherLiveDataTest : KoinTest {
@@ -50,9 +48,7 @@ class WeatherLiveDataTest : KoinTest {
 
         var observations = 0
         weatherLiveData.observeXTimes(1) {
-            //this shouldn't be triggered, weather gets triggered by valid location being available
             observations++
-            assertNull(it)
         }
 
         assertEquals(0, observations)
@@ -61,7 +57,6 @@ class WeatherLiveDataTest : KoinTest {
     @Test
     fun `Test observe after fetch success`() {
 
-
         mockWebServer = MockWebServer()
         mockWebServer?.enqueue(MockResponse().setBody(weatherResponse))
 
@@ -69,33 +64,40 @@ class WeatherLiveDataTest : KoinTest {
             WeatherLiveData()
 
         var observations = 0
-        var weatherResponse: WeatherResponse? = null
         weatherLiveData.observeXTimes(1) {
             observations++
-            weatherResponse = it
-            assertNotNull(weatherResponse)
-            System.out.println("weatherResponse = " + weatherResponse)
+            assertEquals(Gson().fromJson(weatherResponse, WeatherResponse::class.java), Gson().toJson(it))
         }
 
-        weatherLiveData.fetchWeather(sligoLatitude,sligoLongitude)
+        weatherLiveData.fetchWeather(sligoLatitude, sligoLongitude)
 
-        val maxWaitTime = 10_000L
-        val waitInterval = 100L
-        var waitTimeSoFar = 0L
-        while (weatherResponse == null && waitTimeSoFar <= maxWaitTime) {
-            Thread.sleep(waitInterval)
-            waitTimeSoFar += waitInterval
-        }
+        while(observations == 0)
+            Thread.sleep(100)
 
         assertEquals(1, observations)
 
         mockWebServer?.shutdown()
     }
 
+    @Test
     fun `Test observe after fetch error`() {
+        mockWebServer = MockWebServer()
+        mockWebServer?.enqueue(MockResponse().setResponseCode(403))
 
+        val weatherLiveData =
+            WeatherLiveData()
+
+        var observations = 0
+        weatherLiveData.observeXTimes(1) {
+            observations++
+        }
+
+        weatherLiveData.fetchWeather(sligoLatitude, sligoLongitude)
+
+        assertEquals(0, observations)
+
+        mockWebServer?.shutdown()
     }
-
 }
 
 val weatherResponse = """{

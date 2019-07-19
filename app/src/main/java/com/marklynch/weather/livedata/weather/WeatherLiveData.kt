@@ -2,6 +2,7 @@ package com.marklynch.weather.livedata.weather
 
 import androidx.lifecycle.LiveData
 import okhttp3.HttpUrl
+import org.koin.core.parameter.parametersOf
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 import retrofit2.Call
@@ -47,7 +48,9 @@ class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
 
     private fun getRetrofitInstance(baseUrl: String): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(get<HttpUrl>(baseUrl))
+            .baseUrl(get<HttpUrl>{
+                parametersOf(baseUrl)
+            })
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
