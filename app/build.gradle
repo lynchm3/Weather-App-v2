@@ -10,8 +10,9 @@ android {
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.marklynch.weather"
-        minSdkVersion 21
+        minSdkVersion 29
         targetSdkVersion 29
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
