@@ -79,7 +79,7 @@ class WeatherLiveDataTest : KoinTest {
         mockWebServer?.shutdown()
     }
 
-//    @Test
+////    @Test
     fun `Test observe after fetch error`() {
         mockWebServer = MockWebServer()
         mockWebServer?.enqueue(MockResponse().setResponseCode(403))
