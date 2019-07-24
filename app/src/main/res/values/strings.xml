@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">The Weather</string>
     <string name="action_settings">Settings</string>
-    <string name="action_ok">OK</string>
     <string name="action_use_celsius">Use °C</string>
     <string name="action_use_fahrenheit">Use °F</string>
     <string name="action_use_km">Use km</string>
@@ -23,10 +22,6 @@
     <string name="wind_km">Wind %1$dkm/h %2$s</string>
     <string name="cloudiness_percentage">Cloudiness %1$d%%</string>
 
-
-    <string name="fine_location_permission_denied">Fine Location Permission Denied</string>
-    <string name="location_setting_turned_off">Location Setting Off</string>
-    <string name="getting_location">Getting Location</string>
     <string name="no_network_title">No Network Connection</string>
     <string name="no_network_body">No network connection</string>
     <string name="gps_required_title">GPS required</string>

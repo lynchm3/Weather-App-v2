@@ -25,7 +25,3 @@ fun <T> LiveData<T>.observeXTimes(x:Int, onChangeHandler: (T) -> Unit) {
     val observer = LimitedObserver(x, handler = onChangeHandler)
     observe(observer, observer)
 }
-fun <T> LiveData<T>.observeInfinite(onChangeHandler: (T) -> Unit) {
-    val observer = LimitedObserver(0, handler = onChangeHandler)
-    observe(observer, observer)
-}

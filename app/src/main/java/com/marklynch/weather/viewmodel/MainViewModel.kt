@@ -39,7 +39,6 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun getLocationInformation() = locationLiveData.value
     fun getWeather() = weatherLiveData.value
-    fun getNetworkInfo() = networkInfoLiveData.value
     fun isUseCelsius() = useCelsiusSharedPreferencesLiveData.value
     fun isUseKm() = useKmSharedPreferencesLiveData.value
 

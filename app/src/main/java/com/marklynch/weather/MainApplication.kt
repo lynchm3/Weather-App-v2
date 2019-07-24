@@ -7,7 +7,7 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 
-class MainApplication: Application() {
+class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
