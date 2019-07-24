@@ -67,8 +67,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     testImplementation 'androidx.test:runner:1.2.0'
-    //noinspection GradleDependency
-    testImplementation 'androidx.arch.core:core-testing:2.0.0'
+    testImplementation 'androidx.arch.core:core-testing:2.0.1'
     testImplementation 'androidx.test:core:1.2.0'
     testImplementation "org.koin:koin-test:1.0.1"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
@@ -78,8 +77,7 @@ dependencies {
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
-    //noinspection GradleDependency
-    androidTestImplementation 'androidx.arch.core:core-testing:2.0.0'
+    androidTestImplementation 'androidx.arch.core:core-testing:2.0.1'
     androidTestImplementation 'androidx.test:core:1.2.0'
     androidTestImplementation "org.koin:koin-test:1.0.1"
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
