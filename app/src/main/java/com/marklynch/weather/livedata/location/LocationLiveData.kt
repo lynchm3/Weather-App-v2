@@ -106,6 +106,7 @@ class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
                 return GpsState.Enabled
         } else {
             try {
+                @Suppress("DEPRECATION")
                 if (Settings.Secure.getInt(
                         context.contentResolver,
                         Settings.Secure.LOCATION_MODE

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.LocationManager
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.marklynch.weather.BuildConfig
@@ -19,7 +19,6 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koin.dsl.module.module
 import org.koin.experimental.builder.single
 import timber.log.Timber
-
 
 private val appModule = module {
 
