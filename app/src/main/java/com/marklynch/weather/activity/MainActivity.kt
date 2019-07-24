@@ -24,7 +24,7 @@ import java.util.*
 import kotlin.math.roundToInt
 
 class MainActivity : BaseActivity() {
-FAIL
+
     private val viewModel: MainViewModel by inject()
     private var alertDialog: AlertDialog? = null
 
