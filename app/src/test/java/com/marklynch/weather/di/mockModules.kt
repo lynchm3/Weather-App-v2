@@ -18,7 +18,6 @@ import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.mockwebserver.MockWebServer
 import org.koin.dsl.module.module
 import org.mockito.ArgumentMatchers
@@ -41,7 +40,7 @@ val mockModuleApplication = module(override = true) {
 
 var mockLocationProviderIsEnabled = true
 val mockModuleLocationManager = module(override = true) {
-    single<LocationManager> {
+    single {
         mock<LocationManager> {
             on { isProviderEnabled(any()) } doAnswer {
                 mockLocationProviderIsEnabled

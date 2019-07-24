@@ -1,10 +1,10 @@
 package com.marklynch.weather.di
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.LocationManager
 import android.preference.PreferenceManager
-import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.marklynch.weather.BuildConfig
@@ -30,9 +30,10 @@ private val appModule = module {
 
 }
 
+@SuppressLint("CommitPrefEdits")
 private val dataModule = module {
 
-    single<BooleanSharedPreferencesLiveData> { (sharedPreferencesKey: String) ->
+    single { (sharedPreferencesKey: String) ->
         BooleanSharedPreferencesLiveData(
             sharedPreferencesKey
         )

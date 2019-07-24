@@ -19,7 +19,7 @@ class RawWebResourceLiveData : LiveData<String>() {
 
         val retrofit = getRetrofitInstance("https://www.google.com")
 
-        val apiService = retrofit!!.create(RawWebResourceLiveData.RestApiService::class.java)
+        val apiService = retrofit.create(RawWebResourceLiveData.RestApiService::class.java)
 
         val call = apiService.get
 
@@ -36,7 +36,7 @@ class RawWebResourceLiveData : LiveData<String>() {
         })
     }
 
-    fun getRetrofitInstance(baseUrl: String): Retrofit {
+    private fun getRetrofitInstance(baseUrl: String): Retrofit {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             //.addConverterFactory(GsonConverterFactory.create())

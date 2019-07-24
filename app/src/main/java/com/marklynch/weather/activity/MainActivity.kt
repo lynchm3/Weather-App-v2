@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import com.marklynch.weather.R
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
-import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.livedata.weather.*
 import com.marklynch.weather.utils.*
@@ -102,19 +101,19 @@ class MainActivity : BaseActivity() {
             tv_temperature_unit.text = getString(R.string.degreesF)
             tv_maximum_temperature.text = getString(
                 R.string.maximum_temperature_F,
-                kelvinToFahrenheit(weatherResponse?.main?.temp_max).roundToInt()
+                kelvinToFahrenheit(weatherResponse?.main?.tempMax).roundToInt()
             )
             tv_minimum_temperature.text = getString(
                 R.string.minimum_temperature_F,
-                kelvinToFahrenheit(weatherResponse?.main?.temp_min).roundToInt()
+                kelvinToFahrenheit(weatherResponse?.main?.tempMin).roundToInt()
             )
         } else {
             tv_temperature.text = kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
             tv_temperature_unit.text = getString(R.string.degreesC)
             tv_maximum_temperature.text =
-                getString(R.string.maximum_temperature_C, kelvinToCelsius(weatherResponse?.main?.temp_max).roundToInt())
+                getString(R.string.maximum_temperature_C, kelvinToCelsius(weatherResponse?.main?.tempMax).roundToInt())
             tv_minimum_temperature.text =
-                getString(R.string.minimum_temperature_C, kelvinToCelsius(weatherResponse?.main?.temp_min).roundToInt())
+                getString(R.string.minimum_temperature_C, kelvinToCelsius(weatherResponse?.main?.tempMin).roundToInt())
         }
 
         if (useKm == null || !useKm) {
@@ -272,5 +271,5 @@ class MainActivity : BaseActivity() {
 
 }
 
-fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
+fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 

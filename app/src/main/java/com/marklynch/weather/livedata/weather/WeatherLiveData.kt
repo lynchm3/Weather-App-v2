@@ -16,12 +16,7 @@ import retrofit2.http.Query
 
 class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
 
-    override fun onActive() {
-        super.onActive()
-//        fetchWeather()
-    }
-
-    val appId = "74f01822a2b8950db2986d7e28a5978a"
+    private val appId = "74f01822a2b8950db2986d7e28a5978a"
 
     fun fetchWeather(lat: Double = 0.0, lon: Double = 0.0) {
 
@@ -30,7 +25,7 @@ class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
         
         val retrofit = getRetrofitInstance("https://api.openweathermap.org")
 
-        val apiService = retrofit!!.create(RestApiService::class.java)
+        val apiService = retrofit.create(RestApiService::class.java)
 
         val call = apiService.getCurrentWeatherData(lat, lon, appId)
 

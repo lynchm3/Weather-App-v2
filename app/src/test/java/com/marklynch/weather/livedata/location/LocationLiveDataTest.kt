@@ -5,6 +5,7 @@ import com.google.android.gms.location.LocationResult
 import com.marklynch.weather.di.*
 import com.marklynch.weather.livedata.observeXTimes
 import com.marklynch.weather.utils.AppPermissionState
+import com.marklynch.weather.utils.setBuildVersionSdkInt
 import junit.framework.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
@@ -13,10 +14,6 @@ import org.junit.Test
 import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.test.KoinTest
-import android.os.Build
-import com.marklynch.weather.utils.setBuildVersionSdkInt
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 
 
 class LocationLiveDataTest : KoinTest {

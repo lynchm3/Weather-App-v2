@@ -20,6 +20,5 @@ class CurrentTimeLiveData : LiveData<Long>() {
                 postValue(System.currentTimeMillis())
             }
         }
-
     }
 }

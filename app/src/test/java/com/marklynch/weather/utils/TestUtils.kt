@@ -11,8 +11,8 @@ fun setBuildVersionSdkInt(sdk:Int)
 
 fun setFinalStatic(field: Field, newValue: Any) {
     field.isAccessible = true
-    val modifiersField = Field::class.java!!.getDeclaredField("modifiers")
+    val modifiersField = Field::class.java.getDeclaredField("modifiers")
     modifiersField.isAccessible = true
-    modifiersField.setInt(field, field.getModifiers() and Modifier.FINAL.inv())
+    modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
     field.set(null, newValue)
 }

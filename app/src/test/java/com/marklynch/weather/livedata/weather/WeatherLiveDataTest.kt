@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.marklynch.weather.di.*
 import com.marklynch.weather.livedata.observeXTimes
 import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNull
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -54,7 +53,7 @@ class WeatherLiveDataTest : KoinTest {
         assertEquals(0, observations)
     }
 
-//    @Test
+    //    @Test
     fun `Test observe after fetch success`() {
 
         mockWebServer = MockWebServer()
@@ -71,7 +70,7 @@ class WeatherLiveDataTest : KoinTest {
 
         weatherLiveData.fetchWeather(sligoLatitude, sligoLongitude)
 
-        while(observations == 0)
+        while (observations == 0)
             Thread.sleep(100)
 
         assertEquals(1, observations)
@@ -79,7 +78,7 @@ class WeatherLiveDataTest : KoinTest {
         mockWebServer?.shutdown()
     }
 
-////    @Test
+    ////    @Test
     fun `Test observe after fetch error`() {
         mockWebServer = MockWebServer()
         mockWebServer?.enqueue(MockResponse().setResponseCode(403))
@@ -100,7 +99,7 @@ class WeatherLiveDataTest : KoinTest {
     }
 }
 
-val weatherResponse = """{
+const val weatherResponse = """{
    "coord":{
       "lon":-122.08,
       "lat":37.42
@@ -118,8 +117,8 @@ val weatherResponse = """{
       "temp":298.24,
       "pressure":1017,
 	  "humidity":47,
-	  "temp_min":294.82,
-	  "temp_max":301.48
+	  "tempMin":294.82,
+	  "tempMax":301.48
    },
    "visibility":16093,
    "wind":{

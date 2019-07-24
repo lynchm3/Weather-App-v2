@@ -85,13 +85,13 @@ class Main {
     var humidity = 0.0
     @SerializedName("pressure")
     var pressure = 0.0
-    @SerializedName("temp_min")
-    var temp_min = 0.0
-    @SerializedName("temp_max")
-    var temp_max = 0.0
+    @SerializedName("tempMin")
+    var tempMin = 0.0
+    @SerializedName("tempMax")
+    var tempMax = 0.0
 
     override fun toString(): String {
-        return "Main(temp=$temp, humidity=$humidity, pressure=$pressure, temp_min=$temp_min, temp_max=$temp_max)"
+        return "Main(temp=$temp, humidity=$humidity, pressure=$pressure, tempMin=$tempMin, tempMax=$tempMax)"
     }
 }
 

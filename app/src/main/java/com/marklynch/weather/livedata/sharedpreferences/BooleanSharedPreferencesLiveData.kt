@@ -1,8 +1,6 @@
 package com.marklynch.weather.livedata.sharedpreferences
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 
