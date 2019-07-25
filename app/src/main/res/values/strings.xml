@@ -29,4 +29,6 @@
     <string name="permission_required_title">Location permission required</string>
     <string name="permission_required_body">Location permission required</string>
     <string name="loading">Loading…</string>
+    <string name="action_use_24_hr_clock">Use 24hr clock</string>
+    <string name="action_use_12_hr_clock">Use 12hr clock</string>
 </resources>

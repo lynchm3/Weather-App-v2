@@ -13,15 +13,15 @@ import com.marklynch.weather.R
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.network.ConnectionType
-import com.marklynch.weather.livedata.weather.*
+import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.*
 import com.marklynch.weather.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main_mine.*
 import org.koin.android.ext.android.inject
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
-import java.text.SimpleDateFormat
 
 
 class MainActivity : BaseActivity() {
@@ -41,7 +41,7 @@ class MainActivity : BaseActivity() {
             Observer<ConnectionType> { connectionType ->
                 if (connectionType == ConnectionType.CONNECTED)
                     pullToRefresh.isRefreshing = true
-                    viewModel.fetchWeather()
+                viewModel.fetchWeather()
             })
 
         //Location
@@ -83,6 +83,14 @@ class MainActivity : BaseActivity() {
 
         //km / mi settings
         viewModel.useKmSharedPreferencesLiveData.observe(this,
+            Observer<Boolean> {
+                invalidateOptionsMenu()
+                updateWeatherUI()
+            }
+        )
+
+        //24hr / 12hr settings
+        viewModel.use24hrClockSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 invalidateOptionsMenu()
                 updateWeatherUI()
@@ -143,13 +151,21 @@ class MainActivity : BaseActivity() {
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
         tv_location_and_time.text =
-            getString(R.string.location_and_time, weatherResponse?.name,
-                SimpleDateFormat("HH:mm",Locale.US).format(Calendar.getInstance().time)
+            getString(
+                R.string.location_and_time, weatherResponse?.name, generateTimeString()
+
             )
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
         tv_cloudiness.text = getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
 
     }
+
+    private fun generateTimeString(): String =
+        if (viewModel.isUse24hrClock() == true)
+            SimpleDateFormat("HH:mm", Locale.US).format(Calendar.getInstance().time)
+        else
+            SimpleDateFormat("hh:mm a", Locale.US).format(Calendar.getInstance().time)
+
 
     private fun showNoNetworkConnectionDialog() {
         if (alertDialog?.isShowing == true) {
@@ -224,6 +240,11 @@ class MainActivity : BaseActivity() {
         } else {
             menu.findItem(R.id.action_use_mi).isVisible = false
         }
+        if (viewModel.isUse24hrClock() == true) {
+            menu.findItem(R.id.action_use_24_hr_clock).isVisible = false
+        } else {
+            menu.findItem(R.id.action_use_12_hr_clock).isVisible = false
+        }
 
 
         return true
@@ -245,6 +266,14 @@ class MainActivity : BaseActivity() {
             }
             R.id.action_use_mi -> {
                 viewModel.setUseKm(false)
+                return true
+            }
+            R.id.action_use_24_hr_clock -> {
+                viewModel.setUse24hrClock(true)
+                return true
+            }
+            R.id.action_use_mi -> {
+                viewModel.setUse24hrClock(false)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
