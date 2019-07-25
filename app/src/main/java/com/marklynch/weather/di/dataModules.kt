@@ -32,13 +32,13 @@ private val appModule = module {
 @SuppressLint("CommitPrefEdits")
 private val dataModule = module {
 
-    single { (sharedPreferencesKey: String) ->
+    factory { (sharedPreferencesKey: String) ->
         BooleanSharedPreferencesLiveData(
             sharedPreferencesKey
         )
     }
 
-    single<HttpUrl> { (baseUrl: String) ->
+    factory<HttpUrl> { (baseUrl: String) ->
         baseUrl.toHttpUrlOrNull() ?: throw IllegalArgumentException("Illegal URL: $baseUrl")
     }
 

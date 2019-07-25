@@ -272,7 +272,7 @@ class MainActivity : BaseActivity() {
                 viewModel.setUse24hrClock(true)
                 return true
             }
-            R.id.action_use_mi -> {
+            R.id.action_use_12_hr_clock -> {
                 viewModel.setUse24hrClock(false)
                 return true
             }

@@ -56,7 +56,7 @@ var locationCallbackRef: LocationCallback = object : LocationCallback() {
 }
 
 val mockModuleFusedLocationProviderClient = module(override = true) {
-    single {
+    factory {
         mock<FusedLocationProviderClient> {
             on { requestLocationUpdates(any(), any(), any()) } doAnswer {
                 locationCallbackRef = it.arguments[1] as LocationCallback
@@ -73,7 +73,7 @@ val mockModuleFusedLocationProviderClient = module(override = true) {
 
 var mockWebServer: MockWebServer? = null
 val mockModuleHttpUrl = module(override = true) {
-    single<HttpUrl> { (baseUrl: String) ->
+    factory<HttpUrl> { (baseUrl: String) ->
         mockWebServer?.url("") ?: throw IllegalArgumentException("Illegal URL: \"\"")
     }
 }
