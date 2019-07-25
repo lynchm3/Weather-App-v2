@@ -39,7 +39,8 @@ class MainActivity : BaseActivity() {
         //Network
         viewModel.networkInfoLiveData.observe(this,
             Observer<ConnectionType> { connectionType ->
-                if (connectionType == ConnectionType.MOBILE_DATA_CONNECTION || connectionType == ConnectionType.WIFI_CONNECTION)
+                if (connectionType == ConnectionType.CONNECTED)
+                    pullToRefresh.isRefreshing = true
                     viewModel.fetchWeather()
             })
 
@@ -55,7 +56,10 @@ class MainActivity : BaseActivity() {
                         showGpsNotEnabledDialog()
                         pullToRefresh.isRefreshing = false
                     }
-                    else -> viewModel.fetchWeather()
+                    else -> {
+                        pullToRefresh.isRefreshing = true
+                        viewModel.fetchWeather()
+                    }
                 }
             })
 
@@ -253,19 +257,19 @@ class MainActivity : BaseActivity() {
         "02d" to R.drawable.weather02d,
         "02n" to R.drawable.weather02n,
         "03d" to R.drawable.weather03d,
-        "03n" to R.drawable.weather03n,
+        "03n" to R.drawable.weather03d,
         "04d" to R.drawable.weather04d,
-        "04n" to R.drawable.weather04n,
+        "04n" to R.drawable.weather04d,
         "09d" to R.drawable.weather09d,
-        "09n" to R.drawable.weather09n,
+        "09n" to R.drawable.weather09d,
         "10d" to R.drawable.weather10d,
         "10n" to R.drawable.weather10n,
         "11d" to R.drawable.weather11d,
-        "11n" to R.drawable.weather11n,
+        "11n" to R.drawable.weather11d,
         "13d" to R.drawable.weather13d,
-        "13n" to R.drawable.weather13n,
+        "13n" to R.drawable.weather13d,
         "50d" to R.drawable.weather50d,
-        "50n" to R.drawable.weather50n
+        "50n" to R.drawable.weather50d
     )
 
     private fun directionInDegreesToCardinalDirection(directionInDegrees: Double): String {

@@ -85,9 +85,9 @@ class Main {
     var humidity = 0.0
     @SerializedName("pressure")
     var pressure = 0.0
-    @SerializedName("tempMin")
+    @SerializedName("temp_min")
     var tempMin = 0.0
-    @SerializedName("tempMax")
+    @SerializedName("temp_max")
     var tempMax = 0.0
 
     override fun toString(): String {

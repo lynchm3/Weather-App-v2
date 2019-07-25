@@ -1,51 +1,40 @@
 package com.marklynch.weather.livedata.network
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import android.net.*
+import android.os.Build
 import androidx.lifecycle.LiveData
 
-enum class ConnectionType { WIFI_CONNECTION, MOBILE_DATA_CONNECTION, NO_CONNECTION }
+enum class ConnectionType { CONNECTED, NO_CONNECTION }
 
 class NetworkInfoLiveData(private val context: Context) : LiveData<ConnectionType>() {
 
-    private val networkReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
+    private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
+            as ConnectivityManager
 
-            if (intent.extras != null) {
-                val activeNetwork = intent.extras!!.get(ConnectivityManager.EXTRA_NETWORK_INFO) as NetworkInfo?
+    override fun onActive() {
+        super.onActive()
 
-                val isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting
-
-                if (isConnected) {
-                    when (activeNetwork!!.type) {
-                        ConnectivityManager.TYPE_WIFI -> postValue(ConnectionType.WIFI_CONNECTION)
-                        ConnectivityManager.TYPE_MOBILE -> postValue(ConnectionType.MOBILE_DATA_CONNECTION)
-                    }
-                } else {
-                    postValue(ConnectionType.NO_CONNECTION)
-                }
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        } else {
+            val builder = NetworkRequest.Builder()
+            connectivityManager.registerNetworkCallback(builder.build(), networkCallback)
         }
     }
 
-    override fun onActive() {
-
-        super.onActive()
-        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-
-        context.registerReceiver(networkReceiver, filter)
-    }
-
     override fun onInactive() {
-
         super.onInactive()
-
-        context.unregisterReceiver(networkReceiver)
+        connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network?) {
+            postValue(ConnectionType.CONNECTED)
+        }
 
+        override fun onLost(network: Network?) {
+            postValue(ConnectionType.NO_CONNECTION)
+        }
+    }
 }

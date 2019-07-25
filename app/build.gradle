@@ -67,6 +67,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     testImplementation 'androidx.test:runner:1.2.0'
+    //Lint to ignore the old lib version below due to strict version dependency
     //noinspection GradleDependency
     testImplementation 'androidx.arch.core:core-testing:2.0.0'
     testImplementation 'androidx.test:core:1.2.0'
@@ -78,6 +79,7 @@ dependencies {
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
+    //Lint to ignore the old lib version below due to strict version dependency
     //noinspection GradleDependency
     androidTestImplementation 'androidx.arch.core:core-testing:2.0.0'
     androidTestImplementation 'androidx.test:core:1.2.0'
