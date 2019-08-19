@@ -2,6 +2,7 @@ package com.marklynch.weather.activity
 
 import android.Manifest
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
@@ -27,6 +28,7 @@ import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
+import android.os.Build
 
 
 class MainActivity : BaseActivity() {
@@ -42,8 +44,30 @@ class MainActivity : BaseActivity() {
         pullToRefresh.isRefreshing = true
 
         fab.setOnClickListener {
+
+            var latitude = 40.0
+            var longitude = -73.0
+
+            //Attempt to get location from gps
+            val gpsLocation: Location? = viewModel.getLocationInformation()?.locationResult?.locations?.getOrNull(0)
+            if(gpsLocation != null) {
+                latitude = gpsLocation.latitude
+                longitude = gpsLocation.longitude
+            }
+//            else //Attempt to get location from registered phone region
+//            {
+//                val locale: String
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                    locale = resources.configuration.locales.get(0).displayCountry
+//                } else {
+//                    @Suppress("DEPRECATION")
+//                    locale = resources.configuration.locale.displayCountry
+//                }
+//
+//            }
+
             val intent = PlacePicker.IntentBuilder()
-                .setLatLong(40.748672, -73.985628)  // Initial Latitude and Longitude the Map will load into
+                .setLatLong(latitude,longitude)  // Initial Latitude and Longitude the Map will load into
                 .showLatLong(true)  // Show Coordinates in the Activity
                 .setMapZoom(12.0f)  // Map Zoom Level. Default: 14.0
                 .setAddressRequired(true) // Set If return only Coordinates if cannot fetch Address for the coordinates. Default: True
