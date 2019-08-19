@@ -17,6 +17,9 @@ import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.*
 import com.marklynch.weather.viewmodel.MainViewModel
+import com.sucho.placepicker.AddressData
+import com.sucho.placepicker.Constants as PlacePickerConstants
+import com.sucho.placepicker.PlacePicker
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.koin.android.ext.android.inject
@@ -36,6 +39,26 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         pullToRefresh.isRefreshing = true
+
+//        fab.setOnClickListener {
+//            val intent = PlacePicker.IntentBuilder()
+//                .setLatLong(40.748672, -73.985628)  // Initial Latitude and Longitude the Map will load into
+////                .showLatLong(true)  // Show Coordinates in the Activity
+////                .setMapZoom(12.0f)  // Map Zoom Level. Default: 14.0
+////                .setAddressRequired(true) // Set If return only Coordinates if cannot fetch Address for the coordinates. Default: True
+////                .hideMarkerShadow(true) // Hides the shadow under the map marker. Default: False
+////                .setMarkerDrawable(R.drawable.marker) // Change the default Marker Image
+////                .setMarkerImageImageColor(R.color.colorPrimary)
+////                .setFabColor(R.color.fabColor)
+////                .setPrimaryTextColor(R.color.primaryTextColor) // Change text color of Shortened Address
+////                .setSecondaryTextColor(R.color.secondaryTextColor) // Change text color of full Address
+////                .setMapRawResourceStyle(R.raw.map_style)  //Set Map Style
+////                .setMapType(MapType.NORMAL)
+////                .disableBootomSheetAnimation(true)
+////                .onlyCoordinates(true)  //Get only Coordinates from Place Picker
+//                .build(this)
+//            startActivityForResult(intent, PlacePickerConstants.PLACE_PICKER_REQUEST)
+//        }
 
         //Network
         viewModel.networkInfoLiveData.observe(this,
@@ -100,6 +123,22 @@ class MainActivity : BaseActivity() {
 
         pullToRefresh.setOnRefreshListener {
             viewModel.fetchLocation()
+        }
+    }
+    override fun onActivityResult(requestCode: Int,resultCode: Int,data: Intent?) {
+        if (requestCode == PlacePickerConstants.PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                val addressData = data?.getParcelableExtra<AddressData>(PlacePickerConstants.ADDRESS_INTENT)
+
+
+                alertDialog = AlertDialog.Builder(this)
+                    .setTitle("ADDRESS DATA")
+                    .setMessage(addressData.toString())
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
