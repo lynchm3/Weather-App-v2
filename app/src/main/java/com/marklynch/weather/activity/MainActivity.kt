@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -17,7 +18,7 @@ import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.*
 import com.marklynch.weather.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main_mine.*
+import kotlinx.android.synthetic.main.content_main.*
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -106,6 +107,9 @@ class MainActivity : BaseActivity() {
         if (viewModel.getWeather() == null)
             return
 
+        tv_messaging.visibility = View.GONE
+        ll_weather_info.visibility = View.VISIBLE
+
         val weatherResponse = viewModel.getWeather()
         val useCelsius = viewModel.isUseCelsius()
         val useKm = viewModel.isUseKm()
@@ -168,6 +172,10 @@ class MainActivity : BaseActivity() {
 
 
     private fun showNoNetworkConnectionDialog() {
+        tv_messaging.text = getString(R.string.no_network_title)
+        tv_messaging.visibility = View.VISIBLE
+        ll_weather_info.visibility = View.GONE
+
         if (alertDialog?.isShowing == true) {
             return
         }
@@ -187,6 +195,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showGpsNotEnabledDialog() {
+        tv_messaging.text = getString(R.string.gps_required_title)
+        tv_messaging.visibility = View.VISIBLE
+        ll_weather_info.visibility = View.GONE
+
         if (alertDialog?.isShowing == true) {
             return
         }
@@ -206,6 +218,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showLocationPermissionNeededDialog() {
+        tv_messaging.text = getString(R.string.permission_required_title)
+        tv_messaging.visibility = View.VISIBLE
+        ll_weather_info.visibility = View.GONE
+
         if (alertDialog?.isShowing == true) {
             return
         }
