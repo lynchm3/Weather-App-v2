@@ -9,10 +9,10 @@ interface ManualLocationDAO {
     fun loadAllManualLocations(): List<ManualLocation>
 
     @Insert
-    fun insertManualLocation(person: ManualLocation)
+    fun insertManualLocation(manualLocation: ManualLocation)
 
     @Update
-    fun updateManualLocation(person: ManualLocation)
+    fun updateManualLocation(manualLocation: ManualLocation)
 
     @Delete
     fun delete(manualLocation: ManualLocation)

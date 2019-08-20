@@ -12,6 +12,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.marklynch.weather.R
+import com.marklynch.weather.data.ManualLocation
+import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.network.ConnectionType
@@ -20,26 +22,31 @@ import com.marklynch.weather.utils.*
 import com.marklynch.weather.viewmodel.MainViewModel
 import com.sucho.placepicker.AddressData
 import com.sucho.placepicker.MapType
-import com.sucho.placepicker.Constants as PlacePickerConstants
 import com.sucho.placepicker.PlacePicker
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
-import android.os.Build
+import com.sucho.placepicker.Constants as PlacePickerConstants
 
 
 class MainActivity : BaseActivity() {
 
     private val viewModel: MainViewModel by inject()
     private var alertDialog: AlertDialog? = null
+    private var weatherDatabase: WeatherDatabase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        weatherDatabase = WeatherDatabase.getDatabase(this)
 
         pullToRefresh.isRefreshing = true
 
@@ -50,24 +57,13 @@ class MainActivity : BaseActivity() {
 
             //Attempt to get location from gps
             val gpsLocation: Location? = viewModel.getLocationInformation()?.locationResult?.locations?.getOrNull(0)
-            if(gpsLocation != null) {
+            if (gpsLocation != null) {
                 latitude = gpsLocation.latitude
                 longitude = gpsLocation.longitude
             }
-//            else //Attempt to get location from registered phone region
-//            {
-//                val locale: String
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                    locale = resources.configuration.locales.get(0).displayCountry
-//                } else {
-//                    @Suppress("DEPRECATION")
-//                    locale = resources.configuration.locale.displayCountry
-//                }
-//
-//            }
 
             val intent = PlacePicker.IntentBuilder()
-                .setLatLong(latitude,longitude)  // Initial Latitude and Longitude the Map will load into
+                .setLatLong(latitude, longitude)  // Initial Latitude and Longitude the Map will load into
                 .showLatLong(true)  // Show Coordinates in the Activity
                 .setMapZoom(12.0f)  // Map Zoom Level. Default: 14.0
                 .setAddressRequired(true) // Set If return only Coordinates if cannot fetch Address for the coordinates. Default: True
@@ -80,7 +76,7 @@ class MainActivity : BaseActivity() {
 //                .setMapRawResourceStyle(R.raw.map_style)  //Set Map Style
                 .setMapType(MapType.NORMAL)
                 .disableBootomSheetAnimation(true)
-                .onlyCoordinates(true)  //Get only Coordinates from Place Picker
+                .onlyCoordinates(false)  //Get only Coordinates from Place Picker
                 .build(this)
             startActivityForResult(intent, PlacePickerConstants.PLACE_PICKER_REQUEST)
         }
@@ -150,17 +146,34 @@ class MainActivity : BaseActivity() {
             viewModel.fetchLocation()
         }
     }
-    override fun onActivityResult(requestCode: Int,resultCode: Int,data: Intent?) {
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PlacePickerConstants.PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 val addressData = data?.getParcelableExtra<AddressData>(PlacePickerConstants.ADDRESS_INTENT)
 
 
-                alertDialog = AlertDialog.Builder(this)
-                    .setTitle("ADDRESS DATA")
-                    .setMessage(addressData.toString())
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .show()
+//                addressData?.addressList?.get(0)
+
+//                    ?.let { if(it.isNotEmpty()) return it[0].getAddressLine(0)}
+
+                val context = this
+
+                GlobalScope.async {
+                    weatherDatabase?.manualLocationDao()?.insertManualLocation(
+                        ManualLocation(null,addressData?.addressList?.get(0)?.getAddressLine(0), addressData?.latitude, addressData?.longitude)
+                    )
+                    val locationInformationFromDatabase = weatherDatabase?.manualLocationDao()?.getAllManualLocations()
+                    runOnUiThread {
+                        alertDialog = AlertDialog.Builder(context)
+                            .setTitle("ADDRESS DATA")
+                            .setMessage(""+locationInformationFromDatabase)
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .show()
+                    }
+                }
+
+
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
