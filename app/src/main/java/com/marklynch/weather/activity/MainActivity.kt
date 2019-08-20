@@ -142,6 +142,17 @@ class MainActivity : BaseActivity() {
             }
         )
 
+        //Manual Location
+        viewModel.manualLocationRepository.manualLocationLiveData?.observe(this,
+            Observer<List<ManualLocation>> {
+                alertDialog = AlertDialog.Builder(this@MainActivity)
+                    .setTitle("ADDRESS DATA")
+                    .setMessage(""+it)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
+            }
+        )
+
         pullToRefresh.setOnRefreshListener {
             viewModel.fetchLocation()
         }
@@ -151,29 +162,8 @@ class MainActivity : BaseActivity() {
         if (requestCode == PlacePickerConstants.PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 val addressData = data?.getParcelableExtra<AddressData>(PlacePickerConstants.ADDRESS_INTENT)
-
-
-//                addressData?.addressList?.get(0)
-
-//                    ?.let { if(it.isNotEmpty()) return it[0].getAddressLine(0)}
-
+                viewModel.addManualLocation(addressData)
                 val context = this
-
-                GlobalScope.async {
-                    weatherDatabase?.manualLocationDao()?.insertManualLocation(
-                        ManualLocation(null,addressData?.addressList?.get(0)?.getAddressLine(0), addressData?.latitude, addressData?.longitude)
-                    )
-                    val locationInformationFromDatabase = weatherDatabase?.manualLocationDao()?.getAllManualLocations()
-                    runOnUiThread {
-                        alertDialog = AlertDialog.Builder(context)
-                            .setTitle("ADDRESS DATA")
-                            .setMessage(""+locationInformationFromDatabase)
-                            .setNegativeButton(android.R.string.cancel, null)
-                            .show()
-                    }
-                }
-
-
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)

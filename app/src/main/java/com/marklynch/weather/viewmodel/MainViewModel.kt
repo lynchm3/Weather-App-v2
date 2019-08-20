@@ -2,6 +2,7 @@ package com.marklynch.weather.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
@@ -9,6 +10,7 @@ import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_24_HR_CLOCK
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELSIUS
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
+import com.sucho.placepicker.AddressData
 import org.koin.core.parameter.parametersOf
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
@@ -45,6 +47,8 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
         )
     }
 
+    val manualLocationRepository = ManualLocationRepository(application)
+
     fun getLocationInformation() = locationLiveData.value
     fun getWeather() = weatherLiveData.value
     fun isUseCelsius() = useCelsiusSharedPreferencesLiveData.value
@@ -72,5 +76,10 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
         val lon = getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.longitude
         if (lat != null && lon != null)
             weatherLiveData.fetchWeather(lat, lon)
+    }
+
+    fun addManualLocation(addressData: AddressData?) {
+        if(addressData != null)
+            manualLocationRepository.insert(addressData)
     }
 }

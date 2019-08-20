@@ -1,12 +1,13 @@
 package com.marklynch.weather.data
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface ManualLocationDAO {
 
     @Query("SELECT * FROM ManualLocation ORDER BY id")
-    fun loadAllManualLocations(): List<ManualLocation>
+    fun getManualLocationLiveData(): LiveData<List<ManualLocation>>
 
     @Insert
     fun insertManualLocation(manualLocation: ManualLocation)
