@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
 import com.marklynch.weather.R
 import com.marklynch.weather.data.ManualLocation
@@ -110,6 +109,7 @@ class MainActivity : BaseActivity() {
                     }
                     else -> {
                         pullToRefresh.isRefreshing = true
+                        updateLocationSpinner()
                         viewModel.fetchWeather()
                     }
                 }
@@ -152,25 +152,7 @@ class MainActivity : BaseActivity() {
         //Manual Location
         viewModel.manualLocationLiveData?.observe(this,
             Observer<List<ManualLocation>> {
-
-                val spinner = findViewById(R.id.spinner_select_location) as Spinner
-
-                var s:Array<String?> = arrayOf("")
-                val t = viewModel.manualLocationLiveData?.value?.map { it.displayName/*?.ellipsize(30) */}?.toTypedArray()
-                if(t != null)
-                    s = t
-
-                val spinnerArrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, s)
-                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinner.adapter = spinnerArrayAdapter
-
-//                invalidateOptionsMenu()
-//                updateWeatherUI()
-//                alertDialog = AlertDialog.Builder(this@MainActivity)
-//                    .setTitle("ADDRESS DATA")
-//                    .setMessage("" + it)
-//                    .setNegativeButton(android.R.string.cancel, null)
-//                    .show()
+                updateLocationSpinner()
             }
         )
 
@@ -188,6 +170,20 @@ class MainActivity : BaseActivity() {
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    private fun updateLocationSpinner()
+    {
+        val spinner = findViewById<Spinner>(R.id.spinner_select_location)
+
+        val currentLocation = viewModel.getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.toString()?:"Unavailable"
+        val spinnerList = mutableListOf("Current Location ($currentLocation)")
+        spinnerList.addAll(viewModel.manualLocationLiveData?.value?.map { it.displayName}?:listOf())//?.toTypedArray()
+        spinnerList.add("Add Location +")
+
+        val spinnerArrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList)
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = spinnerArrayAdapter
     }
 
     private fun updateWeatherUI() {

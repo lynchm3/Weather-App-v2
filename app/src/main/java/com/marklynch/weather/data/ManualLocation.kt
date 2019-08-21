@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "manualLocation")
 data class ManualLocation(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long?,
-    @ColumnInfo(name = "displayName") val displayName: String?,
-    @ColumnInfo(name = "latitude") val latitude: Double?,
-    @ColumnInfo(name = "longitude") val longitude: Double?
+    @ColumnInfo(name = "displayName") val displayName: String,
+    @ColumnInfo(name = "latitude") val latitude: Double,
+    @ColumnInfo(name = "longitude") val longitude: Double
 )
