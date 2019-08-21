@@ -2,6 +2,7 @@ package com.marklynch.weather.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.marklynch.weather.data.ManualLocation
 import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
@@ -72,11 +73,17 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
         locationLiveData.fetchLocation()
     }
 
-    fun fetchWeather() {
-        val lat = getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.latitude
-        val lon = getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.longitude
-        if (lat != null && lon != null)
-            weatherLiveData.fetchWeather(lat, lon)
+    fun fetchWeather(manualLocation:ManualLocation?) {
+        if(manualLocation == null) {
+            val lat = getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.latitude
+            val lon = getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.longitude
+            if (lat != null && lon != null)
+                weatherLiveData.fetchWeather(lat, lon)
+        }
+        else
+        {
+            weatherLiveData.fetchWeather(manualLocation.latitude, manualLocation.longitude)
+        }
     }
 
     fun addManualLocation(addressData: AddressData?) {

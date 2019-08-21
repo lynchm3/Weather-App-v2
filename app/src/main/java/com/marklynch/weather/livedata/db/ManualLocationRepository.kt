@@ -26,7 +26,7 @@ class ManualLocationRepository(context: Context) : KoinComponent {
         GlobalScope.async {
             db?.manualLocationDao()?.insertManualLocation(
                 ManualLocation(
-                    null,
+                    0,
                     addressData?.addressList?.get(0)?.getAddressLine(0)?:"",
                     addressData?.latitude,
                     addressData?.longitude

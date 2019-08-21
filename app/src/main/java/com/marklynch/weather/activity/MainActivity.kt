@@ -8,8 +8,10 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -38,6 +40,8 @@ class MainActivity : BaseActivity() {
     private val viewModel: MainViewModel by inject()
     private var alertDialog: AlertDialog? = null
     private var weatherDatabase: WeatherDatabase? = null
+    private var spinnerList: MutableList<Any> = mutableListOf("")
+    private var currentManualLocation:ManualLocation? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +49,7 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         //Custom action bar
-        val actionBar = getSupportActionBar()
+        val actionBar = supportActionBar
         actionBar!!.setCustomView(R.layout.action_bar_main)
         actionBar.setDisplayShowTitleEnabled(false)
         actionBar.setDisplayShowCustomEnabled(true)
@@ -56,43 +60,12 @@ class MainActivity : BaseActivity() {
 
         pullToRefresh.isRefreshing = true
 
-        fab.setOnClickListener {
-
-            var latitude = 40.0
-            var longitude = -73.0
-
-            //Attempt to get location from gps
-            val gpsLocation: Location? = viewModel.getLocationInformation()?.locationResult?.locations?.getOrNull(0)
-            if (gpsLocation != null) {
-                latitude = gpsLocation.latitude
-                longitude = gpsLocation.longitude
-            }
-
-            val intent = PlacePicker.IntentBuilder()
-                .setLatLong(latitude, longitude)  // Initial Latitude and Longitude the Map will load into
-                .showLatLong(true)  // Show Coordinates in the Activity
-                .setMapZoom(12.0f)  // Map Zoom Level. Default: 14.0
-                .setAddressRequired(true) // Set If return only Coordinates if cannot fetch Address for the coordinates. Default: True
-                .hideMarkerShadow(true) // Hides the shadow under the map marker. Default: False
-//                .setMarkerDrawable(R.drawable.marker) // Change the default Marker Image
-                .setMarkerImageImageColor(R.color.colorPrimary)
-//                .setFabColor(R.color.fabColor)
-//                .setPrimaryTextColor(R.color.primaryTextColor) // Change text color of Shortened Address
-//                .setSecondaryTextColor(R.color.secondaryTextColor) // Change text color of full Address
-//                .setMapRawResourceStyle(R.raw.map_style)  //Set Map Style
-                .setMapType(MapType.NORMAL)
-                .disableBootomSheetAnimation(true)
-                .onlyCoordinates(false)  //Get only Coordinates from Place Picker
-                .build(this)
-            startActivityForResult(intent, PlacePickerConstants.PLACE_PICKER_REQUEST)
-        }
-
         //Network
         viewModel.networkInfoLiveData.observe(this,
             Observer<ConnectionType> { connectionType ->
                 if (connectionType == ConnectionType.CONNECTED)
                     pullToRefresh.isRefreshing = true
-                viewModel.fetchWeather()
+                viewModel.fetchWeather(currentManualLocation)
             })
 
         //Location
@@ -110,7 +83,7 @@ class MainActivity : BaseActivity() {
                     else -> {
                         pullToRefresh.isRefreshing = true
                         updateLocationSpinner()
-                        viewModel.fetchWeather()
+                        viewModel.fetchWeather(currentManualLocation)
                     }
                 }
             })
@@ -161,6 +134,31 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun addLocation() {
+        var latitude = 40.0
+        var longitude = -73.0
+
+        //Attempt to get location from gps
+        val gpsLocation: Location? = viewModel.getLocationInformation()?.locationResult?.locations?.getOrNull(0)
+        if (gpsLocation != null) {
+            latitude = gpsLocation.latitude
+            longitude = gpsLocation.longitude
+        }
+
+        val intent = PlacePicker.IntentBuilder()
+            .setLatLong(latitude, longitude)
+            .showLatLong(true)
+            .setMapZoom(12.0f)
+            .setAddressRequired(true)
+            .hideMarkerShadow(true)
+            .setMarkerImageImageColor(R.color.colorPrimary)
+            .setMapType(MapType.NORMAL)
+            .disableBootomSheetAnimation(true)
+            .onlyCoordinates(false)
+            .build(this)
+        startActivityForResult(intent, PlacePickerConstants.PLACE_PICKER_REQUEST)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PlacePickerConstants.PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
@@ -172,18 +170,47 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun updateLocationSpinner()
-    {
+    private fun updateLocationSpinner() {
         val spinner = findViewById<Spinner>(R.id.spinner_select_location)
 
-        val currentLocation = viewModel.getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.toString()?:"Unavailable"
-        val spinnerList = mutableListOf("Current Location ($currentLocation)")
-        spinnerList.addAll(viewModel.manualLocationLiveData?.value?.map { it.displayName}?:listOf())//?.toTypedArray()
-        spinnerList.add("Add Location +")
+//        val currentLocation =
+//            viewModel.getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.extras?. ?: "Unavailable"
+        spinnerList = mutableListOf("Current Location")
+        spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
+        spinnerList.add("Add Location...")
 
-        val spinnerArrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList)
+        val spinnerArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerList)
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = spinnerArrayAdapter
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> {
+                        if (currentManualLocation == null) return
+                        currentManualLocation = null
+                        viewModel.fetchLocation()
+                        Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT).show()
+                    }
+                    spinnerList.size - 1 -> {
+                        addLocation()
+                    }
+                    else -> {
+                        val selectedLocation = (spinnerList[position] as ManualLocation)
+                        if (currentManualLocation?.id == selectedLocation.id) return
+                        currentManualLocation = selectedLocation
+                        pullToRefresh.isRefreshing = true
+                        viewModel.fetchWeather(currentManualLocation)
+                        Toast.makeText(parent.context, "Manual Location!!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                Toast.makeText(this@MainActivity, "onNothingSelected!!", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun updateWeatherUI() {
