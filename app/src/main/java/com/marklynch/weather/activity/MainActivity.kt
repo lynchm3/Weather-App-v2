@@ -8,8 +8,11 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
 import com.marklynch.weather.R
 import com.marklynch.weather.data.ManualLocation
@@ -25,15 +28,11 @@ import com.sucho.placepicker.MapType
 import com.sucho.placepicker.PlacePicker
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
-
 
 class MainActivity : BaseActivity() {
 
@@ -45,6 +44,14 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        //Custom action bar
+        val actionBar = getSupportActionBar()
+        actionBar!!.setCustomView(R.layout.action_bar_main)
+        actionBar.setDisplayShowTitleEnabled(false)
+        actionBar.setDisplayShowCustomEnabled(true)
+        actionBar.setDisplayUseLogoEnabled(false)
+        actionBar.setDisplayShowHomeEnabled(false)
 
         weatherDatabase = WeatherDatabase.getDatabase(this)
 
@@ -143,13 +150,27 @@ class MainActivity : BaseActivity() {
         )
 
         //Manual Location
-        viewModel.manualLocationRepository.manualLocationLiveData?.observe(this,
+        viewModel.manualLocationLiveData?.observe(this,
             Observer<List<ManualLocation>> {
-                alertDialog = AlertDialog.Builder(this@MainActivity)
-                    .setTitle("ADDRESS DATA")
-                    .setMessage(""+it)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .show()
+
+                val spinner = findViewById(R.id.spinner_select_location) as Spinner
+
+                var s:Array<String?> = arrayOf("")
+                val t = viewModel.manualLocationLiveData?.value?.map { it.displayName/*?.ellipsize(30) */}?.toTypedArray()
+                if(t != null)
+                    s = t
+
+                val spinnerArrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, s)
+                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner.adapter = spinnerArrayAdapter
+
+//                invalidateOptionsMenu()
+//                updateWeatherUI()
+//                alertDialog = AlertDialog.Builder(this@MainActivity)
+//                    .setTitle("ADDRESS DATA")
+//                    .setMessage("" + it)
+//                    .setNegativeButton(android.R.string.cancel, null)
+//                    .show()
             }
         )
 
@@ -163,7 +184,6 @@ class MainActivity : BaseActivity() {
             if (resultCode == RESULT_OK) {
                 val addressData = data?.getParcelableExtra<AddressData>(PlacePickerConstants.ADDRESS_INTENT)
                 viewModel.addManualLocation(addressData)
-                val context = this
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
@@ -328,7 +348,6 @@ class MainActivity : BaseActivity() {
         } else {
             menu.findItem(R.id.action_use_12_hr_clock).isVisible = false
         }
-
 
         return true
     }

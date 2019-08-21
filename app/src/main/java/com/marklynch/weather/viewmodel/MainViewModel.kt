@@ -48,6 +48,7 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     val manualLocationRepository = ManualLocationRepository(application)
+    val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
 
     fun getLocationInformation() = locationLiveData.value
     fun getWeather() = weatherLiveData.value

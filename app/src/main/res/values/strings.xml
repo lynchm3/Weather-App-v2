@@ -1,15 +1,14 @@
 <resources>
     <string name="app_name">The Weather</string>
     <string name="action_settings">Settings</string>
+    <string name="action_select_location_spinner">Select Location</string>
     <string name="action_use_celsius">Use °C</string>
     <string name="action_use_fahrenheit">Use °F</string>
     <string name="action_use_km">Use km</string>
     <string name="action_use_mi">Use mi</string>
 
-
     <string name="degreesF">°F</string>
     <string name="degreesC">°C</string>
-
 
     <!-- Main Activity -->
     <string name="location_and_time">%1$s @%2$s</string>
@@ -31,4 +30,11 @@
     <string name="loading">Loading…</string>
     <string name="action_use_24_hr_clock">Use 24hr clock</string>
     <string name="action_use_12_hr_clock">Use 12hr clock</string>
+
+    <string-array name="spinner_list_item_array">
+        <item>English</item>
+        <item>Hindi</item>
+        <item>Urdu</item>
+        <item>Arabic</item>
+    </string-array>
 </resources>
