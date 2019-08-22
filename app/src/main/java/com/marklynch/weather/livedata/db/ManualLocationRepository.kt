@@ -27,7 +27,7 @@ class ManualLocationRepository(context: Context) : KoinComponent {
             db?.manualLocationDao()?.insertManualLocation(
                 ManualLocation(
                     0,
-                    addressData?.addressList?.get(0)?.getAddressLine(0)?:"",
+                    addressData?.addressList?.get(0)?.adminArea?:"",
                     addressData?.latitude,
                     addressData?.longitude
                 )

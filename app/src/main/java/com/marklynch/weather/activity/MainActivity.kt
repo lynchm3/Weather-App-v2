@@ -190,6 +190,7 @@ class MainActivity : BaseActivity() {
                     0 -> {
                         if (currentManualLocation == null) return
                         currentManualLocation = null
+                        pullToRefresh.isRefreshing = true
                         viewModel.fetchLocation()
                         Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT).show()
                     }
@@ -264,9 +265,18 @@ class MainActivity : BaseActivity() {
 
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
+        var locationName = weatherResponse?.name
+        if(currentManualLocation != null)
+            locationName = currentManualLocation?.displayName
+        else if(weatherResponse?.name != null) {
+            spinnerList[0] = "Current Location (${weatherResponse?.name})"
+            val spinner = findViewById<Spinner>(R.id.spinner_select_location)
+            spinner.invalidate()
+        }
+
         tv_location_and_time.text =
             getString(
-                R.string.location_and_time, weatherResponse?.name, generateTimeString()
+                R.string.location_and_time, locationName, generateTimeString()
 
             )
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
