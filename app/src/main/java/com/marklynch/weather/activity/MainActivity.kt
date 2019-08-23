@@ -271,12 +271,7 @@ class MainActivity : BaseActivity() {
             spinnerArrayAdapter.notifyDataSetChanged()
 //            spinner.notify
         }
-
-        tv_location_and_time.text =
-            getString(
-                R.string.location_and_time, locationName, generateTimeString()
-
-            )
+        
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
         tv_cloudiness.text = getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
 

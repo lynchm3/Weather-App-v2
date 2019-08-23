@@ -11,7 +11,6 @@
     <string name="degreesC">°C</string>
 
     <!-- Main Activity -->
-    <string name="location_and_time">%1$s @%2$s</string>
     <string name="minimum_temperature_F">Min %1$d°F</string>
     <string name="maximum_temperature_F">Max %1$d°F</string>
     <string name="minimum_temperature_C">Min %1$d°C</string>

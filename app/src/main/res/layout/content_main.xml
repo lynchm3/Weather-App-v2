@@ -80,22 +80,6 @@
 
             </RelativeLayout>
 
-            <!-- Location Name -->
-
-            <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                <TextView
-                        android:id="@+id/tv_location_and_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:textSize="@dimen/location_and_time_text_size" />
-
-            </RelativeLayout>
-
             <!-- Humidity -->
 
             <RelativeLayout
