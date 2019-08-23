@@ -41,20 +41,12 @@ class MainActivity : BaseActivity() {
     private var alertDialog: AlertDialog? = null
     private var weatherDatabase: WeatherDatabase? = null
     private var spinnerList: MutableList<Any> = mutableListOf("")
-    private var currentManualLocation:ManualLocation? = null
+    private var currentManualLocation: ManualLocation? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-        //Custom action bar
-        val actionBar = supportActionBar
-        actionBar!!.setCustomView(R.layout.action_bar_main)
-        actionBar.setDisplayShowTitleEnabled(false)
-        actionBar.setDisplayShowCustomEnabled(true)
-        actionBar.setDisplayUseLogoEnabled(false)
-        actionBar.setDisplayShowHomeEnabled(false)
 
         weatherDatabase = WeatherDatabase.getDatabase(this)
 
@@ -179,7 +171,7 @@ class MainActivity : BaseActivity() {
         spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
         spinnerList.add("Add Location...")
 
-        val spinnerArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerList)
+        val spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = spinnerArrayAdapter
 
@@ -266,9 +258,9 @@ class MainActivity : BaseActivity() {
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
         var locationName = weatherResponse?.name
-        if(currentManualLocation != null)
+        if (currentManualLocation != null)
             locationName = currentManualLocation?.displayName
-        else if(weatherResponse?.name != null) {
+        else if (weatherResponse?.name != null) {
             spinnerList[0] = "Current Location (${weatherResponse?.name})"
             val spinner = findViewById<Spinner>(R.id.spinner_select_location)
             spinner.invalidate()
