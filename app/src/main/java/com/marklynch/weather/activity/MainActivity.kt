@@ -269,9 +269,8 @@ class MainActivity : BaseActivity() {
 //            spinner.text
             spinner.invalidate()
             spinnerArrayAdapter.notifyDataSetChanged()
-//            spinner.notify
         }
-        
+
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
         tv_cloudiness.text = getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
 

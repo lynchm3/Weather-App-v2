@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "244002487107",
+    "firebase_url": "https://weather-f905f.firebaseio.com",
+    "project_id": "weather-f905f",
+    "storage_bucket": "weather-f905f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244002487107:android:0fdc023e52f6b393",
+        "android_client_info": {
+          "package_name": "com.marklynch.weather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244002487107-4ljnq4dl368461d5jbrs9eplqncpq6ip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCg0L1fj26ZStkACDqo-qG48O6zITEqIE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "244002487107-4ljnq4dl368461d5jbrs9eplqncpq6ip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
