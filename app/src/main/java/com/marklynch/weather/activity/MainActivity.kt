@@ -8,10 +8,7 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -29,6 +26,7 @@ import com.sucho.placepicker.MapType
 import com.sucho.placepicker.PlacePicker
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import okhttp3.internal.notify
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,8 +38,11 @@ class MainActivity : BaseActivity() {
     private val viewModel: MainViewModel by inject()
     private var alertDialog: AlertDialog? = null
     private var weatherDatabase: WeatherDatabase? = null
-    private var spinnerList: MutableList<Any> = mutableListOf("")
     private var currentManualLocation: ManualLocation? = null
+    private var spinnerList: MutableList<Any> = mutableListOf("")
+
+    private lateinit var spinner:Spinner
+    private lateinit var spinnerArrayAdapter:ArrayAdapter<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +50,10 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         weatherDatabase = WeatherDatabase.getDatabase(this)
+
+        spinner = findViewById<Spinner>(R.id.spinner_select_location)
+        spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
+        spinner.adapter = spinnerArrayAdapter
 
         pullToRefresh.isRefreshing = true
 
@@ -163,17 +168,13 @@ class MainActivity : BaseActivity() {
     }
 
     private fun updateLocationSpinner() {
-        val spinner = findViewById<Spinner>(R.id.spinner_select_location)
-
-//        val currentLocation =
-//            viewModel.getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.extras?. ?: "Unavailable"
-        spinnerList = mutableListOf("Current Location")
+        spinnerList.clear()
+        spinnerList.add("Current Location")
         spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
         spinnerList.add("Add Location...")
 
-        val spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
+        spinnerArrayAdapter.notifyDataSetChanged()
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = spinnerArrayAdapter
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
@@ -262,8 +263,13 @@ class MainActivity : BaseActivity() {
             locationName = currentManualLocation?.displayName
         else if (weatherResponse?.name != null) {
             spinnerList[0] = "Current Location (${weatherResponse?.name})"
+
+//            findViewById<TextView>(R.id.action_bar_spinner_textview)
             val spinner = findViewById<Spinner>(R.id.spinner_select_location)
+//            spinner.text
             spinner.invalidate()
+            spinnerArrayAdapter.notifyDataSetChanged()
+//            spinner.notify
         }
 
         tv_location_and_time.text =
