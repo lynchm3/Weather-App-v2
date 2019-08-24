@@ -263,13 +263,11 @@ class MainActivity : BaseActivity() {
             locationName = currentManualLocation?.displayName
         else if (weatherResponse?.name != null) {
             spinnerList[0] = "Current Location (${weatherResponse?.name})"
-
-//            findViewById<TextView>(R.id.action_bar_spinner_textview)
             val spinner = findViewById<Spinner>(R.id.spinner_select_location)
-//            spinner.text
             spinner.invalidate()
             spinnerArrayAdapter.notifyDataSetChanged()
         }
+        tv_time_of_last_refresh.text = generateTimeString()
 
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
         tv_cloudiness.text = getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
