@@ -24,6 +24,7 @@ import com.marklynch.weather.viewmodel.MainViewModel
 import com.sucho.placepicker.AddressData
 import com.sucho.placepicker.MapType
 import com.sucho.placepicker.PlacePicker
+import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import okhttp3.internal.notify
