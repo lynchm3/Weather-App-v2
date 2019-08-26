@@ -54,6 +54,37 @@ class MainActivity : BaseActivity() {
         spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
         spinner.adapter = spinnerArrayAdapter
 
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> {
+                        if (viewModel.getSelectedLocationId() == 0L) return
+                        viewModel.setSelectedLocationId(0L)
+                        pullToRefresh.isRefreshing = true
+                        viewModel.fetchLocation()
+                        Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT).show()
+                    }
+                    spinnerList.size - 1 -> {
+                        addLocation()
+                    }
+                    else -> {
+                        val selectedLocation = (spinnerList[position] as ManualLocation)
+                        if (viewModel.getSelectedLocationId() == selectedLocation.id) return
+                        currentManualLocation = selectedLocation
+                        viewModel.setSelectedLocationId(selectedLocation.id)
+                        pullToRefresh.isRefreshing = true
+                        viewModel.fetchWeather(selectedLocation)
+                        Toast.makeText(parent.context, "Manual Location!!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                Toast.makeText(this@MainActivity, "onNothingSelected!!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         pullToRefresh.isRefreshing = true
 
         //Network
@@ -179,38 +210,16 @@ class MainActivity : BaseActivity() {
         spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
         spinnerList.add("Add Location...")
 
+        val selectedLocationId = viewModel.getSelectedLocationId()
+
         spinnerArrayAdapter.notifyDataSetChanged()
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                when (position) {
-                    0 -> {
-                        if (viewModel.getSelectedLocationId() == 0L) return
-                        viewModel.setSelectedLocationId(0L)
-                        pullToRefresh.isRefreshing = true
-                        viewModel.fetchLocation()
-                        Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT).show()
-                    }
-                    spinnerList.size - 1 -> {
-                        addLocation()
-                    }
-                    else -> {
-                        val selectedLocation = (spinnerList[position] as ManualLocation)
-                        if (viewModel.getSelectedLocationId() == selectedLocation.id) return
-                        currentManualLocation = selectedLocation
-                        viewModel.setSelectedLocationId(selectedLocation.id)
-                        pullToRefresh.isRefreshing = true
-                        viewModel.fetchWeather(selectedLocation)
-                        Toast.makeText(parent.context, "Manual Location!!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                Toast.makeText(this@MainActivity, "onNothingSelected!!", Toast.LENGTH_SHORT).show()
-            }
+        for(i:Int in 1..spinnerList.size-2)
+        {
+            val manualLocation = (spinnerList[i] as ManualLocation)
+            if(manualLocation.id == selectedLocationId)
+                spinner.setSelection(i)
         }
     }
 
