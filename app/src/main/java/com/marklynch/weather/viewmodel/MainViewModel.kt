@@ -7,7 +7,9 @@ import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
+import com.marklynch.weather.livedata.sharedpreferences.LongSharedPreferencesLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
+import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_LOCATION_ID
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_24_HR_CLOCK
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELSIUS
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
@@ -48,6 +50,12 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
         )
     }
 
+    val selectedLocationIdSharedPreferencesLiveData: LongSharedPreferencesLiveData by inject {
+        parametersOf(
+            SHARED_PREFERENCES_LOCATION_ID
+        )
+    }
+
     val manualLocationRepository = ManualLocationRepository(application)
     val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
 
@@ -56,6 +64,7 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
     fun isUseCelsius() = useCelsiusSharedPreferencesLiveData.value
     fun isUseKm() = useKmSharedPreferencesLiveData.value
     fun isUse24hrClock() = use24hrClockSharedPreferencesLiveData.value
+    fun getSelectedLocationId() = selectedLocationIdSharedPreferencesLiveData.value
 
     fun setUseCelsius(useCelsius: Boolean) {
         useCelsiusSharedPreferencesLiveData.setSharedPreference(useCelsius)
@@ -67,6 +76,10 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun setUse24hrClock(use24hrClock: Boolean) {
         use24hrClockSharedPreferencesLiveData.setSharedPreference(use24hrClock)
+    }
+
+    fun setSelectedLocationId(selectedLocationId: Long) {
+        selectedLocationIdSharedPreferencesLiveData.setSharedPreference(selectedLocationId)
     }
 
     fun fetchLocation() {

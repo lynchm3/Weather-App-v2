@@ -10,7 +10,7 @@ interface ManualLocationDAO {
     fun getManualLocationLiveData(): LiveData<List<ManualLocation>>
 
     @Insert
-    fun insertManualLocation(manualLocation: ManualLocation)
+    fun insertManualLocation(manualLocation: ManualLocation):Long
 
     @Update
     fun updateManualLocation(manualLocation: ManualLocation)

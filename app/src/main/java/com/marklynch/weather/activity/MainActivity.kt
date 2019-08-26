@@ -25,9 +25,7 @@ import com.sucho.placepicker.AddressData
 import com.sucho.placepicker.MapType
 import com.sucho.placepicker.PlacePicker
 import kotlinx.android.synthetic.main.action_bar_main.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import okhttp3.internal.notify
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -130,6 +128,13 @@ class MainActivity : BaseActivity() {
         pullToRefresh.setOnRefreshListener {
             viewModel.fetchLocation()
         }
+
+        //Selected location shared preference
+        viewModel.selectedLocationIdSharedPreferencesLiveData.observe(this,
+            Observer<Long> {
+                updateLocationSpinner()
+            }
+        )
     }
 
     private fun addLocation() {
@@ -182,8 +187,8 @@ class MainActivity : BaseActivity() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 when (position) {
                     0 -> {
-                        if (currentManualLocation == null) return
-                        currentManualLocation = null
+                        if (viewModel.getSelectedLocationId() == 0L) return
+                        viewModel.setSelectedLocationId(0L)
                         pullToRefresh.isRefreshing = true
                         viewModel.fetchLocation()
                         Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT).show()
@@ -193,10 +198,11 @@ class MainActivity : BaseActivity() {
                     }
                     else -> {
                         val selectedLocation = (spinnerList[position] as ManualLocation)
-                        if (currentManualLocation?.id == selectedLocation.id) return
+                        if (viewModel.getSelectedLocationId() == selectedLocation.id) return
                         currentManualLocation = selectedLocation
+                        viewModel.setSelectedLocationId(selectedLocation.id)
                         pullToRefresh.isRefreshing = true
-                        viewModel.fetchWeather(currentManualLocation)
+                        viewModel.fetchWeather(selectedLocation)
                         Toast.makeText(parent.context, "Manual Location!!", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -260,7 +266,7 @@ class MainActivity : BaseActivity() {
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
         var locationName = weatherResponse?.name
-        if (currentManualLocation != null)
+        if (viewModel.getSelectedLocationId() != 0L)
             locationName = currentManualLocation?.displayName
         else if (weatherResponse?.name != null) {
             spinnerList[0] = "Current Location (${weatherResponse?.name})"

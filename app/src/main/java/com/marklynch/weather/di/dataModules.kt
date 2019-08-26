@@ -11,6 +11,7 @@ import com.marklynch.weather.BuildConfig
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
+import com.marklynch.weather.livedata.sharedpreferences.LongSharedPreferencesLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.log.ProductionTree
 import com.marklynch.weather.utils.PermissionsChecker
@@ -34,6 +35,12 @@ private val dataModule = module {
 
     factory { (sharedPreferencesKey: String) ->
         BooleanSharedPreferencesLiveData(
+            sharedPreferencesKey
+        )
+    }
+
+    factory { (sharedPreferencesKey: String) ->
+        LongSharedPreferencesLiveData(
             sharedPreferencesKey
         )
     }
