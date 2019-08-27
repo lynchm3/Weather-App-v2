@@ -52,7 +52,7 @@ class MainActivity : BaseActivity() {
 
         weatherDatabase = WeatherDatabase.getDatabase(this)
 
-        spinner = findViewById<Spinner>(R.id.spinner_select_location)
+        spinner = findViewById(R.id.spinner_select_location)
         spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
         spinner.adapter = spinnerArrayAdapter
 
@@ -62,7 +62,6 @@ class MainActivity : BaseActivity() {
                 when (position) {
                     0 -> {
                         if (viewModel.getSelectedLocationId() == 0L) return
-                        currentManualLocation = null
                         viewModel.setSelectedLocationId(0L)
                         pullToRefresh.isRefreshing = true
                         viewModel.fetchLocation()
@@ -277,8 +276,8 @@ class MainActivity : BaseActivity() {
 
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
-        if (weatherResponse?.name != null) {
-            spinnerList[0] = "Current Location (${weatherResponse?.name})"
+        if (viewModel.getSelectedLocationId() == 0 && weatherResponse?.name != null) {
+            spinnerList[0] = "Current Location (${weatherResponse.name})"
             val spinner = findViewById<Spinner>(R.id.spinner_select_location)
             spinner.invalidate()
             spinnerArrayAdapter.notifyDataSetChanged()
