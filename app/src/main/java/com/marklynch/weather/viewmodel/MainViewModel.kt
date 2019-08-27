@@ -103,4 +103,9 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
         if(addressData != null)
             manualLocationRepository.insert(addressData)
     }
+
+    fun getCurrentlySelectedLocation():ManualLocation?
+    {
+        return manualLocationLiveData?.value?.first { it.id ==  getSelectedLocationId()}
+    }
 }

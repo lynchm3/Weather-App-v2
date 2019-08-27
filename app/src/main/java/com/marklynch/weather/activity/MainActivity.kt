@@ -8,7 +8,10 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -37,11 +40,10 @@ class MainActivity : BaseActivity() {
     private val viewModel: MainViewModel by inject()
     private var alertDialog: AlertDialog? = null
     private var weatherDatabase: WeatherDatabase? = null
-    private var currentManualLocation: ManualLocation? = null
     private var spinnerList: MutableList<Any> = mutableListOf("")
 
-    private lateinit var spinner:Spinner
-    private lateinit var spinnerArrayAdapter:ArrayAdapter<Any>
+    private lateinit var spinner: Spinner
+    private lateinit var spinnerArrayAdapter: ArrayAdapter<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +62,7 @@ class MainActivity : BaseActivity() {
                 when (position) {
                     0 -> {
                         if (viewModel.getSelectedLocationId() == 0L) return
+                        currentManualLocation = null
                         viewModel.setSelectedLocationId(0L)
                         pullToRefresh.isRefreshing = true
                         viewModel.fetchLocation()
@@ -71,7 +74,6 @@ class MainActivity : BaseActivity() {
                     else -> {
                         val selectedLocation = (spinnerList[position] as ManualLocation)
                         if (viewModel.getSelectedLocationId() == selectedLocation.id) return
-                        currentManualLocation = selectedLocation
                         viewModel.setSelectedLocationId(selectedLocation.id)
                         pullToRefresh.isRefreshing = true
                         viewModel.fetchWeather(selectedLocation)
@@ -92,7 +94,7 @@ class MainActivity : BaseActivity() {
             Observer<ConnectionType> { connectionType ->
                 if (connectionType == ConnectionType.CONNECTED)
                     pullToRefresh.isRefreshing = true
-                viewModel.fetchWeather(currentManualLocation)
+                viewModel.fetchWeather(viewModel.getCurrentlySelectedLocation())
             })
 
         //Location
@@ -108,9 +110,11 @@ class MainActivity : BaseActivity() {
                         pullToRefresh.isRefreshing = false
                     }
                     else -> {
-                        pullToRefresh.isRefreshing = true
-                        updateLocationSpinner()
-                        viewModel.fetchWeather(currentManualLocation)
+                        if (viewModel.getSelectedLocationId() == 0L) {
+                            pullToRefresh.isRefreshing = true
+                            updateLocationSpinner()
+                            viewModel.fetchWeather(null)
+                        }
                     }
                 }
             })
@@ -215,10 +219,9 @@ class MainActivity : BaseActivity() {
         spinnerArrayAdapter.notifyDataSetChanged()
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        for(i:Int in 1..spinnerList.size-2)
-        {
+        for (i: Int in 1..spinnerList.size - 2) {
             val manualLocation = (spinnerList[i] as ManualLocation)
-            if(manualLocation.id == selectedLocationId)
+            if (manualLocation.id == selectedLocationId)
                 spinner.setSelection(i)
         }
     }
@@ -274,10 +277,7 @@ class MainActivity : BaseActivity() {
 
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
-        var locationName = weatherResponse?.name
-        if (viewModel.getSelectedLocationId() != 0L)
-            locationName = currentManualLocation?.displayName
-        else if (weatherResponse?.name != null) {
+        if (weatherResponse?.name != null) {
             spinnerList[0] = "Current Location (${weatherResponse?.name})"
             val spinner = findViewById<Spinner>(R.id.spinner_select_location)
             spinner.invalidate()
