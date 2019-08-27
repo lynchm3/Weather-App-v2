@@ -373,7 +373,7 @@ class MainActivity : BaseActivity() {
         } else {
             menu.findItem(R.id.action_use_fahrenheit).isVisible = false
         }
-        if (viewModel.isUseCelsius() == true) {
+        if (viewModel.isUseKm() == true) {
             menu.findItem(R.id.action_use_km).isVisible = false
         } else {
             menu.findItem(R.id.action_use_mi).isVisible = false
