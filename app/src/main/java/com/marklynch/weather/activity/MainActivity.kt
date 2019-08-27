@@ -173,7 +173,7 @@ class MainActivity : BaseActivity() {
         var longitude = -73.0
 
         //Attempt to get location from gps
-        val gpsLocation: Location? = viewModel.getLocationInformation()?.locationResult?.locations?.getOrNull(0)
+        val gpsLocation: Location? = viewModel.getLocationInformation()?.location
         if (gpsLocation != null) {
             latitude = gpsLocation.latitude
             longitude = gpsLocation.longitude

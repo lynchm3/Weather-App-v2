@@ -88,8 +88,8 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun fetchWeather(manualLocation:ManualLocation?) {
         if(manualLocation == null) {
-            val lat = getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.latitude
-            val lon = getLocationInformation()?.locationResult?.locations?.getOrNull(0)?.longitude
+            val lat = getLocationInformation()?.location?.latitude
+            val lon = getLocationInformation()?.location?.longitude
             if (lat != null && lon != null)
                 weatherLiveData.fetchWeather(lat, lon)
         }

@@ -1,6 +1,7 @@
 package com.marklynch.weather.livedata.location
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,6 +10,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -18,6 +20,7 @@ import com.marklynch.weather.utils.AppPermissionState
 import com.marklynch.weather.utils.PermissionsChecker
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
+import java.lang.IllegalStateException
 
 
 class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
@@ -36,7 +39,7 @@ class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
     private val gpsSwitchStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            postValue(LocationInformation(locationPermissionState, gpsState, locationResult))
+            postValue(LocationInformation(locationPermissionState, gpsState, locationResult?.locations?.get(0)))
             if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
                 fetchLocation()
         }
@@ -49,7 +52,7 @@ class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
         registerGpsStateReceiver()
 
-        postValue(LocationInformation(locationPermissionState, gpsState, locationResult))
+        postValue(LocationInformation(locationPermissionState, gpsState, locationResult?.locations?.get(0)))
 
         if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
             fetchLocation()
@@ -63,8 +66,11 @@ class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
     val locationCallback = object : LocationCallback() {
         override fun onLocationResult(newLocationResult: LocationResult) {
-            locationResult = newLocationResult
-            postValue(LocationInformation(locationPermissionState, gpsState, locationResult))
+
+            val newLocation = newLocationResult.locations.get(0)
+            if (newLocation != null) {
+                postValue(LocationInformation(locationPermissionState, gpsState, newLocationResult.locations.get(0)))
+            }
         }
     }
 
@@ -76,8 +82,18 @@ class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
     private fun unregisterGpsStateReceiver() = get<Context>().unregisterReceiver(gpsSwitchStateReceiver)
 
+    @SuppressLint("MissingPermission")
     fun fetchLocation() {
+
         try {
+            postValue(LocationInformation(locationPermissionState, gpsState, fusedLocationClient.lastLocation.result))
+        } catch (unlikely: IllegalStateException) {
+            Log.e("","Error when fusedLocationClient.lastLocation")
+        }
+
+        try {
+
+
             fusedLocationClient.requestLocationUpdates(
                 LocationRequest.create().apply {
                     priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -87,7 +103,7 @@ class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
                 Looper.myLooper()
             )
         } catch (unlikely: SecurityException) {
-            error("Error when registerLocationUpdates()")
+            Log.e("","Error when registerLocationUpdates()")
         }
     }
 
@@ -95,7 +111,7 @@ class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
         try {
             fusedLocationClient.removeLocationUpdates(locationCallback)
         } catch (unlikely: SecurityException) {
-            error("Error when unregisterLocationUpdated()")
+            Log.e("","Error when unregisterLocationUpdated()")
         }
     }
 
