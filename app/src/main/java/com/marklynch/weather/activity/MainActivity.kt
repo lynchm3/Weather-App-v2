@@ -9,12 +9,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
-import com.marklynch.weather.LocationAdapterArrayAdapter
 import com.marklynch.weather.R
 import com.marklynch.weather.data.ManualLocation
 import com.marklynch.weather.data.WeatherDatabase
@@ -43,8 +43,7 @@ class MainActivity : BaseActivity() {
     private var spinnerList: MutableList<Any> = mutableListOf("")
 
     private lateinit var spinner: Spinner
-
-    private lateinit var spinnerArrayAdapter: LocationAdapterArrayAdapter
+    private lateinit var spinnerArrayAdapter: ArrayAdapter<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,10 +53,7 @@ class MainActivity : BaseActivity() {
         weatherDatabase = WeatherDatabase.getDatabase(this)
 
         spinner = findViewById(R.id.spinner_select_location)
-        spinnerArrayAdapter = LocationAdapterArrayAdapter(
-            this,
-            R.layout.action_bar_spinner_textview, spinnerList
-        )
+        spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
         spinner.adapter = spinnerArrayAdapter
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -280,13 +276,12 @@ class MainActivity : BaseActivity() {
 
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
-        if (viewModel.getSelectedLocationId() == 0L && weatherResponse?.name != null) {
+        if (viewModel.getSelectedLocationId() == 0 && weatherResponse?.name != null) {
             spinnerList[0] = "Current Location (${weatherResponse.name})"
             val spinner = findViewById<Spinner>(R.id.spinner_select_location)
             spinner.invalidate()
             spinnerArrayAdapter.notifyDataSetChanged()
         }
-
         tv_time_of_last_refresh.text = generateTimeString()
 
         tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
