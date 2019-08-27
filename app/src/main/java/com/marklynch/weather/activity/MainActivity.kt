@@ -39,7 +39,6 @@ class MainActivity : BaseActivity() {
 
     private val viewModel: MainViewModel by inject()
     private var alertDialog: AlertDialog? = null
-    private var weatherDatabase: WeatherDatabase? = null
     private var spinnerList: MutableList<Any> = mutableListOf("")
 
     private lateinit var spinner: Spinner
@@ -49,8 +48,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-        weatherDatabase = WeatherDatabase.getDatabase(this)
 
         spinner = findViewById(R.id.spinner_select_location)
         spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
@@ -276,7 +273,7 @@ class MainActivity : BaseActivity() {
 
         tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
-        if (viewModel.getSelectedLocationId() == 0 && weatherResponse?.name != null) {
+        if (viewModel.getSelectedLocationId() == 0L && weatherResponse?.name != null) {
             spinnerList[0] = "Current Location (${weatherResponse.name})"
             val spinner = findViewById<Spinner>(R.id.spinner_select_location)
             spinner.invalidate()
@@ -414,6 +411,10 @@ class MainActivity : BaseActivity() {
             }
             R.id.action_use_12_hr_clock -> {
                 viewModel.setUse24hrClock(false)
+                return true
+            }
+            R.id.action_manage_locations -> {
+                startActivity(Intent(this@MainActivity, ManageLocationsActivity::class.java))
                 return true
             }
             else -> super.onOptionsItemSelected(item)

@@ -42,4 +42,9 @@ class ManualLocationRepository(context: Context) : KoinComponent {
             Log.i("newId", "newId = $newId")
         }
     }
+
+    fun delete(manualLocation: ManualLocation)
+    {
+        manualLocationDAO?.delete(manualLocation)
+    }
 }
