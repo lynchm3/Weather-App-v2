@@ -1,7 +1,6 @@
 package com.marklynch.weather
 
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +8,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.marklynch.weather.activity.ManageLocationsActivity
 import com.marklynch.weather.data.ManualLocation
 import com.marklynch.weather.viewmodel.ManageLocationsViewModel
 
 
-class ManualLocationListAdapter(context: Context, private val viewModel: ManageLocationsViewModel) :
+class ManualLocationListAdapter(val activity: ManageLocationsActivity, private val viewModel: ManageLocationsViewModel) :
     RecyclerView.Adapter<ManualLocationListAdapter.ManualLocationViewHolder>() {
 
-    private val mInflater: LayoutInflater = LayoutInflater.from(context)
+    private val mInflater: LayoutInflater = LayoutInflater.from(activity)
     private var manualLocations: MutableList<ManualLocation> = mutableListOf()
     private var expandedViewPosition = -1
     private var oldExpandedViewPosition = -1
@@ -68,6 +68,12 @@ class ManualLocationListAdapter(context: Context, private val viewModel: ManageL
             expandedViewPosition = -1
             oldExpandedViewPosition = -1
             viewModel.deleteManualLocation(this.manualLocations[position])
+        }
+
+        holder.tvRename.setOnClickListener {
+            expandedViewPosition = -1
+            oldExpandedViewPosition = position
+            activity.showRenameDialog(this.manualLocations[position])
         }
     }
 

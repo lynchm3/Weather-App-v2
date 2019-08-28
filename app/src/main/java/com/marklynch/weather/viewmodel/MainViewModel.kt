@@ -9,7 +9,7 @@ import com.marklynch.weather.livedata.network.NetworkInfoLiveData
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
 import com.marklynch.weather.livedata.sharedpreferences.LongSharedPreferencesLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_LOCATION_ID
+import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_CURRENT_LOCATION_ID
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_24_HR_CLOCK
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELSIUS
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
@@ -52,7 +52,7 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
 
     val selectedLocationIdSharedPreferencesLiveData: LongSharedPreferencesLiveData by inject {
         parametersOf(
-            SHARED_PREFERENCES_LOCATION_ID
+            SHARED_PREFERENCES_CURRENT_LOCATION_ID
         )
     }
 

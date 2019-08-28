@@ -1,12 +1,11 @@
 package com.marklynch.weather.activity
 
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.marklynch.weather.ManualLocationListAdapter
 import com.marklynch.weather.R
 import com.marklynch.weather.data.ManualLocation
@@ -14,9 +13,6 @@ import com.marklynch.weather.viewmodel.ManageLocationsViewModel
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_manage_locations.*
 import org.koin.android.ext.android.inject
-import androidx.recyclerview.widget.DividerItemDecoration
-
-
 
 
 class ManageLocationsActivity : BaseActivity() {
@@ -35,16 +31,40 @@ class ManageLocationsActivity : BaseActivity() {
         val linearLayoutManager = LinearLayoutManager(this)
         list.layoutManager = LinearLayoutManager(this)
 
-        val dividerItemDecoration = DividerItemDecoration(
-            list.context,
-            linearLayoutManager.orientation
-        )
-        list.addItemDecoration(dividerItemDecoration)
-
         viewModel.manualLocationLiveData?.observe(this, object : Observer<List<ManualLocation>> {
             override fun onChanged(manualLocations: List<ManualLocation>) {
                 adapter.setManualLocations(manualLocations)
             }
         })
+    }
+
+    fun showRenameDialog(manualLocationToRename: ManualLocation) {
+
+        if (alertDialog?.isShowing == true) {
+            return
+        }
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Rename Location")
+        val input = EditText(this)
+        input.hint = "New Location Name"
+        builder.setView(input)
+
+        builder.setPositiveButton(
+            "OK"
+        ) { _, _ ->
+            val newName = input.text.toString()
+            if (newName.isEmpty() || newName.isBlank()) {
+                Toast.makeText(applicationContext, "No name entered", Toast.LENGTH_SHORT).show()
+            } else {
+                viewModel.renameManualLocation(manualLocationToRename, newName)
+            }
+        }
+        builder.setNegativeButton(
+            "Cancel"
+        ) { dialog, _ -> dialog.cancel() }
+
+        this.alertDialog = builder.show()
+        input.requestFocus()
     }
 }

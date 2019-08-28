@@ -20,4 +20,8 @@ open class ManageLocationsViewModel(application: Application) : AndroidViewModel
     fun deleteManualLocation(manualLocation: ManualLocation) {
         manualLocationRepository.delete(manualLocation)
     }
+
+    fun renameManualLocation(manualLocation: ManualLocation, displayName:String) {
+        manualLocationRepository.rename(manualLocation, displayName)
+    }
 }

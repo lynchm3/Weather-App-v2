@@ -2,14 +2,12 @@ package com.marklynch.weather.livedata.db
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.marklynch.weather.data.ManualLocation
 import com.marklynch.weather.data.ManualLocationDAO
 import com.marklynch.weather.data.WeatherDatabase
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_LOCATION_ID
+import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_CURRENT_LOCATION_ID
 import com.sucho.placepicker.AddressData
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -39,16 +37,26 @@ class ManualLocationRepository(context: Context) : KoinComponent {
             )
 
             if (newId != null)
-                get<SharedPreferences.Editor>().putLong(SHARED_PREFERENCES_LOCATION_ID, newId).apply()
-
-            Log.i("newId", "newId = $newId")
+                get<SharedPreferences.Editor>().putLong(SHARED_PREFERENCES_CURRENT_LOCATION_ID, newId).apply()
         }
     }
 
-    fun delete(manualLocation: ManualLocation)
-    {
-        GlobalScope.launch{
+    fun delete(manualLocation: ManualLocation) {
+        GlobalScope.launch {
             manualLocationDAO?.delete(manualLocation)
+        }
+    }
+
+    fun rename(manualLocation: ManualLocation, displayName: String) {
+        GlobalScope.launch {
+            manualLocationDAO?.updateManualLocation(
+                ManualLocation(
+                    manualLocation.id,
+                    displayName,
+                    manualLocation.latitude,
+                    manualLocation.longitude
+                )
+            )
         }
     }
 }
