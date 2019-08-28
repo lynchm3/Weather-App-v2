@@ -4,13 +4,19 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.marklynch.weather.data.ManualLocation
 import com.marklynch.weather.livedata.db.ManualLocationRepository
+import com.marklynch.weather.livedata.location.LocationLiveData
 import com.sucho.placepicker.AddressData
 import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
 open class ManageLocationsViewModel(application: Application) : AndroidViewModel(application), KoinComponent {
 
+    //Location
+    val locationLiveData: LocationLiveData by inject()
     val manualLocationRepository = ManualLocationRepository(application)
     val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
+
+    fun getLocationInformation() = locationLiveData.value
 
     fun addManualLocation(addressData: AddressData?) {
         if (addressData != null)

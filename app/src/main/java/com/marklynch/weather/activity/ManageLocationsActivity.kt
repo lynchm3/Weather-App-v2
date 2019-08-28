@@ -1,5 +1,7 @@
 package com.marklynch.weather.activity
 
+import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -10,8 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.marklynch.weather.ManualLocationListAdapter
 import com.marklynch.weather.R
 import com.marklynch.weather.data.ManualLocation
+import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.viewmodel.ManageLocationsViewModel
+import com.sucho.placepicker.AddressData
+import com.sucho.placepicker.Constants
 import kotlinx.android.synthetic.main.action_bar_main.*
+import kotlinx.android.synthetic.main.activity_manage_locations.*
 import kotlinx.android.synthetic.main.content_manage_locations.*
 import org.koin.android.ext.android.inject
 
@@ -26,11 +32,15 @@ class ManageLocationsActivity : BaseActivity() {
         setContentView(R.layout.activity_manage_locations)
         setSupportActionBar(toolbar)
 
-
         val adapter = ManualLocationListAdapter(this, viewModel)
         rv_list.adapter = adapter
-        val linearLayoutManager = LinearLayoutManager(this)
         rv_list.layoutManager = LinearLayoutManager(this)
+
+
+        viewModel.locationLiveData.observe(this,
+            Observer<LocationInformation> { locationInformation ->
+
+            })
 
         viewModel.manualLocationLiveData?.observe(this, object : Observer<List<ManualLocation>> {
             override fun onChanged(manualLocations: List<ManualLocation>) {
@@ -44,6 +54,27 @@ class ManageLocationsActivity : BaseActivity() {
                 }
             }
         })
+
+        fab.setOnClickListener {
+            val gpsLocation: Location? = viewModel.getLocationInformation()?.location
+            if (gpsLocation != null) {
+                val latitude = gpsLocation.latitude
+                val longitude = gpsLocation.longitude
+                addLocation(latitude, longitude)
+            } else {
+                addLocation()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == Constants.PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                viewModel.addManualLocation(data?.getParcelableExtra<AddressData>(Constants.ADDRESS_INTENT))
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     fun showRenameDialog(manualLocationToRename: ManualLocation) {

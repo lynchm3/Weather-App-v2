@@ -35,7 +35,7 @@
     <string name="manage_locations">Manage Locations</string>
     <string name="remove">REMOVE</string>
     <string name="rename">RENAME</string>
-    <string name="no_locations_to_display">No Locations to display</string>
+    <string name="no_locations_to_display">No locations to display</string>
 
     <string-array name="spinner_list_item_array">
         <item>English</item>

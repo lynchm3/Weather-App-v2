@@ -17,7 +17,6 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.marklynch.weather.R
 import com.marklynch.weather.data.ManualLocation
-import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.network.ConnectionType
@@ -25,8 +24,6 @@ import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.*
 import com.marklynch.weather.viewmodel.MainViewModel
 import com.sucho.placepicker.AddressData
-import com.sucho.placepicker.MapType
-import com.sucho.placepicker.PlacePicker
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.koin.android.ext.android.inject
@@ -65,7 +62,16 @@ class MainActivity : BaseActivity() {
                         Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT).show()
                     }
                     spinnerList.size - 1 -> {
-                        addLocation()
+                        //Attempt to get location from gps
+                        val gpsLocation: Location? = viewModel.getLocationInformation()?.location
+                        if (gpsLocation != null) {
+                            val latitude = gpsLocation.latitude
+                            val longitude = gpsLocation.longitude
+                            addLocation(latitude, longitude)
+                        } else {
+                            addLocation()
+
+                        }
                     }
                     else -> {
                         val selectedLocation = (spinnerList[position] as ManualLocation)
@@ -168,36 +174,11 @@ class MainActivity : BaseActivity() {
         )
     }
 
-    private fun addLocation() {
-        var latitude = 40.0
-        var longitude = -73.0
-
-        //Attempt to get location from gps
-        val gpsLocation: Location? = viewModel.getLocationInformation()?.location
-        if (gpsLocation != null) {
-            latitude = gpsLocation.latitude
-            longitude = gpsLocation.longitude
-        }
-
-        val intent = PlacePicker.IntentBuilder()
-            .setLatLong(latitude, longitude)
-            .showLatLong(true)
-            .setMapZoom(8f)
-            .setAddressRequired(true)
-            .hideMarkerShadow(true)
-            .setMarkerImageImageColor(R.color.colorPrimary)
-            .setMapType(MapType.NORMAL)
-            .disableBootomSheetAnimation(true)
-            .onlyCoordinates(false)
-            .build(this)
-        startActivityForResult(intent, PlacePickerConstants.PLACE_PICKER_REQUEST)
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PlacePickerConstants.PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                val addressData = data?.getParcelableExtra<AddressData>(PlacePickerConstants.ADDRESS_INTENT)
-                viewModel.addManualLocation(addressData)
+                viewModel.addManualLocation(data?.getParcelableExtra<AddressData>(PlacePickerConstants.ADDRESS_INTENT))
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
