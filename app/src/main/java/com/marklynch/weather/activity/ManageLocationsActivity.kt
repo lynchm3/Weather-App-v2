@@ -30,7 +30,7 @@ class ManageLocationsActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
 
-        val adapter = ManualLocationListAdapter(this)
+        val adapter = ManualLocationListAdapter(this, viewModel)
         list.adapter = adapter
         val linearLayoutManager = LinearLayoutManager(this)
         list.layoutManager = LinearLayoutManager(this)
