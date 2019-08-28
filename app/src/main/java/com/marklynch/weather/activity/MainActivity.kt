@@ -182,7 +182,7 @@ class MainActivity : BaseActivity() {
         val intent = PlacePicker.IntentBuilder()
             .setLatLong(latitude, longitude)
             .showLatLong(true)
-            .setMapZoom(12.0f)
+            .setMapZoom(8f)
             .setAddressRequired(true)
             .hideMarkerShadow(true)
             .setMarkerImageImageColor(R.color.colorPrimary)

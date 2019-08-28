@@ -14,6 +14,9 @@ import com.marklynch.weather.viewmodel.ManageLocationsViewModel
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_manage_locations.*
 import org.koin.android.ext.android.inject
+import androidx.recyclerview.widget.DividerItemDecoration
+
+
 
 
 class ManageLocationsActivity : BaseActivity() {
@@ -28,44 +31,20 @@ class ManageLocationsActivity : BaseActivity() {
 
 
         val adapter = ManualLocationListAdapter(this)
-        list.setAdapter(adapter)
-        list.setLayoutManager(LinearLayoutManager(this))
+        list.adapter = adapter
+        val linearLayoutManager = LinearLayoutManager(this)
+        list.layoutManager = LinearLayoutManager(this)
+
+        val dividerItemDecoration = DividerItemDecoration(
+            list.context,
+            linearLayoutManager.orientation
+        )
+        list.addItemDecoration(dividerItemDecoration)
 
         viewModel.manualLocationLiveData?.observe(this, object : Observer<List<ManualLocation>> {
             override fun onChanged(manualLocations: List<ManualLocation>) {
                 adapter.setManualLocations(manualLocations)
             }
         })
-
-
-        // Add the functionality to swipe items in the
-        // recycler view to delete that item
-        val helper = ItemTouchHelper(
-            object : ItemTouchHelper.SimpleCallback(
-                0,
-                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-            ) {
-                override// We are not implementing onMove() in this app
-                fun onMove(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
-                ): Boolean {
-                    return false
-                }
-
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val position = viewHolder.adapterPosition
-                    val manualLocation = adapter.getManualLocationAtPosition(position)
-                    Toast.makeText(
-                        this@ManageLocationsActivity,
-                        """Removing ${manualLocation.displayName}""", Toast.LENGTH_LONG
-                    ).show()
-
-                    viewModel.deleteManualLocation(manualLocation)
-                }
-            })
-        // Attach the item touch helper to the recycler view
-        helper.attachToRecyclerView(list)
     }
 }

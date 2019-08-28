@@ -106,6 +106,6 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun getCurrentlySelectedLocation():ManualLocation?
     {
-        return manualLocationLiveData?.value?.first { it.id ==  getSelectedLocationId()}
+        return manualLocationLiveData?.value?.firstOrNull { it.id ==  getSelectedLocationId()}
     }
 }
