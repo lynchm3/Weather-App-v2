@@ -30,9 +30,10 @@
     <string name="action_use_24_hr_clock">Use 24hr clock</string>
     <string name="action_use_12_hr_clock">Use 12hr clock</string>
     <string name="weather_in">Weather in</string>
-    <string name="action_manage_locations">Manage Locations</string>
+    <string name="action_manage_locations">Manage locations</string>
     <string name="remove">REMOVE</string>
     <string name="rename">RENAME</string>
+    <string name="no_locations_to_display">No Locations to display</string>
 
     <string-array name="spinner_list_item_array">
         <item>English</item>
