@@ -4,17 +4,32 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
-    <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
+    <LinearLayout
             android:layout_height="48dp"
-            android:gravity="center_vertical"
-            android:textSize="24sp"
-    android:layout_marginStart="16dp"/>
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+        <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:textSize="24sp"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"/>
+
+        <ImageView
+                android:id="@+id/iv_arrow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/arrow_up"/>
+    </LinearLayout>
 
     <LinearLayout
             android:id="@+id/sub_item"
-            android:layout_height="match_parent"
+            android:layout_height="24dp"
             android:layout_width="match_parent"
             android:orientation="horizontal">
         <TextView
@@ -23,16 +38,18 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:background="#e5e5e5"
-                android:textColor="@color/white"/>
+                android:background="#aaaaaa"
+                android:textColor="@color/white"
+                android:text="@string/rename"/>
         <TextView
                 android:id="@+id/sub_item_delete"
                 android:layout_height="match_parent"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
-        android:background="#b00020"
-        android:textColor="@color/white"/>
+                android:background="#b00020"
+                android:textColor="@color/white"
+                android:text="@string/remove"/>
     </LinearLayout>
 
 </LinearLayout>

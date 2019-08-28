@@ -1,9 +1,11 @@
 package com.marklynch.weather
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +25,7 @@ class ManualLocationListAdapter(context: Context) :
         val llSubItem: LinearLayout = itemView.findViewById(R.id.sub_item)
         val tvRename: TextView = itemView.findViewById(R.id.sub_item_rename)
         val tvDelete: TextView = itemView.findViewById(R.id.sub_item_delete)
+        val ivArrow: ImageView = itemView.findViewById(R.id.iv_arrow)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManualLocationViewHolder {
@@ -35,8 +38,12 @@ class ManualLocationListAdapter(context: Context) :
 
         val expanded = expandedViewPosition == position
         holder.llSubItem.visibility = if (expanded) View.VISIBLE else View.GONE
-        holder.tvRename.text = "RENAME"
-        holder.tvDelete.text = "DELETE"
+
+        if (expanded) {
+            ObjectAnimator.ofFloat(holder.ivArrow, "rotation", 0f, 180f).setDuration(500).start()
+        } else {
+            ObjectAnimator.ofFloat(holder.ivArrow, "rotation", 180f, 0f).setDuration(500).start()
+        }
 
         holder.tvDisplayName.setOnClickListener {
             val oldExpandedViewPosition = expandedViewPosition
