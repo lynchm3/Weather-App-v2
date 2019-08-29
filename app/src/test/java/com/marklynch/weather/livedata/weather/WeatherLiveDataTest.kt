@@ -3,7 +3,7 @@ package com.marklynch.weather.livedata.weather
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.marklynch.weather.di.*
-import com.marklynch.weather.livedata.observeXTimes
+import com.marklynch.weather.utils.observeXTimes
 import junit.framework.Assert.assertEquals
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer

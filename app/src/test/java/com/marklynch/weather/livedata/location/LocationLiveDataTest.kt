@@ -3,8 +3,8 @@ package com.marklynch.weather.livedata.location
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.location.LocationResult
 import com.marklynch.weather.di.*
-import com.marklynch.weather.livedata.observeXTimes
 import com.marklynch.weather.utils.AppPermissionState
+import com.marklynch.weather.utils.observeXTimes
 import com.marklynch.weather.utils.setBuildVersionSdkInt
 import junit.framework.Assert.assertEquals
 import org.junit.After
@@ -134,7 +134,7 @@ class LocationLiveDataTest : KoinTest {
 
         locationLiveData.observeXTimes(1) {
             observations++
-            assertEquals(it.locationResult, locationResultPassed)
+            assertEquals(it.location, locationResultPassed)
         }
 
         assertEquals(2, observations)

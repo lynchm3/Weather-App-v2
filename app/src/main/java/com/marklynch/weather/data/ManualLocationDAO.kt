@@ -6,18 +6,18 @@ import androidx.room.*
 @Dao
 interface ManualLocationDAO {
 
-    @Query("SELECT * FROM ManualLocation ORDER BY displayName ASC")
-    fun getManualLocationLiveData(): LiveData<List<ManualLocation>>
-
     @Insert
-    fun insertManualLocation(manualLocation: ManualLocation):Long
+    fun insert(manualLocation: ManualLocation):Long
 
     @Update
-    fun updateManualLocation(manualLocation: ManualLocation)
+    fun update(manualLocation: ManualLocation)
 
     @Delete
     fun delete(manualLocation: ManualLocation)
 
+    @Query("SELECT * FROM ManualLocation ORDER BY displayName ASC")
+    fun getManualLocationLiveData(): LiveData<List<ManualLocation>>
+
     @Query("SELECT * FROM ManualLocation WHERE id = :id")
-    fun loadManualLocationById(id: Int): ManualLocation
+    fun getManualLocationById(id: Long): ManualLocation
 }

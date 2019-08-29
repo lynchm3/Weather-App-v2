@@ -1,7 +1,7 @@
 package com.marklynch.weather.livedata.util
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.marklynch.weather.livedata.observeXTimes
+import com.marklynch.weather.utils.observeXTimes
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test

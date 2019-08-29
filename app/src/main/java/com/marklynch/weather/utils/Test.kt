@@ -1,6 +1,7 @@
-package com.marklynch.weather.livedata
+package com.marklynch.weather.utils
 
 import androidx.lifecycle.*
+
 
 class LimitedObserver<T>(private val triggerLimit: Int = 0, private val handler: (T) -> Unit) : Observer<T>,
     LifecycleOwner {

@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [ManualLocation::class], version = 1)
 abstract class WeatherDatabase : RoomDatabase() {
-    abstract fun manualLocationDao(): ManualLocationDAO
+    abstract fun getManualLocationDao(): ManualLocationDAO
     companion object {
         private var INSTANCE: WeatherDatabase? = null
         fun getDatabase(context: Context): WeatherDatabase? {

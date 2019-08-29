@@ -21,13 +21,13 @@ class ManualLocationRepository(context: Context) : KoinComponent {
     val manualLocationLiveData: LiveData<List<ManualLocation>>?
 
     init {
-        manualLocationDAO = db?.manualLocationDao()
+        manualLocationDAO = db?.getManualLocationDao()
         manualLocationLiveData = manualLocationDAO?.getManualLocationLiveData()
     }
 
     fun insert(addressData: AddressData) {
         GlobalScope.async {
-            val newId = db?.manualLocationDao()?.insertManualLocation(
+            val newId = db?.getManualLocationDao()?.insert(
                 ManualLocation(
                     0,
                     addressData?.addressList?.get(0)?.adminArea ?: "",
@@ -49,7 +49,7 @@ class ManualLocationRepository(context: Context) : KoinComponent {
 
     fun rename(manualLocation: ManualLocation, displayName: String) {
         GlobalScope.launch {
-            manualLocationDAO?.updateManualLocation(
+            manualLocationDAO?.update(
                 ManualLocation(
                     manualLocation.id,
                     displayName,

@@ -2,7 +2,7 @@ package com.marklynch.weather.livedata.sharedpreferences
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.marklynch.weather.di.*
-import com.marklynch.weather.livedata.observeXTimes
+import com.marklynch.weather.utils.observeXTimes
 import junit.framework.Assert.*
 import org.junit.*
 import org.koin.standalone.StandAloneContext.loadKoinModules
