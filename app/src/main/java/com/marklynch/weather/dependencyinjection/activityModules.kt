@@ -1,4 +1,4 @@
-package com.marklynch.weather.di
+package com.marklynch.weather.dependencyinjection
 
 import com.marklynch.weather.viewmodel.MainViewModel
 import com.marklynch.weather.viewmodel.ManageLocationsViewModel
@@ -13,4 +13,7 @@ val manageLocationsModule = module {
     viewModel<ManageLocationsViewModel>()
 }
 
-val activityModules = listOf(mainModule,manageLocationsModule)
+val activityModules = listOf(
+    mainModule,
+    manageLocationsModule
+)

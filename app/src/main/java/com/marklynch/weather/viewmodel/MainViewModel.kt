@@ -2,7 +2,7 @@ package com.marklynch.weather.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.marklynch.weather.data.ManualLocation
+import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
@@ -56,7 +56,8 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
         )
     }
 
-    val manualLocationRepository = ManualLocationRepository(application)
+//        val manualLocationRepository = ManualLocationRepository(application)
+    private val manualLocationRepository: ManualLocationRepository by inject()
     val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
 
     fun getLocationInformation() = locationLiveData.value
@@ -86,26 +87,23 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
         locationLiveData.fetchLocation()
     }
 
-    fun fetchWeather(manualLocation:ManualLocation?) {
-        if(manualLocation == null) {
+    fun fetchWeather(manualLocation: ManualLocation?) {
+        if (manualLocation == null) {
             val lat = getLocationInformation()?.location?.latitude
             val lon = getLocationInformation()?.location?.longitude
             if (lat != null && lon != null)
                 weatherLiveData.fetchWeather(lat, lon)
-        }
-        else
-        {
+        } else {
             weatherLiveData.fetchWeather(manualLocation.latitude, manualLocation.longitude)
         }
     }
 
     fun addManualLocation(addressData: AddressData?) {
-        if(addressData != null)
+        if (addressData != null)
             manualLocationRepository.insert(addressData)
     }
 
-    fun getCurrentlySelectedLocation():ManualLocation?
-    {
-        return manualLocationLiveData?.value?.firstOrNull { it.id ==  getSelectedLocationId()}
+    fun getCurrentlySelectedLocation(): ManualLocation? {
+        return manualLocationLiveData?.value?.firstOrNull { it.id == getSelectedLocationId() }
     }
 }

@@ -2,10 +2,10 @@ package com.marklynch.weather.data
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.*
 import androidx.room.*
 import androidx.test.core.app.ApplicationProvider
-import com.marklynch.weather.utils.AppPermissionState
+import com.marklynch.weather.data.manuallocation.ManualLocation
+import com.marklynch.weather.data.manuallocation.ManualLocationDAO
 import com.marklynch.weather.utils.observeXTimes
 import com.marklynch.weather.utils.randomAlphaNumeric
 import junit.framework.Assert
@@ -39,7 +39,7 @@ class WeatherDatabaseTest {
         db.close()
     }
 
-    private fun insertAndCheckLocation():ManualLocation
+    private fun insertAndCheckLocation(): ManualLocation
     {
         val displayName = randomAlphaNumeric(5)
         val lat = Random.nextDouble()
@@ -71,9 +71,19 @@ class WeatherDatabaseTest {
         val updateLat = Random.nextDouble()
         val updateLon = Random.nextDouble()
 
-        val toUpdateInDB = ManualLocation(insertedManualLocation.id, updateDisplayName, updateLat, updateLon)
+        val toUpdateInDB = ManualLocation(
+            insertedManualLocation.id,
+            updateDisplayName,
+            updateLat,
+            updateLon
+        )
         manualLocationDAO.update(toUpdateInDB)
-        val expected2 = ManualLocation(insertedManualLocation.id, updateDisplayName, updateLat, updateLon)
+        val expected2 = ManualLocation(
+            insertedManualLocation.id,
+            updateDisplayName,
+            updateLat,
+            updateLon
+        )
         val actual2 = manualLocationDAO.getManualLocationById(insertedManualLocation.id)
 
         assertEquals(expected2, actual2)
@@ -94,13 +104,11 @@ class WeatherDatabaseTest {
     @Test
     fun testInsertandSelectAllManualLocationById() {
 
-
         //Select all
         val manualLocationsLiveData =  manualLocationDAO.getManualLocationLiveData()
 
         //Insert
         val insertedManualLocation = insertAndCheckLocation()
-
 
         var observations = 0
         manualLocationsLiveData.observeXTimes(1) {

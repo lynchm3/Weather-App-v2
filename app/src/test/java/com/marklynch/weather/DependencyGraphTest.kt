@@ -1,7 +1,7 @@
 package com.marklynch.weather
 
-import com.marklynch.weather.di.activityModules
-import com.marklynch.weather.di.appModules
+import com.marklynch.weather.dependencyinjection.activityModules
+import com.marklynch.weather.dependencyinjection.appModules
 import com.marklynch.weather.di.mockModuleApplication
 import org.junit.Test
 import org.koin.test.KoinTest

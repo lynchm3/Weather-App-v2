@@ -1,13 +1,17 @@
-package com.marklynch.weather.di
+package com.marklynch.weather.dependencyinjection
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.LocationManager
 import androidx.preference.PreferenceManager
+import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.marklynch.weather.BuildConfig
+import com.marklynch.weather.data.WeatherDatabase
+import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
@@ -32,6 +36,13 @@ private val appModule = module {
 
 @SuppressLint("CommitPrefEdits")
 private val dataModule = module {
+
+    single {
+        Room.databaseBuilder(
+            get<Application>(),
+            WeatherDatabase::class.java, "weather.db"
+        ).build()
+    }
 
     factory { (sharedPreferencesKey: String) ->
         BooleanSharedPreferencesLiveData(
@@ -72,6 +83,10 @@ private val dataModule = module {
     single<LocationLiveData>()
     single<WeatherLiveData>()
     single<NetworkInfoLiveData>()
+    single<ManualLocationRepository>()
 }
 
-val appModules = listOf(appModule, dataModule)
+val appModules = listOf(
+    appModule,
+    dataModule
+)

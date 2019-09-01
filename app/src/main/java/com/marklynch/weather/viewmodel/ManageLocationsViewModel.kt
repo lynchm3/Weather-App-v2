@@ -2,7 +2,7 @@ package com.marklynch.weather.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.marklynch.weather.data.ManualLocation
+import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.sucho.placepicker.AddressData
@@ -13,7 +13,8 @@ open class ManageLocationsViewModel(application: Application) : AndroidViewModel
 
     //Location
     val locationLiveData: LocationLiveData by inject()
-    val manualLocationRepository = ManualLocationRepository(application)
+//    val manualLocationRepository = ManualLocationRepository(application)
+    val manualLocationRepository:ManualLocationRepository by inject()
     val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
 
     fun getLocationInformation() = locationLiveData.value

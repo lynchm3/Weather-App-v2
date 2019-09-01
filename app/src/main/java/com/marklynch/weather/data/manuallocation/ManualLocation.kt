@@ -1,4 +1,4 @@
-package com.marklynch.weather.data
+package com.marklynch.weather.data.manuallocation
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

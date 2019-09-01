@@ -16,7 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.marklynch.weather.R
-import com.marklynch.weather.data.ManualLocation
+import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.network.ConnectionType

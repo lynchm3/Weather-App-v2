@@ -1,8 +1,8 @@
 package com.marklynch.weather.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.marklynch.weather.di.activityModules
-import com.marklynch.weather.di.appModules
+import com.marklynch.weather.dependencyinjection.activityModules
+import com.marklynch.weather.dependencyinjection.appModules
 import com.marklynch.weather.di.mockModuleApplication
 import com.marklynch.weather.di.mockModuleBooleanSharedPreferencesLiveData
 import org.junit.After

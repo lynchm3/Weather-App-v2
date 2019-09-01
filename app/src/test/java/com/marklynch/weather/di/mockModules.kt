@@ -7,9 +7,13 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import androidx.lifecycle.LiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.marklynch.weather.data.WeatherDatabase
+import com.marklynch.weather.data.manuallocation.ManualLocation
+import com.marklynch.weather.data.manuallocation.ManualLocationDAO
 import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
 import com.marklynch.weather.utils.AppPermissionState
 import com.marklynch.weather.utils.PermissionsChecker
@@ -135,4 +139,33 @@ val mockModuleBooleanSharedPreferencesLiveData = module(override = true) {
             }
         }
     }
+}
+
+val mockWeatherDatabase = module(override = true) {
+    single {
+        mock<WeatherDatabase> {
+            on { getManualLocationDao() } doAnswer {
+                mockManualLocationDAO
+            }
+        }
+    }
+}
+
+//val mockManualLocationDAO= module(override = true) {
+//    single {
+val mockManualLocationDAO = mock<ManualLocationDAO> {
+    on { getManualLocationLiveData() } doAnswer {
+        mockManualLocationLiveData
+    }
+}
+
+lateinit var mockManualLocationLiveDataValue: List<ManualLocation>
+val mockManualLocationLiveData = mock<LiveData<List<ManualLocation>>> {
+    on { value } doAnswer {
+        mockManualLocationLiveDataValue
+    }
+//    on { setSharedPreference(ArgumentMatchers.anyBoolean()) } doAnswer {
+//        mockSharedPrefLiveDataBoolean = it.arguments[0] as Boolean
+//        null
+//    }
 }

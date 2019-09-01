@@ -9,9 +9,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.marklynch.weather.ManualLocationListAdapter
+import com.marklynch.weather.adapter.ManualLocationListAdapter
 import com.marklynch.weather.R
-import com.marklynch.weather.data.ManualLocation
+import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.viewmodel.ManageLocationsViewModel
 import com.sucho.placepicker.AddressData

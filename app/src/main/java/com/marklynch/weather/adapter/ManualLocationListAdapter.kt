@@ -1,4 +1,4 @@
-package com.marklynch.weather
+package com.marklynch.weather.adapter
 
 import android.animation.ObjectAnimator
 import android.view.LayoutInflater
@@ -8,8 +8,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.marklynch.weather.R
 import com.marklynch.weather.activity.ManageLocationsActivity
-import com.marklynch.weather.data.ManualLocation
+import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.viewmodel.ManageLocationsViewModel
 
 

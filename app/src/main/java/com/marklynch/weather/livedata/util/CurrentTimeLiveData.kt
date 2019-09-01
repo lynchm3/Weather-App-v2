@@ -2,8 +2,8 @@ package com.marklynch.weather.livedata.util
 
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class CurrentTimeLiveData : LiveData<Long>() {
 
@@ -14,7 +14,7 @@ class CurrentTimeLiveData : LiveData<Long>() {
     }
 
     private fun startTimer() {
-        GlobalScope.async {
+        GlobalScope.launch {
             while (hasActiveObservers()) {
                 delay(1000)
                 postValue(System.currentTimeMillis())
