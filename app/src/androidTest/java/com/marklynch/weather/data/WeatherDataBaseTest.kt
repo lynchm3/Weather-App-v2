@@ -2,10 +2,12 @@ package com.marklynch.weather.data
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.room.*
 import androidx.test.core.app.ApplicationProvider
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.data.manuallocation.ManualLocationDAO
+import com.marklynch.weather.dependencyinjection.activityModules
+import com.marklynch.weather.dependencyinjection.appModules
+import com.marklynch.weather.dependencyinjection.testWeatherDatabase
 import com.marklynch.weather.utils.observeXTimes
 import com.marklynch.weather.utils.randomAlphaNumeric
 import junit.framework.Assert
@@ -14,10 +16,13 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.koin.standalone.StandAloneContext
+import org.koin.standalone.get
+import org.koin.test.KoinTest
 import java.io.IOException
 import kotlin.random.Random
 
-class WeatherDatabaseTest {
+class WeatherDatabaseTest : KoinTest {
     private lateinit var db: WeatherDatabase
     private lateinit var manualLocationDAO: ManualLocationDAO
 
@@ -26,10 +31,15 @@ class WeatherDatabaseTest {
 
     @Before
     fun setup() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(
-            context, WeatherDatabase::class.java
-        ).build()
+
+        val moduleList =
+            appModules +
+                    activityModules +
+                    testWeatherDatabase
+
+        StandAloneContext.loadKoinModules(moduleList)
+        
+        db = get()
         manualLocationDAO = db.getManualLocationDao()
     }
 
@@ -39,8 +49,7 @@ class WeatherDatabaseTest {
         db.close()
     }
 
-    private fun insertAndCheckLocation(): ManualLocation
-    {
+    private fun insertAndCheckLocation(): ManualLocation {
         val displayName = randomAlphaNumeric(5)
         val lat = Random.nextDouble()
         val lon = Random.nextDouble()
@@ -56,7 +65,7 @@ class WeatherDatabaseTest {
     }
 
     @Test
-    fun testInsertAndGetManualLocationById(){
+    fun testInsertAndGetManualLocationById() {
         insertAndCheckLocation()
     }
 
@@ -105,7 +114,7 @@ class WeatherDatabaseTest {
     fun testInsertandSelectAllManualLocationById() {
 
         //Select all
-        val manualLocationsLiveData =  manualLocationDAO.getManualLocationLiveData()
+        val manualLocationsLiveData = manualLocationDAO.getManualLocationLiveData()
 
         //Insert
         val insertedManualLocation = insertAndCheckLocation()

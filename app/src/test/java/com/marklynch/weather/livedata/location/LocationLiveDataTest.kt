@@ -2,9 +2,7 @@ package com.marklynch.weather.livedata.location
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.location.LocationResult
-import com.marklynch.weather.dependencyinjection.activityModules
-import com.marklynch.weather.dependencyinjection.appModules
-import com.marklynch.weather.di.*
+import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.utils.AppPermissionState
 import com.marklynch.weather.utils.observeXTimes
 import com.marklynch.weather.utils.setBuildVersionSdkInt

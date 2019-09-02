@@ -1,6 +1,5 @@
 package com.marklynch.weather.livedata.db
 
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import com.marklynch.weather.data.WeatherDatabase
@@ -14,7 +13,7 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 import org.koin.standalone.inject
 
-class ManualLocationRepository(context: Context) : KoinComponent {
+class ManualLocationRepository : KoinComponent {
 
     private val db: WeatherDatabase by inject()
     private val manualLocationDAO: ManualLocationDAO?
@@ -35,7 +34,6 @@ class ManualLocationRepository(context: Context) : KoinComponent {
                     addressData.longitude
                 )
             )
-
             get<SharedPreferences.Editor>().putLong(SHARED_PREFERENCES_CURRENT_LOCATION_ID, newId).apply()
         }
     }

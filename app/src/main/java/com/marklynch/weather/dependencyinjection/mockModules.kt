@@ -1,4 +1,4 @@
-package com.marklynch.weather.di
+package com.marklynch.weather.dependencyinjection
 
 import android.app.Application
 import android.content.BroadcastReceiver
@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.lifecycle.LiveData
+import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -205,18 +206,15 @@ val mockModuleCurrentLocationIdSharedPreferenceLiveData = module(override = true
     }
 }
 
-val mockWeatherDatabase = module(override = true) {
+val testWeatherDatabase = module(override = true) {
     single {
-        mock<WeatherDatabase> {
-            on { getManualLocationDao() } doAnswer {
-                mockManualLocationDAO
-            }
-        }
+        Room.inMemoryDatabaseBuilder(
+            get(), WeatherDatabase::class.java
+        ).build()
     }
 }
 
 //val mockManualLocationDAO= module(override = true) {
-//    single {
 val mockManualLocationDAO = mock<ManualLocationDAO> {
     on { getManualLocationLiveData() } doAnswer {
         mockManualLocationLiveData

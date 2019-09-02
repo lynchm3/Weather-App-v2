@@ -1,9 +1,7 @@
 package com.marklynch.weather.livedata.sharedpreferences
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.marklynch.weather.dependencyinjection.activityModules
-import com.marklynch.weather.dependencyinjection.appModules
-import com.marklynch.weather.di.*
+import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.BooleanSharedPreferencesLiveData
 import com.marklynch.weather.utils.observeXTimes
 import junit.framework.Assert.*

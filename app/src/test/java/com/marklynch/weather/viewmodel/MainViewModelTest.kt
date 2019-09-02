@@ -1,9 +1,7 @@
 package com.marklynch.weather.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.marklynch.weather.dependencyinjection.activityModules
-import com.marklynch.weather.dependencyinjection.appModules
-import com.marklynch.weather.di.*
+import com.marklynch.weather.dependencyinjection.*
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
