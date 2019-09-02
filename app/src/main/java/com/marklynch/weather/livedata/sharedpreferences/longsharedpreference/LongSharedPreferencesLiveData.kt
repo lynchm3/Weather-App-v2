@@ -1,10 +1,12 @@
-package com.marklynch.weather.livedata.sharedpreferences
+package com.marklynch.weather.livedata.sharedpreferences.longsharedpreference
 
 import android.content.SharedPreferences
+import com.marklynch.weather.livedata.sharedpreferences.SharedPreferencesLiveData
+import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_CURRENT_LOCATION_ID
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 
-class LongSharedPreferencesLiveData(
+open class LongSharedPreferencesLiveData(
     sharedPreferencesKey: String
 ) : SharedPreferencesLiveData<Long>(sharedPreferencesKey), KoinComponent {
 
@@ -16,3 +18,7 @@ class LongSharedPreferencesLiveData(
         get<SharedPreferences.Editor>().putLong(sharedPreferencesKey, value).apply()
     }
 }
+
+class CurrentLocationIdSharedPreferenceLiveData : LongSharedPreferencesLiveData(
+    SHARED_PREFERENCES_CURRENT_LOCATION_ID
+)

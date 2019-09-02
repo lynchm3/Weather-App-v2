@@ -3,8 +3,7 @@ package com.marklynch.weather.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.marklynch.weather.dependencyinjection.activityModules
 import com.marklynch.weather.dependencyinjection.appModules
-import com.marklynch.weather.di.mockModuleApplication
-import com.marklynch.weather.di.mockModuleBooleanSharedPreferencesLiveData
+import com.marklynch.weather.di.*
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -23,7 +22,10 @@ class MainViewModelTest : KoinTest {
 
     @Before
     fun setup() {
-        val moduleList = appModules + activityModules + mockModuleApplication + mockModuleBooleanSharedPreferencesLiveData
+        val moduleList = appModules + activityModules + mockModuleApplication +
+                mockModuleUse24hrClockSharedPreferenceLiveData +
+                mockModuleUseCelsiusSharedPreferenceLiveData +
+                mockModuleUseKmSharedPreferenceLiveData
         loadKoinModules(moduleList)
     }
 

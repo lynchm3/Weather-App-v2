@@ -14,8 +14,11 @@ import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
-import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
-import com.marklynch.weather.livedata.sharedpreferences.LongSharedPreferencesLiveData
+import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.Use24hrClockSharedPreferenceLiveData
+import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
+import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseKmSharedPreferenceLiveData
+import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
+import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.LongSharedPreferencesLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.log.ProductionTree
 import com.marklynch.weather.utils.PermissionsChecker
@@ -42,18 +45,6 @@ private val dataModule = module {
             get<Application>(),
             WeatherDatabase::class.java, "weather.db"
         ).build()
-    }
-
-    factory { (sharedPreferencesKey: String) ->
-        BooleanSharedPreferencesLiveData(
-            sharedPreferencesKey
-        )
-    }
-
-    factory { (sharedPreferencesKey: String) ->
-        LongSharedPreferencesLiveData(
-            sharedPreferencesKey
-        )
     }
 
     factory<HttpUrl> { (baseUrl: String) ->
@@ -84,6 +75,10 @@ private val dataModule = module {
     single<WeatherLiveData>()
     single<NetworkInfoLiveData>()
     single<ManualLocationRepository>()
+    single<Use24hrClockSharedPreferenceLiveData>()
+    single<UseKmSharedPreferenceLiveData>()
+    single<UseCelsiusSharedPreferenceLiveData>()
+    single<CurrentLocationIdSharedPreferenceLiveData>()
 }
 
 val appModules = listOf(

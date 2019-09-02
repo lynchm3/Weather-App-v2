@@ -14,7 +14,11 @@ import com.google.android.gms.location.LocationResult
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.data.manuallocation.ManualLocationDAO
-import com.marklynch.weather.livedata.sharedpreferences.BooleanSharedPreferencesLiveData
+import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.BooleanSharedPreferencesLiveData
+import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.Use24hrClockSharedPreferenceLiveData
+import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
+import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseKmSharedPreferenceLiveData
+import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
 import com.marklynch.weather.utils.AppPermissionState
 import com.marklynch.weather.utils.PermissionsChecker
 import com.nhaarman.mockitokotlin2.any
@@ -135,6 +139,66 @@ val mockModuleBooleanSharedPreferencesLiveData = module(override = true) {
             }
             on { setSharedPreference(ArgumentMatchers.anyBoolean()) } doAnswer {
                 mockSharedPrefLiveDataBoolean = it.arguments[0] as Boolean
+                null
+            }
+        }
+    }
+}
+
+var useCelcius = false
+val mockModuleUseCelsiusSharedPreferenceLiveData = module(override = true) {
+    single {
+        mock<UseCelsiusSharedPreferenceLiveData> {
+            on { value } doAnswer {
+                useCelcius
+            }
+            on { setSharedPreference(ArgumentMatchers.anyBoolean()) } doAnswer {
+                useCelcius = it.arguments[0] as Boolean
+                null
+            }
+        }
+    }
+}
+
+var useKm = false
+val mockModuleUseKmSharedPreferenceLiveData = module(override = true) {
+    single {
+        mock<UseKmSharedPreferenceLiveData> {
+            on { value } doAnswer {
+                useKm
+            }
+            on { setSharedPreference(ArgumentMatchers.anyBoolean()) } doAnswer {
+                useKm = it.arguments[0] as Boolean
+                null
+            }
+        }
+    }
+}
+
+var use24hrClock = false
+val mockModuleUse24hrClockSharedPreferenceLiveData = module(override = true) {
+    single {
+        mock<Use24hrClockSharedPreferenceLiveData> {
+            on { value } doAnswer {
+                use24hrClock
+            }
+            on { setSharedPreference(ArgumentMatchers.anyBoolean()) } doAnswer {
+                use24hrClock = it.arguments[0] as Boolean
+                null
+            }
+        }
+    }
+}
+
+var currentLocationID = 0L
+val mockModuleCurrentLocationIdSharedPreferenceLiveData = module(override = true) {
+    single {
+        mock<CurrentLocationIdSharedPreferenceLiveData> {
+            on { value } doAnswer {
+                currentLocationID
+            }
+            on { setSharedPreference(ArgumentMatchers.anyLong()) } doAnswer {
+                currentLocationID = it.arguments[0] as Long
                 null
             }
         }
