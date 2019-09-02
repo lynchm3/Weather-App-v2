@@ -1,6 +1,7 @@
 package com.marklynch.weather.activity
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
@@ -52,14 +53,20 @@ class MainActivity : BaseActivity() {
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 when (position) {
                     0 -> {
                         if (viewModel.getSelectedLocationId() == 0L) return
                         viewModel.setSelectedLocationId(0L)
                         pullToRefresh.isRefreshing = true
                         viewModel.fetchLocation()
-                        Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT)
+                            .show()
                     }
                     spinnerList.size - 1 -> {
                         //Attempt to get location from gps
@@ -79,7 +86,8 @@ class MainActivity : BaseActivity() {
                         viewModel.setSelectedLocationId(selectedLocation.id)
                         pullToRefresh.isRefreshing = true
                         viewModel.fetchWeather(selectedLocation)
-                        Toast.makeText(parent.context, "Manual Location!!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(parent.context, "Manual Location!!", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }
@@ -178,7 +186,13 @@ class MainActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PlacePickerConstants.PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                viewModel.addManualLocation(data?.getParcelableExtra<AddressData>(PlacePickerConstants.ADDRESS_INTENT))
+                viewModel.addManualLocation(
+                    data?.getParcelableExtra<AddressData>(
+                        PlacePickerConstants.ADDRESS_INTENT
+                    )
+                )
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                setSpinnerSelectionFromSelectedLocationId()
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
@@ -191,15 +205,23 @@ class MainActivity : BaseActivity() {
         spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
         spinnerList.add("Add Location...")
 
-        val selectedLocationId = viewModel.getSelectedLocationId()
+        setSpinnerSelectionFromSelectedLocationId()
 
         spinnerArrayAdapter.notifyDataSetChanged()
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    }
 
-        for (i: Int in 1..spinnerList.size - 2) {
-            val manualLocation = (spinnerList[i] as ManualLocation)
-            if (manualLocation.id == selectedLocationId)
-                spinner.setSelection(i)
+    private fun setSpinnerSelectionFromSelectedLocationId() {
+        val selectedLocationId = viewModel.getSelectedLocationId()
+
+        if (selectedLocationId == null || selectedLocationId == 0L) {
+            spinner.setSelection(0)
+        } else {
+            for (i: Int in 1..spinnerList.size - 2) {
+                val manualLocation = (spinnerList[i] as ManualLocation)
+                if (manualLocation.id == selectedLocationId)
+                    spinner.setSelection(i)
+            }
         }
     }
 
@@ -215,7 +237,8 @@ class MainActivity : BaseActivity() {
         val useKm = viewModel.isUseKm()
 
         if (useCelsius == null || !useCelsius) {
-            tv_temperature.text = kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
+            tv_temperature.text =
+                kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
             tv_temperature_unit.text = getString(R.string.degreesF)
             tv_maximum_temperature.text = getString(
                 R.string.maximum_temperature_F,
@@ -226,12 +249,19 @@ class MainActivity : BaseActivity() {
                 kelvinToFahrenheit(weatherResponse?.main?.tempMin).roundToInt()
             )
         } else {
-            tv_temperature.text = kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
+            tv_temperature.text =
+                kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
             tv_temperature_unit.text = getString(R.string.degreesC)
             tv_maximum_temperature.text =
-                getString(R.string.maximum_temperature_C, kelvinToCelsius(weatherResponse?.main?.tempMax).roundToInt())
+                getString(
+                    R.string.maximum_temperature_C,
+                    kelvinToCelsius(weatherResponse?.main?.tempMax).roundToInt()
+                )
             tv_minimum_temperature.text =
-                getString(R.string.minimum_temperature_C, kelvinToCelsius(weatherResponse?.main?.tempMin).roundToInt())
+                getString(
+                    R.string.minimum_temperature_C,
+                    kelvinToCelsius(weatherResponse?.main?.tempMin).roundToInt()
+                )
         }
 
         if (useKm == null || !useKm) {
@@ -249,10 +279,12 @@ class MainActivity : BaseActivity() {
         }
 
         iv_weather_description.setImageResource(
-            mapWeatherCodeToDrawable[weatherResponse?.weather?.getOrNull(0)?.icon] ?: R.drawable.weather01d
+            mapWeatherCodeToDrawable[weatherResponse?.weather?.getOrNull(0)?.icon]
+                ?: R.drawable.weather01d
         )
 
-        tv_weather_description.text = weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
+        tv_weather_description.text =
+            weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
         if (viewModel.getSelectedLocationId() == 0L && weatherResponse?.name != null) {
             spinnerList[0] = "Current Location (${weatherResponse.name})"
@@ -262,8 +294,10 @@ class MainActivity : BaseActivity() {
         }
         tv_time_of_last_refresh.text = generateTimeString()
 
-        tv_humidity.text = getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
-        tv_cloudiness.text = getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
+        tv_humidity.text =
+            getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
+        tv_cloudiness.text =
+            getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
 
     }
 
