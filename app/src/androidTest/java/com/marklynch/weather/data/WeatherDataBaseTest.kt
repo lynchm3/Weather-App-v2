@@ -1,12 +1,8 @@
 package com.marklynch.weather.data
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.data.manuallocation.ManualLocationDAO
-import com.marklynch.weather.dependencyinjection.activityModules
-import com.marklynch.weather.dependencyinjection.appModules
 import com.marklynch.weather.dependencyinjection.testWeatherDatabase
 import com.marklynch.weather.utils.observeXTimes
 import com.marklynch.weather.utils.randomAlphaNumeric
@@ -33,12 +29,10 @@ class WeatherDatabaseTest : KoinTest {
     fun setup() {
 
         val moduleList =
-            appModules +
-                    activityModules +
-                    testWeatherDatabase
+            testWeatherDatabase
 
         StandAloneContext.loadKoinModules(moduleList)
-        
+
         db = get()
         manualLocationDAO = db.getManualLocationDao()
     }
@@ -46,7 +40,7 @@ class WeatherDatabaseTest : KoinTest {
     @After
     @Throws(IOException::class)
     fun closeDb() {
-        db.close()
+//        db.close()
     }
 
     private fun insertAndCheckLocation(): ManualLocation {

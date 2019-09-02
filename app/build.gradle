@@ -40,6 +40,14 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+    sourceSets {
+        androidTest {
+            java.srcDirs += "src/sharedTest/java"
+        }
+        test {
+            java.srcDirs += "src/sharedTest/java"
+        }
+    }
 }
 
 repositories {
@@ -74,7 +82,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
     implementation 'com.google.gms:google-services:4.3.1'
-    implementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
     implementation 'com.squareup.okhttp3:mockwebserver:4.0.1'
 
 
@@ -87,6 +94,7 @@ dependencies {
     testImplementation 'androidx.arch.core:core-testing:2.0.0'
     testImplementation 'androidx.test:core:1.2.0'
     testImplementation "org.koin:koin-test:1.0.1"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
 
     //Android test implementation
     androidTestImplementation 'junit:junit:4.12'
@@ -97,4 +105,5 @@ dependencies {
     androidTestImplementation 'androidx.arch.core:core-testing:2.0.0'
     androidTestImplementation 'androidx.test:core:1.2.0'
     androidTestImplementation "org.koin:koin-test:1.0.1"
+    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
 }

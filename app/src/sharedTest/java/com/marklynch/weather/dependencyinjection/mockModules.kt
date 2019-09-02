@@ -206,14 +206,6 @@ val mockModuleCurrentLocationIdSharedPreferenceLiveData = module(override = true
     }
 }
 
-val testWeatherDatabase = module(override = true) {
-    single {
-        Room.inMemoryDatabaseBuilder(
-            get(), WeatherDatabase::class.java
-        ).build()
-    }
-}
-
 //val mockManualLocationDAO= module(override = true) {
 val mockManualLocationDAO = mock<ManualLocationDAO> {
     on { getManualLocationLiveData() } doAnswer {
