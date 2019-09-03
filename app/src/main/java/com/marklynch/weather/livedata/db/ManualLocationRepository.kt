@@ -15,7 +15,7 @@ import org.koin.standalone.inject
 
 class ManualLocationRepository : KoinComponent {
 
-    private val db: WeatherDatabase by inject()
+    val db: WeatherDatabase by inject()
     private val manualLocationDAO: ManualLocationDAO?
     val manualLocationLiveData: LiveData<List<ManualLocation>>?
 

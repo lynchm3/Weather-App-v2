@@ -14,12 +14,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.get
+import org.koin.standalone.inject
 import org.koin.test.KoinTest
 import java.io.IOException
 import kotlin.random.Random
 
 class WeatherDatabaseTest : KoinTest {
-    private lateinit var db: WeatherDatabase
+    private val db: WeatherDatabase by inject()
     private lateinit var manualLocationDAO: ManualLocationDAO
 
     @get:Rule
@@ -27,20 +28,18 @@ class WeatherDatabaseTest : KoinTest {
 
     @Before
     fun setup() {
-
         val moduleList =
             testWeatherDatabase
 
         StandAloneContext.loadKoinModules(moduleList)
-
-        db = get()
         manualLocationDAO = db.getManualLocationDao()
+        db.clearAllTables()
     }
 
     @After
     @Throws(IOException::class)
     fun closeDb() {
-//        db.close()
+        db.close()
     }
 
     private fun insertAndCheckLocation(): ManualLocation {

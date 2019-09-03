@@ -2,6 +2,7 @@ package com.marklynch.weather.livedata.db
 
 import android.location.Address
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.dependencyinjection.testWeatherDatabase
 import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
@@ -27,7 +28,6 @@ class ManualLocationRepositoryTest : KoinTest {
 
     @Before
     fun setup() {
-
         val moduleList =
             testWeatherDatabase
 
@@ -58,6 +58,7 @@ class ManualLocationRepositoryTest : KoinTest {
     @Test
     fun testInsert() {
         val manualLocationRepository: ManualLocationRepository by inject()
+        manualLocationRepository.db.clearAllTables()
         val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
         val currentLocationIdSharedPreferenceLiveData: CurrentLocationIdSharedPreferenceLiveData by inject()
 
@@ -68,16 +69,14 @@ class ManualLocationRepositoryTest : KoinTest {
 
         //Check the inserted data
         manualLocationLiveData?.observeXTimes(2) {
-            if (it.isEmpty()) {
-
-            } else {
+            if (it.isNotEmpty()) {
                 actualManualLocationInserted = it[0]
                 latch.countDown()
             }
         }
 
         currentLocationIdSharedPreferenceLiveData.observeXTimes(1) {
-            Assert.assertEquals(1L, it)
+            org.junit.Assert.assertNotEquals(0, it)
             latch.countDown()
         }
 
@@ -97,19 +96,18 @@ class ManualLocationRepositoryTest : KoinTest {
     @Test
     fun testDelete() {
         val manualLocationRepository: ManualLocationRepository by inject()
+        manualLocationRepository.db.clearAllTables()
         val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
         val currentLocationIdSharedPreferenceLiveData: CurrentLocationIdSharedPreferenceLiveData by inject()
 
-        val latchForInsert = CountDownLatch(2)
+        val latchForInsert = CountDownLatch(1)
 
         val addressData = insertLocation()
         lateinit var actualManualLocationInserted: ManualLocation
 
         //Check the inserted data
         manualLocationLiveData?.observeXTimes(2) {
-            if (it.isEmpty()) {
-
-            } else {
+            if (it.isNotEmpty()) {
                 actualManualLocationInserted = it[0]
                 latchForInsert.countDown()
             }
@@ -132,8 +130,10 @@ class ManualLocationRepositoryTest : KoinTest {
         //Confirm deleted
         var listSize = -1
         manualLocationLiveData?.observeXTimes(2) {
-            listSize = it.size
-            latchForDelete.countDown()
+            if (it.isEmpty()) {
+                listSize = it.size
+                latchForDelete.countDown()
+            }
         }
 
         latchForDelete.await(2, TimeUnit.SECONDS)
@@ -146,19 +146,18 @@ class ManualLocationRepositoryTest : KoinTest {
     @Test
     fun testRename() {
         val manualLocationRepository: ManualLocationRepository by inject()
+        manualLocationRepository.db.clearAllTables()
         val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
         val currentLocationIdSharedPreferenceLiveData: CurrentLocationIdSharedPreferenceLiveData by inject()
 
-        val latchForInsert = CountDownLatch(2)
+        val latchForInsert = CountDownLatch(1)
 
         val addressData = insertLocation()
         lateinit var actualManualLocationInserted: ManualLocation
 
         //Check the inserted data
         manualLocationLiveData?.observeXTimes(2) {
-            if (it.isEmpty()) {
-
-            } else {
+            if (it.isNotEmpty()) {
                 actualManualLocationInserted = it[0]
                 latchForInsert.countDown()
             }
@@ -173,21 +172,25 @@ class ManualLocationRepositoryTest : KoinTest {
         Assert.assertEquals(addressData.latitude, actualManualLocationInserted.latitude)
         Assert.assertEquals(addressData.longitude, actualManualLocationInserted.longitude)
 
-        //Call delete
-        manualLocationRepository.delete(actualManualLocationInserted)
+        //Testing rename...
+        val latchForRename = CountDownLatch(2)
 
-        val latchForDelete = CountDownLatch(2)
-
-        //Confirm deleted
-        var listSize = -1
+        //Observer for rename
+        var actualNewName = ""
         manualLocationLiveData?.observeXTimes(2) {
-            listSize = it.size
-            latchForDelete.countDown()
+            if (it.isNotEmpty()) {
+                actualNewName = it[0].displayName
+                latchForRename.countDown()
+            }
         }
 
-        latchForDelete.await(2, TimeUnit.SECONDS)
+        //Call rename
+        val renameTo = randomAlphaNumeric(5)
+        manualLocationRepository.rename(actualManualLocationInserted, renameTo)
 
-        Assert.assertEquals(0, listSize)
+        latchForRename.await(2, TimeUnit.SECONDS)
+
+        Assert.assertEquals(renameTo, actualNewName)
     }
 
 }
