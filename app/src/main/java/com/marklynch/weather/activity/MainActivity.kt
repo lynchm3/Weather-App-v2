@@ -33,7 +33,7 @@ import java.util.*
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
 
-class MainActivity : BaseActivity() {
+public class MainActivity : BaseActivity() {
 
     private val viewModel: MainViewModel by inject()
     private var alertDialog: AlertDialog? = null

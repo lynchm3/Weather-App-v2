@@ -2,20 +2,22 @@ package com.marklynch.weather.livedata.db
 
 import android.location.Address
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.dependencyinjection.testWeatherDatabase
 import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
-import com.marklynch.weather.utils.observeXTimes
 import com.marklynch.weather.utils.randomAlphaNumeric
 import com.sucho.placepicker.AddressData
 import junit.framework.Assert
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
+import java.io.IOException
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -32,6 +34,14 @@ class ManualLocationRepositoryTest : KoinTest {
             testWeatherDatabase
 
         StandAloneContext.loadKoinModules(moduleList)
+    }
+
+    @After
+    @Throws(IOException::class)
+    fun after() {
+        val manualLocationRepository: ManualLocationRepository by inject()
+        manualLocationRepository.db.close()
+        GlobalScope.cancel()
     }
 
     private fun insertLocation(): AddressData {
@@ -68,14 +78,14 @@ class ManualLocationRepositoryTest : KoinTest {
         lateinit var actualManualLocationInserted: ManualLocation
 
         //Check the inserted data
-        manualLocationLiveData?.observeXTimes(2) {
+        manualLocationLiveData?.observeForever {
             if (it.isNotEmpty()) {
                 actualManualLocationInserted = it[0]
                 latch.countDown()
             }
         }
 
-        currentLocationIdSharedPreferenceLiveData.observeXTimes(1) {
+        currentLocationIdSharedPreferenceLiveData.observeForever {
             org.junit.Assert.assertNotEquals(0, it)
             latch.countDown()
         }
@@ -106,7 +116,7 @@ class ManualLocationRepositoryTest : KoinTest {
         lateinit var actualManualLocationInserted: ManualLocation
 
         //Check the inserted data
-        manualLocationLiveData?.observeXTimes(2) {
+        manualLocationLiveData?.observeForever {
             if (it.isNotEmpty()) {
                 actualManualLocationInserted = it[0]
                 latchForInsert.countDown()
@@ -129,7 +139,7 @@ class ManualLocationRepositoryTest : KoinTest {
 
         //Confirm deleted
         var listSize = -1
-        manualLocationLiveData?.observeXTimes(2) {
+        manualLocationLiveData?.observeForever {
             if (it.isEmpty()) {
                 listSize = it.size
                 latchForDelete.countDown()
@@ -156,7 +166,7 @@ class ManualLocationRepositoryTest : KoinTest {
         lateinit var actualManualLocationInserted: ManualLocation
 
         //Check the inserted data
-        manualLocationLiveData?.observeXTimes(2) {
+        manualLocationLiveData?.observeForever {
             if (it.isNotEmpty()) {
                 actualManualLocationInserted = it[0]
                 latchForInsert.countDown()
@@ -177,7 +187,7 @@ class ManualLocationRepositoryTest : KoinTest {
 
         //Observer for rename
         var actualNewName = ""
-        manualLocationLiveData?.observeXTimes(2) {
+        manualLocationLiveData?.observeForever {
             if (it.isNotEmpty()) {
                 actualNewName = it[0].displayName
                 latchForRename.countDown()

@@ -4,16 +4,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.data.manuallocation.ManualLocationDAO
 import com.marklynch.weather.dependencyinjection.testWeatherDatabase
-import com.marklynch.weather.utils.observeXTimes
 import com.marklynch.weather.utils.randomAlphaNumeric
-import junit.framework.Assert
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.standalone.StandAloneContext
-import org.koin.standalone.get
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
 import java.io.IOException
@@ -38,8 +37,9 @@ class WeatherDatabaseTest : KoinTest {
 
     @After
     @Throws(IOException::class)
-    fun closeDb() {
+    fun after() {
         db.close()
+        GlobalScope.cancel()
     }
 
     private fun insertAndCheckLocation(): ManualLocation {
@@ -113,11 +113,11 @@ class WeatherDatabaseTest : KoinTest {
         val insertedManualLocation = insertAndCheckLocation()
 
         var observations = 0
-        manualLocationsLiveData.observeXTimes(1) {
+        manualLocationsLiveData.observeForever {
             observations++
-            Assert.assertEquals(insertedManualLocation, it[0])
+            assertEquals(insertedManualLocation, it[0])
         }
 
-        Assert.assertEquals(1, observations)
+        assertEquals(1, observations)
     }
 }

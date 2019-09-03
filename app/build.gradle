@@ -87,6 +87,7 @@ dependencies {
 
     //Test implementation
     testImplementation 'junit:junit:4.12'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     testImplementation 'androidx.test:runner:1.2.0'
     //Lint to ignore the old lib version below due to strict version dependency
@@ -95,9 +96,11 @@ dependencies {
     testImplementation 'androidx.test:core:1.2.0'
     testImplementation "org.koin:koin-test:1.0.1"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
+    testImplementation 'com.android.support.test:rules:1.0.2'
 
     //Android test implementation
     androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     //Lint to ignore the old lib version below due to strict version dependency
@@ -106,4 +109,5 @@ dependencies {
     androidTestImplementation 'androidx.test:core:1.2.0'
     androidTestImplementation "org.koin:koin-test:1.0.1"
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
 }
