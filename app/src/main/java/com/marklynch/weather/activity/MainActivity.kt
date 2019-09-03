@@ -201,9 +201,9 @@ public class MainActivity : BaseActivity() {
 
     private fun updateLocationSpinner() {
         spinnerList.clear()
-        spinnerList.add("Current Location")
+        spinnerList.add(getString(R.string.current_location))
         spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
-        spinnerList.add("Add Location...")
+        spinnerList.add(getString(R.string.add_location_ellipses))
 
         setSpinnerSelectionFromSelectedLocationId()
 

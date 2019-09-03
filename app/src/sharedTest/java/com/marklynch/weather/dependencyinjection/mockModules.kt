@@ -79,14 +79,6 @@ val mockModuleFusedLocationProviderClient = module(override = true) {
     }
 }
 
-
-var mockWebServer: MockWebServer? = null
-val mockModuleHttpUrl = module(override = true) {
-    factory<HttpUrl> { (baseUrl: String) ->
-        mockWebServer?.url("") ?: throw IllegalArgumentException("Illegal URL: \"\"")
-    }
-}
-
 var mockAppPermissionState = AppPermissionState.Denied
 val mockModulePermissionsChecker = module(override = true) {
     single {

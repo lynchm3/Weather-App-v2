@@ -1,6 +1,8 @@
 package com.marklynch.weather.livedata.weather
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.HttpUrl
 import org.koin.core.parameter.parametersOf
 import org.koin.standalone.KoinComponent
@@ -12,6 +14,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.mockwebserver.MockWebServer
+import org.koin.standalone.inject
 
 
 class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
@@ -22,32 +27,45 @@ class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
 
         if (lat == 0.0 && lon == 0.0)
             return
-        
-        val retrofit = getRetrofitInstance("https://api.openweathermap.org")
 
-        val apiService = retrofit.create(RestApiService::class.java)
+        GlobalScope.launch {
 
-        val call = apiService.getCurrentWeatherData(lat, lon, appId)
+            val retrofit = getRetrofitInstance("https://api.openweathermap.org")
 
-        call.enqueue(object : Callback<WeatherResponse> {
-            override fun onFailure(call: Call<WeatherResponse>?, t: Throwable?) {
-                postValue(null)
-            }
+            val apiService = retrofit.create(RestApiService::class.java)
 
-            override fun onResponse(call: Call<WeatherResponse>, weatherResponseWrapper: Response<WeatherResponse>) {
-                val weatherResponse = weatherResponseWrapper.body()
-                postValue(weatherResponse)
-            }
-        })
+            val call = apiService.getCurrentWeatherData(lat, lon, appId)
+
+            call.enqueue(object : Callback<WeatherResponse> {
+                override fun onFailure(call: Call<WeatherResponse>?, t: Throwable?) {
+                    println("onResponse posting null t = " + t)
+                    postValue(null)
+                }
+
+                override fun onResponse(
+                    call: Call<WeatherResponse>,
+                    weatherResponseWrapper: Response<WeatherResponse>
+                ) {
+                    val weatherResponse = weatherResponseWrapper.body()
+                    println("onResponse weatherResponse = $weatherResponse")
+                    postValue(weatherResponse)
+                }
+            })
+        }
     }
 
     private fun getRetrofitInstance(baseUrl: String): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(get<HttpUrl>{
+
+            println("getRetrofitInstance baseUrl = $baseUrl")
+            val httpURL: HttpUrl  by inject {
                 parametersOf(baseUrl)
-            })
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+            }
+            println("getRetrofitInstance httpURL = $httpURL")
+
+            return Retrofit.Builder()
+                .baseUrl(httpURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
     }
 
     interface RestApiService {

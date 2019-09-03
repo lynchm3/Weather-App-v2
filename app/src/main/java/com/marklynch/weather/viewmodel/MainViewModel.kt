@@ -6,19 +6,12 @@ import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
 import com.marklynch.weather.livedata.network.NetworkInfoLiveData
-import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.BooleanSharedPreferencesLiveData
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.Use24hrClockSharedPreferenceLiveData
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseKmSharedPreferenceLiveData
 import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
-import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.LongSharedPreferencesLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_CURRENT_LOCATION_ID
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_24_HR_CLOCK
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELSIUS
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
 import com.sucho.placepicker.AddressData
-import org.koin.core.parameter.parametersOf
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
@@ -37,14 +30,14 @@ open class MainViewModel(application: Application) : AndroidViewModel(applicatio
     val useCelsiusSharedPreferencesLiveData: UseCelsiusSharedPreferenceLiveData by inject()
 
     //Shared Preference for setting whether to use km or mi
-    val useKmSharedPreferencesLiveData: UseKmSharedPreferenceLiveData by inject ()
+    val useKmSharedPreferencesLiveData: UseKmSharedPreferenceLiveData by inject()
 
     //Shared Preference for setting whether to use 24 or 12 hr clock
     val use24hrClockSharedPreferencesLiveData: Use24hrClockSharedPreferenceLiveData by inject()
 
     val selectedLocationIdSharedPreferencesLiveData: CurrentLocationIdSharedPreferenceLiveData by inject()
 
-//        val manualLocationRepository = ManualLocationRepository(application)
+    //        val manualLocationRepository = ManualLocationRepository(application)
     private val manualLocationRepository: ManualLocationRepository by inject()
     val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
 

@@ -40,6 +40,7 @@ class WeatherDatabaseTest : KoinTest {
     fun after() {
         db.close()
         GlobalScope.cancel()
+        StandAloneContext.stopKoin()
     }
 
     private fun insertAndCheckLocation(): ManualLocation {

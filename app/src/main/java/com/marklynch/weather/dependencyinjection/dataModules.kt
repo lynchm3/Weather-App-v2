@@ -18,7 +18,6 @@ import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseKmSharedPreferenceLiveData
 import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
-import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.LongSharedPreferencesLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.log.ProductionTree
 import com.marklynch.weather.utils.PermissionsChecker

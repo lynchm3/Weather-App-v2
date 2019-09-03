@@ -98,6 +98,7 @@ dependencies {
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
     testImplementation 'com.android.support.test:rules:1.0.2'
 
+
     //Android test implementation
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
@@ -107,7 +108,8 @@ dependencies {
     //noinspection GradleDependency
     androidTestImplementation 'androidx.arch.core:core-testing:2.0.0'
     androidTestImplementation 'androidx.test:core:1.2.0'
-    androidTestImplementation "org.koin:koin-test:1.0.1"
+    androidTestImplementation ("org.koin:koin-test:1.0.1") { exclude group: 'org.mockito' }
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'org.mockito:mockito-android:3.0.0'
 }

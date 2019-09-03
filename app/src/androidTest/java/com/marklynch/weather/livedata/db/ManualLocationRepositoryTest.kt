@@ -42,6 +42,7 @@ class ManualLocationRepositoryTest : KoinTest {
         val manualLocationRepository: ManualLocationRepository by inject()
         manualLocationRepository.db.close()
         GlobalScope.cancel()
+        StandAloneContext.stopKoin()
     }
 
     private fun insertLocation(): AddressData {

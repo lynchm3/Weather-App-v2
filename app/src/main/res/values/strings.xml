@@ -36,6 +36,8 @@
     <string name="remove">REMOVE</string>
     <string name="rename">RENAME</string>
     <string name="no_locations_to_display">No locations to display</string>
+    <string name="current_location">Current Location</string>
+    <string name="add_location_ellipses">Add Location...</string>
 
     <string-array name="spinner_list_item_array">
         <item>English</item>

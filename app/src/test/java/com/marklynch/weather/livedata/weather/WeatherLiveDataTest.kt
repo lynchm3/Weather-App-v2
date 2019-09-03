@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.utils.observeXTimes
+import com.marklynch.weather.generateGetWeatherResponse
 import junit.framework.Assert.assertEquals
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -30,7 +31,7 @@ class WeatherLiveDataTest : KoinTest {
             appModules +
                     activityModules +
                     mockModuleApplication +
-                    mockModuleHttpUrl
+                    testModuleHttpUrl
         loadKoinModules(moduleList)
     }
 
@@ -56,8 +57,8 @@ class WeatherLiveDataTest : KoinTest {
     @Test
     fun `Test observe after fetch success`() {
 
-        mockWebServer = MockWebServer()
-        mockWebServer?.enqueue(MockResponse().setBody(weatherResponse))
+        testWebServer = MockWebServer()
+        testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse()))
 
         val weatherLiveData =
             WeatherLiveData()
@@ -65,7 +66,7 @@ class WeatherLiveDataTest : KoinTest {
         var observations = 0
         weatherLiveData.observeXTimes(1) {
             observations++
-            assertEquals(Gson().fromJson(weatherResponse, WeatherResponse::class.java), Gson().toJson(it))
+            assertEquals(Gson().fromJson(generateGetWeatherResponse(), WeatherResponse::class.java), Gson().toJson(it))
         }
 
         weatherLiveData.fetchWeather(sligoLatitude, sligoLongitude)
@@ -79,13 +80,13 @@ class WeatherLiveDataTest : KoinTest {
 
 //        assertEquals(1, observations)
 
-        mockWebServer?.shutdown()
+        testWebServer?.shutdown()
     }
 
     @Test
     fun `Test observe after fetch error`() {
-        mockWebServer = MockWebServer()
-        mockWebServer?.enqueue(MockResponse().setResponseCode(403))
+        testWebServer = MockWebServer()
+        testWebServer?.enqueue(MockResponse().setResponseCode(403))
 
         val weatherLiveData =
             WeatherLiveData()
@@ -99,50 +100,6 @@ class WeatherLiveDataTest : KoinTest {
 
         assertEquals(0, observations)
 
-        mockWebServer?.shutdown()
+        testWebServer?.shutdown()
     }
 }
-
-const val weatherResponse = """{
-   "coord":{
-      "lon":-122.08,
-      "lat":37.42
-   },
-   "weather":[
-      {
-         "id":800,
-         "main":"Clear",
-         "description":"clear sky",
-         "icon":"01d"
-      }
-   ],
-   "base":"stations",
-   "main":{
-      "temp":298.24,
-      "pressure":1017,
-	  "humidity":47,
-	  "tempMin":294.82,
-	  "tempMax":301.48
-   },
-   "visibility":16093,
-   "wind":{
-	  "speed":2.1,
-	  "deg":340
-   },
-   "clouds":{
-								"all":1
-   },
-   "dt":1563212122,
-   "sys":{
-      "type":1,
-      "id":5122,
-      "message":0.0134,
-      "country":"US",
-      "sunrise":1563195547,
-      "sunset":1563247741
-   },
-   "timezone":-25200,
-   "id":5375480,
-   "name":"Mountain View",
-   "cod":200
-}"""
