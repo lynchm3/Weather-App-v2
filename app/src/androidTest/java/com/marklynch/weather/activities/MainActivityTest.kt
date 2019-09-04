@@ -1,6 +1,7 @@
 package com.marklynch.weather.activities
 
 import android.content.res.Resources
+import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -17,10 +18,7 @@ import com.marklynch.weather.activities.SwipeRefreshLayoutMatchers.isNotRefreshi
 import com.marklynch.weather.activity.MainActivity
 import com.marklynch.weather.dependencyinjection.testModuleHttpUrl
 import com.marklynch.weather.dependencyinjection.testWebServer
-import com.marklynch.weather.utils.directionInDegreesToCardinalDirection
-import com.marklynch.weather.utils.kelvinToCelsius
-import com.marklynch.weather.utils.kelvinToFahrenheit
-import com.marklynch.weather.utils.metresPerSecondToMilesPerHour
+import com.marklynch.weather.utils.*
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
 import org.junit.rules.TestWatcher
@@ -73,6 +71,7 @@ class MainActivityTest : KoinTest {
 
     @Before
     fun before() {
+
     }
 
     @After
@@ -92,6 +91,14 @@ class MainActivityTest : KoinTest {
                         R.string.current_location_brackets_name,
                         testLocationName
                     )
+                )
+            )
+        )
+
+        onView(withId(R.id.tv_time_of_last_refresh)).check(
+            matches(
+                withText(
+                    generateTimeString(false)
                 )
             )
         )
@@ -134,8 +141,8 @@ class MainActivityTest : KoinTest {
             matches(
                 withText(
                     resources.getString(
-                        R.string.wind_mi,
-                        metresPerSecondToMilesPerHour(testWindSpeed).roundToInt(),
+                        R.string.wind_km,
+                        metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
                         directionInDegreesToCardinalDirection(testWindDeg)
                     )
                 )
@@ -194,11 +201,58 @@ class MainActivityTest : KoinTest {
         onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesC))))
     }
 
+
+
     @Test
     fun testKmAndMiSwitch() {
 
         waitForLoadingToFinish()
 
+        //Switch to km as a starting point if not there already
+        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        try {
+            onView(withText(resources.getString(R.string.action_use_km)))
+                .perform(click())
+        } catch (e: Exception) {
+            //close menu if degrees C option wasn't available
+            Espresso.pressBack()
+        }
+
+        //Switch to miles
+        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(resources.getString(R.string.action_use_mi)))
+            .perform(click())
+
+        //Check relevant textviews Mi
+        onView(withId(R.id.tv_wind)).check(
+            matches(
+                withText(
+                    resources.getString(
+                        R.string.wind_mi,
+                        metresPerSecondToMilesPerHour(testWindSpeed).roundToInt(),
+                        directionInDegreesToCardinalDirection(testWindDeg)
+                    )
+                )
+            )
+        )
+
+        //Switch to km
+        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(resources.getString(R.string.action_use_km)))
+            .perform(click())
+
+        //Check relevant textviews km
+        onView(withId(R.id.tv_wind)).check(
+            matches(
+                withText(
+                    resources.getString(
+                        R.string.wind_km,
+                        metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
+                        directionInDegreesToCardinalDirection(testWindDeg)
+                    )
+                )
+            )
+        )
     }
 
     @Test
@@ -206,8 +260,45 @@ class MainActivityTest : KoinTest {
 
         waitForLoadingToFinish()
 
+        //Switch to 12hr clock as a starting point if not there already
+        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        try {
+            onView(withText(resources.getString(R.string.action_use_12_hr_clock)))
+                .perform(click())
+        } catch (e: Exception) {
+            //close menu if degrees C option wasn't available
+            Espresso.pressBack()
+        }
 
+        //Switch to 24hr clock
+        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(resources.getString(R.string.action_use_24_hr_clock)))
+            .perform(click())
+
+        //Check relevant textviews 24hr clcok
+        onView(withId(R.id.tv_time_of_last_refresh)).check(
+            matches(
+                withText(
+                    generateTimeString(true)
+                )
+            )
+        )
+
+        //Switch to 12hr clock
+        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(resources.getString(R.string.action_use_12_hr_clock)))
+            .perform(click())
+
+        //Check relevant textviews 12hr clock
+        onView(withId(R.id.tv_time_of_last_refresh)).check(
+            matches(
+                withText(
+                    generateTimeString(false)
+                )
+            )
+        )
     }
+
 
     @Test
     fun testNoLocationPermission() {

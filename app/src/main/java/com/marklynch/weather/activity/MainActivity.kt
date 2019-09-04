@@ -293,7 +293,7 @@ public class MainActivity : BaseActivity() {
             spinner.invalidate()
             spinnerArrayAdapter.notifyDataSetChanged()
         }
-        tv_time_of_last_refresh.text = generateTimeString()
+        tv_time_of_last_refresh.text = generateTimeString(viewModel.isUse24hrClock())
 
         tv_humidity.text =
             getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
@@ -301,12 +301,6 @@ public class MainActivity : BaseActivity() {
             getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
 
     }
-
-    private fun generateTimeString(): String =
-        if (viewModel.isUse24hrClock() == true)
-            SimpleDateFormat("HH:mm", Locale.US).format(Calendar.getInstance().time)
-        else
-            SimpleDateFormat("hh:mm a", Locale.US).format(Calendar.getInstance().time)
 
 
     private fun showNoNetworkConnectionDialog() {
