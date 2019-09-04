@@ -20,6 +20,7 @@ val testWeatherDatabase = module(override = true) {
 lateinit var testWebServer:MockWebServer
 val testModuleHttpUrl = module(override = true) {
     factory { (_: String) ->
+        testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse()))
         testWebServer.url("")
     }
 }

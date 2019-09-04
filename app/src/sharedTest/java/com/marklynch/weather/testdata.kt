@@ -1,18 +1,19 @@
 package com.marklynch.weather
 
+import com.marklynch.weather.utils.randomAlphaNumeric
 import kotlin.random.Random
 
 var testLon = -122.08
 var testLat = 37.42
-var testLocationName = "Test Location"
-var testDescription = "Test Description"
-var testTemperature = Random.nextDouble()
-var testHumidity = Random.nextDouble()
-var testTemperatureMin = Random.nextDouble()
-var testTemperatureMax = Random.nextDouble()
-var testWindSpeed = Random.nextDouble()
-var testWindDeg = Random.nextDouble()
-var testCloudiness = Random.nextDouble()
+var testLocationName = randomAlphaNumeric(5)
+var testDescription = randomAlphaNumeric(5)
+var testTemperature = Random.nextDouble(253.0, 323.0)
+var testHumidity = Random.nextDouble(0.0,100.0)
+var testTemperatureMin = Random.nextDouble(253.0, 323.0)
+var testTemperatureMax = Random.nextDouble(253.0, 323.0)
+var testWindSpeed = Random.nextDouble(0.0,100.0)
+var testWindDeg = Random.nextDouble(0.0,359.0)
+var testCloudiness = Random.nextDouble(0.0,100.0)
 
 fun generateGetWeatherResponse() = """{
    "coord":{
@@ -32,8 +33,8 @@ fun generateGetWeatherResponse() = """{
       "temp":$testTemperature,
       "pressure":1017,
 	  "humidity":$testHumidity,
-	  "tempMin":$testTemperatureMin,
-	  "tempMax":$testTemperatureMax
+	  "temp_min":$testTemperatureMin,
+	  "temp_max":$testTemperatureMax
    },
    "visibility":16093,
    "wind":{

@@ -287,7 +287,8 @@ public class MainActivity : BaseActivity() {
             weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
         if (viewModel.getSelectedLocationId() == 0L && weatherResponse?.name != null) {
-            spinnerList[0] = getString(R.string.current_location_brackets_name,weatherResponse.name)
+            spinnerList[0] =
+                getString(R.string.current_location_brackets_name, weatherResponse.name)
             val spinner = findViewById<Spinner>(R.id.spinner_select_location)
             spinner.invalidate()
             spinnerArrayAdapter.notifyDataSetChanged()

@@ -1,10 +1,11 @@
 package com.marklynch.weather.activities
 
 import android.content.res.Resources
-import android.view.View
-import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
@@ -12,14 +13,14 @@ import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.marklynch.weather.*
+import com.marklynch.weather.activities.SwipeRefreshLayoutMatchers.isNotRefreshing
 import com.marklynch.weather.activity.MainActivity
 import com.marklynch.weather.dependencyinjection.testModuleHttpUrl
 import com.marklynch.weather.dependencyinjection.testWebServer
 import com.marklynch.weather.utils.directionInDegreesToCardinalDirection
 import com.marklynch.weather.utils.kelvinToCelsius
+import com.marklynch.weather.utils.kelvinToFahrenheit
 import com.marklynch.weather.utils.metresPerSecondToMilesPerHour
-import com.marklynch.weather.utils.randomAlphaNumeric
-import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
 import org.junit.rules.TestWatcher
@@ -27,7 +28,6 @@ import org.junit.runner.Description
 import org.koin.standalone.StandAloneContext
 import org.koin.test.KoinTest
 import kotlin.math.roundToInt
-import kotlin.random.Random
 
 
 @LargeTest
@@ -35,7 +35,7 @@ class MainActivityTest : KoinTest {
 
     @Rule
     @JvmField
-    var activityTestRule = ActivityTestRule(MainActivity::class.java, false, false)
+    var activityTestRule = ActivityTestRule(MainActivity::class.java, false, true)
 
     @JvmField
     @Rule
@@ -43,51 +43,46 @@ class MainActivityTest : KoinTest {
 
     private val resources: Resources = getInstrumentation().targetContext.resources
 
+    private val idlingRegistry: IdlingRegistry = IdlingRegistry.getInstance()
+
     companion object {
         @BeforeClass
         @JvmStatic
         fun beforeClass() {
+            val moduleList = listOf(
+                testModuleHttpUrl
+            )
+            StandAloneContext.loadKoinModules(moduleList)
+
+            testWebServer = MockWebServer()
+//            testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse()))
+            testWebServer.start()
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun afterClass() {
+
+//        activityTestRule.finishActivity()
+            testWebServer.shutdown()
+            StandAloneContext.stopKoin()
+
+
         }
     }
 
     @Before
     fun before() {
-        val moduleList = listOf(
-            testModuleHttpUrl
-        )
-        StandAloneContext.loadKoinModules(moduleList)
     }
 
     @After
     fun after() {
-
     }
 
     @Test
     fun checkInitialState() {
-        testLocationName = randomAlphaNumeric(5)
-        testDescription = randomAlphaNumeric(5)
-        testTemperature = Random.nextDouble()
-        testHumidity = Random.nextDouble()
-        testTemperatureMin = Random.nextDouble()
-        testTemperatureMax = Random.nextDouble()
-        testWindSpeed = Random.nextDouble()
-        testWindDeg = Random.nextDouble()
-        testCloudiness = Random.nextDouble()
 
-        testWebServer = MockWebServer()
-        testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse()))
-        testWebServer.start()
-
-        activityTestRule.launchActivity(null)
-
-        val idlingRegistry: IdlingRegistry = IdlingRegistry.getInstance()
-
-        //Wait for weather view to be visible
-        val llWeatherInfo: LinearLayoutCompat =
-            activityTestRule.activity.findViewById(R.id.ll_weather_info)
-        idlingRegistry.register(ViewVisibilityIdlingResource(llWeatherInfo, View.VISIBLE))
-        onView(withId(R.id.ll_weather_info)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        waitForLoadingToFinish()
 
         //Spinner selected item text
         onView(withId(R.id.spinner_select_location)).check(
@@ -154,6 +149,94 @@ class MainActivityTest : KoinTest {
             )
         )
     }
+
+
+
+    @Test
+    fun testFahrenheitAndCelciusSwitch() {
+
+        waitForLoadingToFinish()
+
+        //Switch to degrees C as a starting point if not there already
+        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        try {
+            onView(withText(resources.getString(R.string.action_use_celsius)))
+                .perform(click())
+        } catch (e: Exception) {
+            //close menu if degrees C option wasn't aavailable
+            Espresso.pressBack()
+        }
+
+        //Switch to fahrenheit
+        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(resources.getString(R.string.action_use_fahrenheit)))
+            .perform(click())
+
+        //Check relevant textviews F
+        onView(withId(R.id.tv_temperature)).check(
+            matches(
+                withText(
+                    kelvinToFahrenheit(
+                        testTemperature
+                    ).roundToInt().toString()
+                )
+            )
+        )
+        onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesF))))
+
+        //Switch to celcius
+        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(resources.getString(R.string.action_use_celsius)))
+            .perform(click())
+
+        //Check relevant textviews C
+        onView(withId(R.id.tv_temperature)).check(matches(withText(kelvinToCelsius(testTemperature).roundToInt().toString())))
+        onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesC))))
+    }
+
+    @Test
+    fun testKmAndMiSwitch() {
+
+        waitForLoadingToFinish()
+
+    }
+
+    @Test
+    fun test12hr24hrClockSwitch() {
+
+        waitForLoadingToFinish()
+
+
+    }
+
+    @Test
+    fun testNoLocationPermission() {
+
+        waitForLoadingToFinish()
+    }
+
+    @Test
+    fun testLocationOff() {
+
+        waitForLoadingToFinish()
+    }
+
+    @Test
+    fun testNoNetwork() {
+
+        waitForLoadingToFinish()
+    }
+
+
+    private fun waitForLoadingToFinish() {
+        val pullToRefresh: SwipeRefreshLayout =
+            activityTestRule.activity.findViewById(R.id.pullToRefresh)
+        val idlingResource = ViewRefreshingIdlingResource(pullToRefresh, false)
+        idlingRegistry.register(idlingResource)
+        onView(withId(R.id.pullToRefresh)).check(matches(isNotRefreshing()))
+        idlingRegistry.unregister(idlingResource)
+    }
+
 
     class ScreenshotTakingRule : TestWatcher() {
         override fun failed(e: Throwable?, description: Description) {
