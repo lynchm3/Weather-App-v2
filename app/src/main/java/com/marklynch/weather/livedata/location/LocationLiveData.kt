@@ -23,7 +23,7 @@ import org.koin.standalone.get
 import java.lang.IllegalStateException
 
 
-class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
+open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 

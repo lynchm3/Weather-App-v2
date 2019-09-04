@@ -23,11 +23,11 @@
     <string name="wind_km">Wind %1$dkm/h %2$s</string>
     <string name="cloudiness_percentage">Cloudiness %1$d%%</string>
 
-    <string name="no_network_title">No Network Connection</string>
+    <string name="no_network_title">Alert</string>
     <string name="no_network_body">No network connection</string>
-    <string name="gps_required_title">GPS required</string>
+    <string name="gps_required_title">Alert</string>
     <string name="gps_required_body">GPS Requied</string>
-    <string name="permission_required_title">Location permission required</string>
+    <string name="permission_required_title">Alert</string>
     <string name="permission_required_body">Location permission required</string>
     <string name="loading">Loading…</string>
     <string name="weather_in">Weather in</string>

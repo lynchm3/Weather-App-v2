@@ -1,7 +1,6 @@
 package com.marklynch.weather.activities
 
 import android.content.res.Resources
-import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -16,14 +15,16 @@ import androidx.test.rule.ActivityTestRule
 import com.marklynch.weather.*
 import com.marklynch.weather.activities.SwipeRefreshLayoutMatchers.isNotRefreshing
 import com.marklynch.weather.activity.MainActivity
-import com.marklynch.weather.dependencyinjection.testModuleHttpUrl
-import com.marklynch.weather.dependencyinjection.testWebServer
+import com.marklynch.weather.dependencyinjection.*
+import com.marklynch.weather.livedata.location.GpsState
+import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.utils.*
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 import org.koin.standalone.StandAloneContext
+import org.koin.standalone.StandAloneKoinContext
 import org.koin.test.KoinTest
 import kotlin.math.roundToInt
 
@@ -48,7 +49,8 @@ class MainActivityTest : KoinTest {
         @JvmStatic
         fun beforeClass() {
             val moduleList = listOf(
-                testModuleHttpUrl
+                testModuleHttpUrl,
+                testLocationLiveData
             )
             StandAloneContext.loadKoinModules(moduleList)
 
@@ -158,7 +160,6 @@ class MainActivityTest : KoinTest {
     }
 
 
-
     @Test
     fun testFahrenheitAndCelciusSwitch() {
 
@@ -200,7 +201,6 @@ class MainActivityTest : KoinTest {
         onView(withId(R.id.tv_temperature)).check(matches(withText(kelvinToCelsius(testTemperature).roundToInt().toString())))
         onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesC))))
     }
-
 
 
     @Test
@@ -299,25 +299,15 @@ class MainActivityTest : KoinTest {
         )
     }
 
-
-    @Test
-    fun testNoLocationPermission() {
-
-        waitForLoadingToFinish()
-    }
-
     @Test
     fun testLocationOff() {
-
         waitForLoadingToFinish()
     }
 
     @Test
     fun testNoNetwork() {
-
         waitForLoadingToFinish()
     }
-
 
     private fun waitForLoadingToFinish() {
         val pullToRefresh: SwipeRefreshLayout =
