@@ -1,8 +1,18 @@
 package com.marklynch.weather
 
+import kotlin.random.Random
+
 var testLon = -122.08
 var testLat = 37.42
 var testLocationName = "Test Location"
+var testDescription = "Test Description"
+var testTemperature = Random.nextDouble()
+var testHumidity = Random.nextDouble()
+var testTemperatureMin = Random.nextDouble()
+var testTemperatureMax = Random.nextDouble()
+var testWindSpeed = Random.nextDouble()
+var testWindDeg = Random.nextDouble()
+var testCloudiness = Random.nextDouble()
 
 fun generateGetWeatherResponse() = """{
    "coord":{
@@ -13,25 +23,25 @@ fun generateGetWeatherResponse() = """{
       {
          "id":800,
          "main":"Clear",
-         "description":"clear sky",
+         "description":"$testDescription",
          "icon":"01d"
       }
    ],
    "base":"stations",
    "main":{
-      "temp":298.24,
+      "temp":$testTemperature,
       "pressure":1017,
-	  "humidity":47,
-	  "tempMin":294.82,
-	  "tempMax":301.48
+	  "humidity":$testHumidity,
+	  "tempMin":$testTemperatureMin,
+	  "tempMax":$testTemperatureMax
    },
    "visibility":16093,
    "wind":{
-	  "speed":2.1,
-	  "deg":340
+	  "speed":$testWindSpeed,
+	  "deg":$testWindDeg
    },
    "clouds":{
-      "all":1
+      "all":$testCloudiness
    },
    "dt":1563212122,
    "sys":{

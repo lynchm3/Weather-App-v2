@@ -5,6 +5,8 @@ import com.google.gson.Gson
 import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.utils.observeXTimes
 import com.marklynch.weather.generateGetWeatherResponse
+import com.marklynch.weather.testLocationName
+import com.marklynch.weather.utils.randomAlphaNumeric
 import junit.framework.Assert.assertEquals
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -56,6 +58,9 @@ class WeatherLiveDataTest : KoinTest {
 
     @Test
     fun `Test observe after fetch success`() {
+
+        testLocationName = randomAlphaNumeric(5)
+
 
         testWebServer = MockWebServer()
         testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse()))

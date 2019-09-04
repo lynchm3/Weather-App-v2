@@ -287,7 +287,7 @@ public class MainActivity : BaseActivity() {
             weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
 
         if (viewModel.getSelectedLocationId() == 0L && weatherResponse?.name != null) {
-            spinnerList[0] = "Current Location (${weatherResponse.name})"
+            spinnerList[0] = getString(R.string.current_location_brackets_name,weatherResponse.name)
             val spinner = findViewById<Spinner>(R.id.spinner_select_location)
             spinner.invalidate()
             spinnerArrayAdapter.notifyDataSetChanged()
@@ -456,11 +456,6 @@ public class MainActivity : BaseActivity() {
         "50d" to R.drawable.weather50d,
         "50n" to R.drawable.weather50d
     )
-
-    private fun directionInDegreesToCardinalDirection(directionInDegrees: Double): String {
-        val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW", "N")
-        return directions[(directionInDegrees % 360 / 45).roundToInt()]
-    }
 
 }
 
