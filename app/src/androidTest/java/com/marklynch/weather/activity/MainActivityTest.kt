@@ -1,4 +1,4 @@
-package com.marklynch.weather.activities
+package com.marklynch.weather.activity
 
 import android.content.res.Resources
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -13,8 +13,7 @@ import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.marklynch.weather.*
-import com.marklynch.weather.activities.SwipeRefreshLayoutMatchers.isNotRefreshing
-import com.marklynch.weather.activity.MainActivity
+import com.marklynch.weather.activity.SwipeRefreshLayoutMatchers.isNotRefreshing
 import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
@@ -24,7 +23,6 @@ import org.junit.*
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 import org.koin.standalone.StandAloneContext
-import org.koin.standalone.StandAloneKoinContext
 import org.koin.test.KoinTest
 import kotlin.math.roundToInt
 
@@ -34,7 +32,7 @@ class MainActivityTest : KoinTest {
 
     @Rule
     @JvmField
-    var activityTestRule = ActivityTestRule(MainActivity::class.java, false, true)
+    var activityTestRule = ActivityTestRule(MainActivity::class.java, false, false)
 
     @JvmField
     @Rule
@@ -49,31 +47,29 @@ class MainActivityTest : KoinTest {
         @JvmStatic
         fun beforeClass() {
             val moduleList = listOf(
-                testModuleHttpUrl,
-                testLocationLiveData
+                testModuleHttpUrl
             )
             StandAloneContext.loadKoinModules(moduleList)
 
             testWebServer = MockWebServer()
-//            testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse()))
             testWebServer.start()
         }
 
         @AfterClass
         @JvmStatic
         fun afterClass() {
-
-//        activityTestRule.finishActivity()
             testWebServer.shutdown()
             StandAloneContext.stopKoin()
-
 
         }
     }
 
     @Before
     fun before() {
-
+        val moduleList = listOf(
+            normalLocationLiveData
+        )
+        StandAloneContext.loadKoinModules(moduleList)
     }
 
     @After
@@ -82,6 +78,8 @@ class MainActivityTest : KoinTest {
 
     @Test
     fun checkInitialState() {
+
+        activityTestRule.launchActivity(null)
 
         waitForLoadingToFinish()
 
@@ -157,12 +155,14 @@ class MainActivityTest : KoinTest {
                 )
             )
         )
+        activityTestRule.finishActivity()
     }
 
 
     @Test
     fun testFahrenheitAndCelciusSwitch() {
 
+        activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
 
         //Switch to degrees C as a starting point if not there already
@@ -200,12 +200,14 @@ class MainActivityTest : KoinTest {
         //Check relevant textviews C
         onView(withId(R.id.tv_temperature)).check(matches(withText(kelvinToCelsius(testTemperature).roundToInt().toString())))
         onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesC))))
+        activityTestRule.finishActivity()
     }
 
 
     @Test
     fun testKmAndMiSwitch() {
 
+        activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
 
         //Switch to km as a starting point if not there already
@@ -253,11 +255,13 @@ class MainActivityTest : KoinTest {
                 )
             )
         )
+        activityTestRule.finishActivity()
     }
 
     @Test
     fun test12hr24hrClockSwitch() {
 
+        activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
 
         //Switch to 12hr clock as a starting point if not there already
@@ -297,11 +301,48 @@ class MainActivityTest : KoinTest {
                 )
             )
         )
+        activityTestRule.finishActivity()
+    }
+
+    @Test
+    fun testNoLocationPermission() {
+        val moduleList = listOf(
+            testLocationLiveData
+        )
+        StandAloneContext.loadKoinModules(moduleList)
+
+        testLocationInformation =
+            LocationInformation(AppPermissionState.Denied, GpsState.Enabled, null)
+        activityTestRule.launchActivity(null)
+        waitForLoadingToFinish()
+        onView(withText(resources.getString(R.string.permission_required_body))).check(
+            matches(
+                isDisplayed()
+            )
+        )
+        activityTestRule.finishActivity()
+    }
+
+    @Test
+    fun testLocationOff() {
+        val moduleList = listOf(
+            testLocationLiveData
+        )
+        StandAloneContext.loadKoinModules(moduleList)
+
+        testLocationInformation =
+            LocationInformation(AppPermissionState.Granted, GpsState.Disabled, null)
+        activityTestRule.launchActivity(null)
+        waitForLoadingToFinish()
+        onView(withText(resources.getString(R.string.gps_required_body))).check(matches(isDisplayed()))
+        activityTestRule.finishActivity()
     }
 
     @Test
     fun testNoNetwork() {
+        activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
+        activityTestRule.finishActivity()
     }
 
     private fun waitForLoadingToFinish() {
@@ -309,7 +350,6 @@ class MainActivityTest : KoinTest {
             activityTestRule.activity.findViewById(R.id.pullToRefresh)
         val idlingResource = ViewRefreshingIdlingResource(pullToRefresh, false)
         idlingRegistry.register(idlingResource)
-        onView(withId(R.id.pullToRefresh)).check(matches(isNotRefreshing()))
         idlingRegistry.unregister(idlingResource)
     }
 

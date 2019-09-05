@@ -1,36 +1,30 @@
-package com.marklynch.weather.activities
+package com.marklynch.weather.activity
 
 import android.content.res.Resources
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.marklynch.weather.R
-import com.marklynch.weather.activities.SwipeRefreshLayoutMatchers.isNotRefreshing
-import com.marklynch.weather.activity.MainActivity
-import com.marklynch.weather.dependencyinjection.*
+import com.marklynch.weather.dependencyinjection.testLocationInformation
+import com.marklynch.weather.dependencyinjection.testLocationLiveData
+import com.marklynch.weather.dependencyinjection.testModuleHttpUrl
+import com.marklynch.weather.dependencyinjection.testWebServer
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
-import com.marklynch.weather.testTemperature
-import com.marklynch.weather.testWindDeg
-import com.marklynch.weather.testWindSpeed
-import com.marklynch.weather.utils.*
+import com.marklynch.weather.utils.AppPermissionState
 import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.core.AllOf.allOf
 import org.junit.*
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 import org.koin.standalone.StandAloneContext
 import org.koin.test.KoinTest
-import kotlin.math.roundToInt
 
 
 @LargeTest
@@ -83,16 +77,22 @@ class MainAcitivityFailureTests : KoinTest {
 
     @Test
     fun testNoLocationPermission() {
-        testLocationInformation = LocationInformation(AppPermissionState.Denied, GpsState.Enabled, null)
+        testLocationInformation =
+            LocationInformation(AppPermissionState.Denied, GpsState.Enabled, null)
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
-        onView(withText(resources.getString(R.string.permission_required_body))).check(matches(isDisplayed()))
+        onView(withText(resources.getString(R.string.permission_required_body))).check(
+            matches(
+                isDisplayed()
+            )
+        )
         activityTestRule.finishActivity()
     }
 
     @Test
     fun testLocationOff() {
-        testLocationInformation = LocationInformation(AppPermissionState.Granted, GpsState.Disabled, null)
+        testLocationInformation =
+            LocationInformation(AppPermissionState.Granted, GpsState.Disabled, null)
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
         onView(withText(resources.getString(R.string.gps_required_body))).check(matches(isDisplayed()))

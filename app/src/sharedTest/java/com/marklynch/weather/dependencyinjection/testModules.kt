@@ -30,7 +30,7 @@ val testModuleHttpUrl = module(override = true) {
 
 lateinit var testLocationInformation: LocationInformation
 val testLocationLiveData = module(override = true) {
-    single<LocationLiveData> {
+    factory<LocationLiveData> {
         object : LocationLiveData() {
             override fun postValue(value: LocationInformation?) {
                 super.postValue(testLocationInformation)
@@ -40,5 +40,7 @@ val testLocationLiveData = module(override = true) {
     }
 }
 val normalLocationLiveData = module(override = true) {
-    single<LocationLiveData>()
+    factory<LocationLiveData> {
+        object : LocationLiveData() {}
+    }
 }

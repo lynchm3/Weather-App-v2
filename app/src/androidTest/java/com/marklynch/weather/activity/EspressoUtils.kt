@@ -1,4 +1,4 @@
-package com.marklynch.weather.activities
+package com.marklynch.weather.activity
 
 import android.view.View
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout

@@ -38,7 +38,6 @@ class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
 
             call.enqueue(object : Callback<WeatherResponse> {
                 override fun onFailure(call: Call<WeatherResponse>?, t: Throwable?) {
-                    println("onResponse posting null t = " + t)
                     postValue(null)
                 }
 
@@ -47,7 +46,6 @@ class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
                     weatherResponseWrapper: Response<WeatherResponse>
                 ) {
                     val weatherResponse = weatherResponseWrapper.body()
-                    println("onResponse weatherResponse = $weatherResponse")
                     postValue(weatherResponse)
                 }
             })
@@ -55,12 +53,9 @@ class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
     }
 
     private fun getRetrofitInstance(baseUrl: String): Retrofit {
-
-            println("getRetrofitInstance baseUrl = $baseUrl")
             val httpURL: HttpUrl  by inject {
                 parametersOf(baseUrl)
             }
-            println("getRetrofitInstance httpURL = $httpURL")
 
             return Retrofit.Builder()
                 .baseUrl(httpURL)

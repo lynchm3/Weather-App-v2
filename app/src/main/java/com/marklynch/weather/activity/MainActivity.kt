@@ -28,12 +28,10 @@ import com.sucho.placepicker.AddressData
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.koin.android.ext.android.inject
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
 
-public class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity() {
 
     private val viewModel: MainViewModel by inject()
     private var alertDialog: AlertDialog? = null
@@ -110,7 +108,9 @@ public class MainActivity : BaseActivity() {
         //Location
         viewModel.locationLiveData.observe(this,
             Observer<LocationInformation> { locationInformation ->
+
                 when {
+
                     locationInformation.locationPermission != AppPermissionState.Granted -> {
                         showLocationPermissionNeededDialog()
                         pullToRefresh.isRefreshing = false
@@ -185,6 +185,10 @@ public class MainActivity : BaseActivity() {
     override fun onPause() {
         super.onPause()
         alertDialog?.dismiss()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -313,7 +317,7 @@ public class MainActivity : BaseActivity() {
         ll_weather_info.visibility = View.GONE
 
         if (alertDialog?.isShowing == true) {
-            return
+            alertDialog?.dismiss()
         }
 
         alertDialog = AlertDialog.Builder(this)
@@ -336,7 +340,7 @@ public class MainActivity : BaseActivity() {
         ll_weather_info.visibility = View.GONE
 
         if (alertDialog?.isShowing == true) {
-            return
+            alertDialog?.dismiss()
         }
 
         alertDialog = AlertDialog.Builder(this)
@@ -359,7 +363,7 @@ public class MainActivity : BaseActivity() {
         ll_weather_info.visibility = View.GONE
 
         if (alertDialog?.isShowing == true) {
-            return
+            alertDialog?.dismiss()
         }
 
         alertDialog = AlertDialog.Builder(this)
