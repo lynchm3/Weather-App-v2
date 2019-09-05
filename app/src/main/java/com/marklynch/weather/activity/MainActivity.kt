@@ -3,7 +3,6 @@ package com.marklynch.weather.activity
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.location.Location
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
@@ -68,14 +67,12 @@ class MainActivity : BaseActivity() {
                     }
                     spinnerList.size - 1 -> {
                         //Attempt to get location from gps
-                        val gpsLocation: Location? = viewModel.getLocationInformation()?.location
-                        if (gpsLocation != null) {
-                            val latitude = gpsLocation.latitude
-                            val longitude = gpsLocation.longitude
-                            addLocation(latitude, longitude)
+                        val lat: Double? = viewModel.getLocationInformation()?.lat
+                        val lon: Double? = viewModel.getLocationInformation()?.lon
+                        if (lat != null && lon != null) {
+                            openMapForUserToAddNewLocation(lat, lon)
                         } else {
-                            addLocation()
-
+                            openMapForUserToAddNewLocation()
                         }
                     }
                     else -> {

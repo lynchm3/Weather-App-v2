@@ -60,9 +60,9 @@ class ManageLocationsActivity : BaseActivity() {
             if (gpsLocation != null) {
                 val latitude = gpsLocation.latitude
                 val longitude = gpsLocation.longitude
-                addLocation(latitude, longitude)
+                openMapForUserToAddNewLocation(latitude, longitude)
             } else {
-                addLocation()
+                openMapForUserToAddNewLocation()
             }
         }
     }

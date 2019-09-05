@@ -12,11 +12,11 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.GrantPermissionRule
 import com.marklynch.weather.*
-import com.marklynch.weather.activity.SwipeRefreshLayoutMatchers.isNotRefreshing
 import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.livedata.location.GpsState
-import com.marklynch.weather.livedata.location.LocationInformation
+import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.utils.*
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
@@ -38,6 +38,11 @@ class MainActivityTest : KoinTest {
     @Rule
     val screenshotRule = ScreenshotTakingRule()
 
+    @get:Rule
+    var loctionPermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
+
+
     private val resources: Resources = getInstrumentation().targetContext.resources
 
     private val idlingRegistry: IdlingRegistry = IdlingRegistry.getInstance()
@@ -47,7 +52,8 @@ class MainActivityTest : KoinTest {
         @JvmStatic
         fun beforeClass() {
             val moduleList = listOf(
-                testModuleHttpUrl
+                testModuleHttpUrl,
+                testLocationLiveData, testNetworkInfoLiveData
             )
             StandAloneContext.loadKoinModules(moduleList)
 
@@ -66,10 +72,9 @@ class MainActivityTest : KoinTest {
 
     @Before
     fun before() {
-        val moduleList = listOf(
-            normalLocationLiveData
-        )
-        StandAloneContext.loadKoinModules(moduleList)
+        testLocationPermissionState = AppPermissionState.Granted
+        testGpsState = GpsState.Enabled
+        testNetworkInfo = ConnectionType.CONNECTED
     }
 
     @After
@@ -311,8 +316,8 @@ class MainActivityTest : KoinTest {
         )
         StandAloneContext.loadKoinModules(moduleList)
 
-        testLocationInformation =
-            LocationInformation(AppPermissionState.Denied, GpsState.Enabled, null)
+        testLocationPermissionState = AppPermissionState.Denied
+
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
         onView(withText(resources.getString(R.string.permission_required_body))).check(
@@ -325,13 +330,7 @@ class MainActivityTest : KoinTest {
 
     @Test
     fun testLocationOff() {
-        val moduleList = listOf(
-            testLocationLiveData
-        )
-        StandAloneContext.loadKoinModules(moduleList)
-
-        testLocationInformation =
-            LocationInformation(AppPermissionState.Granted, GpsState.Disabled, null)
+        testGpsState = GpsState.Disabled
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
         onView(withText(resources.getString(R.string.gps_required_body))).check(matches(isDisplayed()))
@@ -340,8 +339,10 @@ class MainActivityTest : KoinTest {
 
     @Test
     fun testNoNetwork() {
+        testNetworkInfo = ConnectionType.NO_CONNECTION
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
+        onView(withText(resources.getString(R.string.no_network_body))).check(matches(isDisplayed()))
         activityTestRule.finishActivity()
     }
 

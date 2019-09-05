@@ -39,7 +39,7 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
     private val gpsSwitchStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            postValue(LocationInformation(locationPermissionState, gpsState, locationResult?.locations?.get(0)))
+            postValue(LocationInformation(locationPermissionState, gpsState, locationResult?.locations?.get(0)?.latitude,locationResult?.locations?.get(0)?.longitude))
             if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
                 fetchLocation()
         }
@@ -52,7 +52,7 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
         registerGpsStateReceiver()
 
-        postValue(LocationInformation(locationPermissionState, gpsState, locationResult?.locations?.get(0)))
+        postValue(LocationInformation(locationPermissionState, gpsState, locationResult?.locations?.get(0)?.latitude,locationResult?.locations?.get(0)?.longitude))
 
         if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
             fetchLocation()
@@ -69,7 +69,7 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
             val newLocation = newLocationResult.locations.get(0)
             if (newLocation != null) {
-                postValue(LocationInformation(locationPermissionState, gpsState, newLocationResult.locations.get(0)))
+                postValue(LocationInformation(locationPermissionState, gpsState, newLocationResult?.locations?.get(0)?.latitude,newLocationResult?.locations?.get(0)?.longitude))
             }
         }
     }
@@ -86,7 +86,7 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
     fun fetchLocation() {
 
         try {
-            postValue(LocationInformation(locationPermissionState, gpsState, fusedLocationClient.lastLocation.result))
+            postValue(LocationInformation(locationPermissionState, gpsState, fusedLocationClient.lastLocation.result?.latitude,fusedLocationClient.lastLocation.result?.longitude))
         } catch (unlikely: IllegalStateException) {
             Log.e("","Error when fusedLocationClient.lastLocation")
         }

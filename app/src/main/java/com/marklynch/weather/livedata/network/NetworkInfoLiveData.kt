@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 
 enum class ConnectionType { CONNECTED, NO_CONNECTION }
 
-class NetworkInfoLiveData(private val context: Context) : LiveData<ConnectionType>() {
+open class NetworkInfoLiveData(private val context: Context) : LiveData<ConnectionType>() {
 
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
             as ConnectivityManager
