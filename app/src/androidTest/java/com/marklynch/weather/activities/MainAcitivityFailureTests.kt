@@ -34,11 +34,11 @@ import kotlin.math.roundToInt
 
 
 @LargeTest
-class MainAcitivityNoLocationPermissionTest : KoinTest {
+class MainAcitivityFailureTests : KoinTest {
 
     @Rule
     @JvmField
-    var activityTestRule = ActivityTestRule(MainActivity::class.java, false, true)
+    var activityTestRule = ActivityTestRule(MainActivity::class.java, false, false)
 
     @JvmField
     @Rule
@@ -57,10 +57,7 @@ class MainAcitivityNoLocationPermissionTest : KoinTest {
                 testLocationLiveData
             )
             StandAloneContext.loadKoinModules(moduleList)
-
-            testLocationInformation = LocationInformation(AppPermissionState.Denied, GpsState.Enabled, null)
             testWebServer = MockWebServer()
-//            testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse()))
             testWebServer.start()
         }
 
@@ -86,14 +83,20 @@ class MainAcitivityNoLocationPermissionTest : KoinTest {
 
     @Test
     fun testNoLocationPermission() {
-//        StandAloneContext.loadKoinModules(testLocationLiveData)
+        testLocationInformation = LocationInformation(AppPermissionState.Denied, GpsState.Enabled, null)
+        activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
         onView(withText(resources.getString(R.string.permission_required_body))).check(matches(isDisplayed()))
+        activityTestRule.finishActivity()
+    }
 
-
-
-//        onView(allOf(withId(..), withEffectiveVisibility(VISIBLE))).perform(click());
-//        StandAloneContext.loadKoinModules(normalLocationLiveData)
+    @Test
+    fun testLocationOff() {
+        testLocationInformation = LocationInformation(AppPermissionState.Granted, GpsState.Disabled, null)
+        activityTestRule.launchActivity(null)
+        waitForLoadingToFinish()
+        onView(withText(resources.getString(R.string.gps_required_body))).check(matches(isDisplayed()))
+        activityTestRule.finishActivity()
     }
 
     private fun waitForLoadingToFinish() {

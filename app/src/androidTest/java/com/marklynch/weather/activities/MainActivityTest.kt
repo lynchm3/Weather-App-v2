@@ -300,11 +300,6 @@ class MainActivityTest : KoinTest {
     }
 
     @Test
-    fun testLocationOff() {
-        waitForLoadingToFinish()
-    }
-
-    @Test
     fun testNoNetwork() {
         waitForLoadingToFinish()
     }
