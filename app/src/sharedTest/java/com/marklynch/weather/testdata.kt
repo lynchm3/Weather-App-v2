@@ -1,5 +1,7 @@
 package com.marklynch.weather
 
+import com.google.gson.Gson
+import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.randomAlphaNumeric
 import kotlin.random.Random
 
@@ -15,7 +17,8 @@ var testWindSpeed = Random.nextDouble(0.0,100.0)
 var testWindDeg = Random.nextDouble(0.0,359.0)
 var testCloudiness = Random.nextDouble(0.0,100.0)
 
-fun generateGetWeatherResponse() = """{
+
+fun generateGetWeatherResponse(): WeatherResponse = Gson().fromJson("""{
    "coord":{
       "lon":$testLon,
       "lat":$testLat
@@ -57,4 +60,4 @@ fun generateGetWeatherResponse() = """{
    "id":5375480,
    "name":"$testLocationName",
    "cod":200
-}"""
+}""", WeatherResponse::class.java)

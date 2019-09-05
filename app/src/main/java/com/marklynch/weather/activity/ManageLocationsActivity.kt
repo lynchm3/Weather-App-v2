@@ -56,11 +56,10 @@ class ManageLocationsActivity : BaseActivity() {
         })
 
         fab.setOnClickListener {
-            val gpsLocation: Location? = viewModel.getLocationInformation()?.location
-            if (gpsLocation != null) {
-                val latitude = gpsLocation.latitude
-                val longitude = gpsLocation.longitude
-                openMapForUserToAddNewLocation(latitude, longitude)
+            val lat: Double? = viewModel.getLocationInformation()?.lat
+            val lon: Double? = viewModel.getLocationInformation()?.lon
+            if (lat != null && lon!=null) {
+                openMapForUserToAddNewLocation(lat, lon)
             } else {
                 openMapForUserToAddNewLocation()
             }

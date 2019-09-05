@@ -53,7 +53,7 @@ class MainActivityTest : KoinTest {
         fun beforeClass() {
             val moduleList = listOf(
                 testModuleHttpUrl,
-                testLocationLiveData, testNetworkInfoLiveData
+                testLocationLiveData, testNetworkInfoLiveData, testWeatherLiveData
             )
             StandAloneContext.loadKoinModules(moduleList)
 
@@ -72,6 +72,7 @@ class MainActivityTest : KoinTest {
 
     @Before
     fun before() {
+        testWeatherResponse = generateGetWeatherResponse()
         testLocationPermissionState = AppPermissionState.Granted
         testGpsState = GpsState.Enabled
         testNetworkInfo = ConnectionType.CONNECTED
@@ -340,6 +341,7 @@ class MainActivityTest : KoinTest {
     @Test
     fun testNoNetwork() {
         testNetworkInfo = ConnectionType.NO_CONNECTION
+        testWeatherResponse = null
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
         onView(withText(resources.getString(R.string.no_network_body))).check(matches(isDisplayed()))

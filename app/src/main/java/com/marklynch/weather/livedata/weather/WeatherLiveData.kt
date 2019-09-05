@@ -19,7 +19,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.koin.standalone.inject
 
 
-class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
+open class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
 
     private val appId = "74f01822a2b8950db2986d7e28a5978a"
 
