@@ -4,6 +4,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.content.res.Resources
 import android.location.Address
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso
@@ -26,6 +27,7 @@ import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.utils.*
 import com.sucho.placepicker.AddressData
 import com.sucho.placepicker.Constants
+import com.sucho.placepicker.PlacePickerActivity
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
 import org.junit.rules.TestWatcher
@@ -311,11 +313,16 @@ class MainActivityTest : KoinTest {
     @Test
     fun testAddLocation() {
 
+        randomiseTestWeatherData()
+
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
-        checkWeatherInfo()
+        waitForViewToBeVisible(activityTestRule.activity.findViewById(R.id.ll_weather_info))
 
-        randomiseTestData()
+        Thread.sleep(3_000)
+
+        randomiseTestWeatherData()
+
         var lat = com.marklynch.weather.testLat
         var lon = com.marklynch.weather.testLon
         val displayName = randomAlphaNumeric(5)
@@ -328,23 +335,34 @@ class MainActivityTest : KoinTest {
 
         resultIntent.putExtra(Constants.ADDRESS_INTENT, addressData)
 
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(
-                AppCompatActivity.RESULT_OK,
-                resultIntent
-            )
-        )
+
+//        intending(anyIntent()).respondWith(
+//            ActivityResult(
+//                AppCompatActivity.RESULT_OK,
+//                resultIntent
+//            )
+//        )
 
         onView(withId(R.id.spinner_select_location)).perform(click())
         onView(withText(resources.getString(R.string.add_location_ellipses))).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
-        Thread.sleep(10_000)
+        Thread.sleep(3_000)
+        onView(withId(com.sucho.placepicker.R.id.place_chosen_button)).perform(click())
+
+        Thread.sleep(5_000)
 
         waitForLoadingToFinish()
-
+        waitForViewToBeVisible(activityTestRule.activity.findViewById(R.id.ll_weather_info))
+        Thread.sleep(5_000)
         checkWeatherInfo()
 
         activityTestRule.finishActivity()
+    }
+
+    @Test
+    fun testCancelAddingLocation() {
+        //TODO Select add location, then press back on add lcoation screen rather than selecting a location
     }
 
     private fun waitForLoadingToFinish() {
@@ -355,6 +373,11 @@ class MainActivityTest : KoinTest {
         idlingRegistry.unregister(idlingResource)
     }
 
+    private fun waitForViewToBeVisible(view: View) {
+        val idlingResource = ViewVisibilityIdlingResource(view, View.VISIBLE)
+        idlingRegistry.register(idlingResource)
+        idlingRegistry.unregister(idlingResource)
+    }
 
     class ScreenshotTakingRule : TestWatcher() {
         override fun failed(e: Throwable?, description: Description) {

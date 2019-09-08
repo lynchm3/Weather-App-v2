@@ -1,6 +1,7 @@
 package com.marklynch.weather
 
 import com.google.gson.Gson
+import com.marklynch.weather.dependencyinjection.testWeatherResponse
 import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.randomAlphaNumeric
 import kotlin.random.Random
@@ -17,9 +18,9 @@ var testWindSpeed = Random.nextDouble(0.0, 100.0)
 var testWindDeg = Random.nextDouble(0.0, 359.0)
 var testCloudiness = Random.nextDouble(0.0, 100.0)
 
-fun randomiseTestData() {
-    testLon = Random.nextDouble(253.0, 323.0)
-    testLat = Random.nextDouble(253.0, 323.0)
+fun randomiseTestWeatherData() {
+    testLon = Random.nextDouble(-180.0, 180.0)
+    testLat = Random.nextDouble(-90.0, 90.0)
     testLocationName = randomAlphaNumeric(5)
     testDescription = randomAlphaNumeric(5)
     testTemperature = Random.nextDouble(253.0, 323.0)
@@ -29,6 +30,8 @@ fun randomiseTestData() {
     testWindSpeed = Random.nextDouble(0.0, 100.0)
     testWindDeg = Random.nextDouble(0.0, 359.0)
     testCloudiness = Random.nextDouble(0.0, 100.0)
+    testWeatherResponse = generateGetWeatherResponse()
+    println("randomiseTestWeatherData() - testWeatherResponse = $testWeatherResponse")
 }
 
 

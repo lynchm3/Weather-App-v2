@@ -97,9 +97,13 @@ class MainActivity : BaseActivity() {
         //Network
         viewModel.networkInfoLiveData.observe(this,
             Observer<ConnectionType> { connectionType ->
-                if (connectionType == ConnectionType.CONNECTED)
+                if (connectionType == ConnectionType.CONNECTED) {
                     pullToRefresh.isRefreshing = true
-                viewModel.fetchWeather(viewModel.getCurrentlySelectedLocation())
+                    viewModel.fetchWeather(viewModel.getCurrentlySelectedLocation())
+                } else {
+                    showNoNetworkConnectionDialog()
+                    pullToRefresh.isRefreshing = false
+                }
             })
 
         //Location
@@ -130,10 +134,13 @@ class MainActivity : BaseActivity() {
         viewModel.weatherLiveData.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
                 pullToRefresh.isRefreshing = false
-                if (weatherResponse == null)
+                if (weatherResponse == null) {
                     showNoNetworkConnectionDialog()
-                else
+                    pullToRefresh.isRefreshing = false
+                } else {
                     updateWeatherUI()
+                    pullToRefresh.isRefreshing = false
+                }
             })
 
         //Fahrenheit/Celsius setting
@@ -194,10 +201,7 @@ class MainActivity : BaseActivity() {
                 val addressData: AddressData? = data?.getParcelableExtra(
                     PlacePickerConstants.ADDRESS_INTENT
                 )
-//                println("addressData = $addressData")
-                viewModel.addManualLocation(
-                    addressData
-                )
+                viewModel.addManualLocation(addressData)
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 setSpinnerSelectionFromSelectedLocationId()
             }
@@ -226,8 +230,9 @@ class MainActivity : BaseActivity() {
         } else {
             for (i: Int in 1..spinnerList.size - 2) {
                 val manualLocation = (spinnerList[i] as ManualLocation)
-                if (manualLocation.id == selectedLocationId)
+                if (manualLocation.id == selectedLocationId) {
                     spinner.setSelection(i)
+                }
             }
         }
     }
