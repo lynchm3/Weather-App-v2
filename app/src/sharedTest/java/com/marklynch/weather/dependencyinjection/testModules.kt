@@ -1,5 +1,6 @@
 package com.marklynch.weather.dependencyinjection
 
+import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.generateGetWeatherResponse
@@ -28,7 +29,7 @@ val testWeatherDatabase = module(override = true) {
 lateinit var testWebServer: MockWebServer
 val testModuleHttpUrl = module(override = true) {
     factory { (_: String) ->
-            testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse().toString()))
+        testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse().toString()))
     }
 }
 
@@ -44,7 +45,6 @@ val testWeatherLiveData = module(override = true) {
     }
 }
 
-//lateinit var testLocationInformation: LocationInformation
 lateinit var testLocationPermissionState: AppPermissionState
 lateinit var testGpsState: GpsState
 var testLat = 53.0
@@ -70,7 +70,7 @@ val testLocationLiveData = module(override = true) {
 lateinit var testNetworkInfo: ConnectionType
 val testNetworkInfoLiveData = module(override = true) {
     factory<NetworkInfoLiveData> {
-        object : NetworkInfoLiveData(get()) {
+        object : NetworkInfoLiveData() {
             override fun postValue(value: ConnectionType?) {
                 super.postValue(testNetworkInfo)
             }

@@ -4,12 +4,15 @@ import android.content.Context
 import android.net.*
 import android.os.Build
 import androidx.lifecycle.LiveData
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
 
 enum class ConnectionType { CONNECTED, NO_CONNECTION }
 
-open class NetworkInfoLiveData(private val context: Context) : LiveData<ConnectionType>() {
+open class NetworkInfoLiveData() : LiveData<ConnectionType>(),
+    KoinComponent {
 
-    private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
+    private val connectivityManager = get<Context>().getSystemService(Context.CONNECTIVITY_SERVICE)
             as ConnectivityManager
 
     override fun onActive() {

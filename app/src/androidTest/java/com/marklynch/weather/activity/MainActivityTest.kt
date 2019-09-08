@@ -1,29 +1,38 @@
 package com.marklynch.weather.activity
 
+import android.app.Instrumentation
+import android.content.Intent
 import android.content.res.Resources
+import android.location.Address
+import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.marklynch.weather.*
 import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.utils.*
+import com.sucho.placepicker.AddressData
+import com.sucho.placepicker.Constants
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 import org.koin.standalone.StandAloneContext
 import org.koin.test.KoinTest
+import java.util.*
 import kotlin.math.roundToInt
 
 
@@ -32,7 +41,7 @@ class MainActivityTest : KoinTest {
 
     @Rule
     @JvmField
-    var activityTestRule = ActivityTestRule(MainActivity::class.java, false, false)
+    var activityTestRule = IntentsTestRule(MainActivity::class.java, false, false)
 
     @JvmField
     @Rule
@@ -53,7 +62,10 @@ class MainActivityTest : KoinTest {
         fun beforeClass() {
             val moduleList = listOf(
                 testModuleHttpUrl,
-                testLocationLiveData, testNetworkInfoLiveData, testWeatherLiveData
+                testLocationLiveData,
+                testNetworkInfoLiveData,
+                testWeatherLiveData,
+                testWeatherDatabase
             )
             StandAloneContext.loadKoinModules(moduleList)
 
@@ -90,16 +102,16 @@ class MainActivityTest : KoinTest {
         waitForLoadingToFinish()
 
         //Spinner selected item text
-        onView(withId(R.id.spinner_select_location)).check(
-            matches(
-                withSpinnerText(
-                    resources.getString(
-                        R.string.current_location_brackets_name,
-                        testLocationName
-                    )
-                )
-            )
-        )
+//        onView(withId(R.id.spinner_select_location)).check(
+//            matches(
+//                withSpinnerText(
+//                    resources.getString(
+//                        R.string.current_location_brackets_name,
+//                        testLocationName
+//                    )
+//                )
+//            )
+//        )
 
         onView(withId(R.id.tv_time_of_last_refresh)).check(
             matches(
@@ -108,59 +120,7 @@ class MainActivityTest : KoinTest {
                 )
             )
         )
-
-        //Check weather info loaded from mockserver displayed
-        onView(withId(R.id.tv_temperature)).check(matches(withText(kelvinToCelsius(testTemperature).roundToInt().toString())))
-        onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesC))))
-        onView(withId(R.id.tv_weather_description)).check(matches(withText(testDescription)))
-        onView(withId(R.id.tv_humidity)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.humidity_percentage,
-                        testHumidity.roundToInt()
-                    )
-                )
-            )
-        )
-        onView(withId(R.id.tv_maximum_temperature)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.maximum_temperature_C,
-                        kelvinToCelsius(testTemperatureMax).roundToInt()
-                    )
-                )
-            )
-        )
-        onView(withId(R.id.tv_minimum_temperature)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.minimum_temperature_C,
-                        kelvinToCelsius(testTemperatureMin).roundToInt()
-                    )
-                )
-            )
-        )
-        onView(withId(R.id.tv_wind)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.wind_km,
-                        metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
-                        directionInDegreesToCardinalDirection(testWindDeg)
-                    )
-                )
-            )
-        )
-        onView(withId(R.id.tv_cloudiness)).check(
-            matches(
-                withText(
-                    resources.getString(R.string.cloudiness_percentage, testCloudiness.roundToInt())
-                )
-            )
-        )
+        checkWeatherInfo()
         activityTestRule.finishActivity()
     }
 
@@ -348,6 +308,45 @@ class MainActivityTest : KoinTest {
         activityTestRule.finishActivity()
     }
 
+    @Test
+    fun testAddLocation() {
+
+        activityTestRule.launchActivity(null)
+        waitForLoadingToFinish()
+        checkWeatherInfo()
+
+        randomiseTestData()
+        var lat = com.marklynch.weather.testLat
+        var lon = com.marklynch.weather.testLon
+        val displayName = randomAlphaNumeric(5)
+        val address = Address(Locale.US)
+        address.adminArea = displayName
+        var addressList: List<Address>? = listOf(address)
+        val addressData = AddressData(lat, lon, addressList)
+
+        val resultIntent = Intent()
+
+        resultIntent.putExtra(Constants.ADDRESS_INTENT, addressData)
+
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(
+            Instrumentation.ActivityResult(
+                AppCompatActivity.RESULT_OK,
+                resultIntent
+            )
+        )
+
+        onView(withId(R.id.spinner_select_location)).perform(click())
+        onView(withText(resources.getString(R.string.add_location_ellipses))).perform(click())
+
+        Thread.sleep(10_000)
+
+        waitForLoadingToFinish()
+
+        checkWeatherInfo()
+
+        activityTestRule.finishActivity()
+    }
+
     private fun waitForLoadingToFinish() {
         val pullToRefresh: SwipeRefreshLayout =
             activityTestRule.activity.findViewById(R.id.pullToRefresh)
@@ -361,5 +360,60 @@ class MainActivityTest : KoinTest {
         override fun failed(e: Throwable?, description: Description) {
             takeScreenshot("fail_" + System.currentTimeMillis())
         }
+    }
+
+    private fun checkWeatherInfo() {
+        //Check weather info loaded from mockserver displayed
+        onView(withId(R.id.tv_temperature)).check(matches(withText(kelvinToCelsius(testTemperature).roundToInt().toString())))
+        onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesC))))
+        onView(withId(R.id.tv_weather_description)).check(matches(withText(testDescription)))
+        onView(withId(R.id.tv_humidity)).check(
+            matches(
+                withText(
+                    resources.getString(
+                        R.string.humidity_percentage,
+                        testHumidity.roundToInt()
+                    )
+                )
+            )
+        )
+        onView(withId(R.id.tv_maximum_temperature)).check(
+            matches(
+                withText(
+                    resources.getString(
+                        R.string.maximum_temperature_C,
+                        kelvinToCelsius(testTemperatureMax).roundToInt()
+                    )
+                )
+            )
+        )
+        onView(withId(R.id.tv_minimum_temperature)).check(
+            matches(
+                withText(
+                    resources.getString(
+                        R.string.minimum_temperature_C,
+                        kelvinToCelsius(testTemperatureMin).roundToInt()
+                    )
+                )
+            )
+        )
+        onView(withId(R.id.tv_wind)).check(
+            matches(
+                withText(
+                    resources.getString(
+                        R.string.wind_km,
+                        metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
+                        directionInDegreesToCardinalDirection(testWindDeg)
+                    )
+                )
+            )
+        )
+        onView(withId(R.id.tv_cloudiness)).check(
+            matches(
+                withText(
+                    resources.getString(R.string.cloudiness_percentage, testCloudiness.roundToInt())
+                )
+            )
+        )
     }
 }

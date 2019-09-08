@@ -112,4 +112,5 @@ dependencies {
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'org.mockito:mockito-android:3.0.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.0'
 }

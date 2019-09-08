@@ -191,10 +191,12 @@ class MainActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PlacePickerConstants.PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
+                val addressData: AddressData? = data?.getParcelableExtra(
+                    PlacePickerConstants.ADDRESS_INTENT
+                )
+//                println("addressData = $addressData")
                 viewModel.addManualLocation(
-                    data?.getParcelableExtra<AddressData>(
-                        PlacePickerConstants.ADDRESS_INTENT
-                    )
+                    addressData
                 )
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 setSpinnerSelectionFromSelectedLocationId()

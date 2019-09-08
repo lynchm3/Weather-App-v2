@@ -5,20 +5,35 @@ import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.randomAlphaNumeric
 import kotlin.random.Random
 
-var testLon = -122.08
-var testLat = 37.42
+var testLon = Random.nextDouble(-180.0, 180.0)
+var testLat = Random.nextDouble(-90.0, 90.0)
 var testLocationName = randomAlphaNumeric(5)
 var testDescription = randomAlphaNumeric(5)
 var testTemperature = Random.nextDouble(253.0, 323.0)
-var testHumidity = Random.nextDouble(0.0,100.0)
+var testHumidity = Random.nextDouble(0.0, 100.0)
 var testTemperatureMin = Random.nextDouble(253.0, 323.0)
 var testTemperatureMax = Random.nextDouble(253.0, 323.0)
-var testWindSpeed = Random.nextDouble(0.0,100.0)
-var testWindDeg = Random.nextDouble(0.0,359.0)
-var testCloudiness = Random.nextDouble(0.0,100.0)
+var testWindSpeed = Random.nextDouble(0.0, 100.0)
+var testWindDeg = Random.nextDouble(0.0, 359.0)
+var testCloudiness = Random.nextDouble(0.0, 100.0)
+
+fun randomiseTestData() {
+    testLon = Random.nextDouble(253.0, 323.0)
+    testLat = Random.nextDouble(253.0, 323.0)
+    testLocationName = randomAlphaNumeric(5)
+    testDescription = randomAlphaNumeric(5)
+    testTemperature = Random.nextDouble(253.0, 323.0)
+    testHumidity = Random.nextDouble(0.0, 100.0)
+    testTemperatureMin = Random.nextDouble(253.0, 323.0)
+    testTemperatureMax = Random.nextDouble(253.0, 323.0)
+    testWindSpeed = Random.nextDouble(0.0, 100.0)
+    testWindDeg = Random.nextDouble(0.0, 359.0)
+    testCloudiness = Random.nextDouble(0.0, 100.0)
+}
 
 
-fun generateGetWeatherResponse(): WeatherResponse = Gson().fromJson("""{
+fun generateGetWeatherResponse(): WeatherResponse = Gson().fromJson(
+    """{
    "coord":{
       "lon":$testLon,
       "lat":$testLat
@@ -60,4 +75,5 @@ fun generateGetWeatherResponse(): WeatherResponse = Gson().fromJson("""{
    "id":5375480,
    "name":"$testLocationName",
    "cod":200
-}""", WeatherResponse::class.java)
+}""", WeatherResponse::class.java
+)
