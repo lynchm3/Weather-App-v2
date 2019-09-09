@@ -60,7 +60,7 @@ class MainActivity : BaseActivity() {
                     0 -> {
                         if (viewModel.getSelectedLocationId() == 0L) return
                         viewModel.setSelectedLocationId(0L)
-                        pullToRefresh.isRefreshing = true
+                        pull_to_refresh.isRefreshing = true
                         viewModel.fetchLocation()
                         Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT)
                             .show()
@@ -79,7 +79,7 @@ class MainActivity : BaseActivity() {
                         val selectedLocation = (spinnerList[position] as ManualLocation)
                         if (viewModel.getSelectedLocationId() == selectedLocation.id) return
                         viewModel.setSelectedLocationId(selectedLocation.id)
-                        pullToRefresh.isRefreshing = true
+                        pull_to_refresh.isRefreshing = true
                         viewModel.fetchWeather(selectedLocation)
                         Toast.makeText(parent.context, "Manual Location!!", Toast.LENGTH_SHORT)
                             .show()
@@ -92,17 +92,17 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        pullToRefresh.isRefreshing = true
+        pull_to_refresh.isRefreshing = true
 
         //Network
         viewModel.networkInfoLiveData.observe(this,
             Observer<ConnectionType> { connectionType ->
                 if (connectionType == ConnectionType.CONNECTED) {
-                    pullToRefresh.isRefreshing = true
+                    pull_to_refresh.isRefreshing = true
                     viewModel.fetchWeather(viewModel.getCurrentlySelectedLocation())
                 } else {
                     showNoNetworkConnectionDialog()
-                    pullToRefresh.isRefreshing = false
+                    pull_to_refresh.isRefreshing = false
                 }
             })
 
@@ -114,15 +114,15 @@ class MainActivity : BaseActivity() {
 
                     locationInformation.locationPermission != AppPermissionState.Granted -> {
                         showLocationPermissionNeededDialog()
-                        pullToRefresh.isRefreshing = false
+                        pull_to_refresh.isRefreshing = false
                     }
                     locationInformation.gpsState != GpsState.Enabled -> {
                         showGpsNotEnabledDialog()
-                        pullToRefresh.isRefreshing = false
+                        pull_to_refresh.isRefreshing = false
                     }
                     else -> {
                         if (viewModel.getSelectedLocationId() == 0L) {
-                            pullToRefresh.isRefreshing = true
+                            pull_to_refresh.isRefreshing = true
                             updateLocationSpinner()
                             viewModel.fetchWeather(null)
                         }
@@ -133,13 +133,13 @@ class MainActivity : BaseActivity() {
         //Weather
         viewModel.weatherLiveData.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
-                pullToRefresh.isRefreshing = false
+                pull_to_refresh.isRefreshing = false
                 if (weatherResponse == null) {
                     showNoNetworkConnectionDialog()
-                    pullToRefresh.isRefreshing = false
+                    pull_to_refresh.isRefreshing = false
                 } else {
                     updateWeatherUI()
-                    pullToRefresh.isRefreshing = false
+                    pull_to_refresh.isRefreshing = false
                 }
             })
 
@@ -174,7 +174,7 @@ class MainActivity : BaseActivity() {
             }
         )
 
-        pullToRefresh.setOnRefreshListener {
+        pull_to_refresh.setOnRefreshListener {
             viewModel.fetchLocation()
         }
 

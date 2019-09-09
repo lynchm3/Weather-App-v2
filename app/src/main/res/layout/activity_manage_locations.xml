@@ -8,7 +8,7 @@
 
     <include layout="@layout/action_bar_manage_locations"/>
 
-    <include layout="@layout/content_manage_locations"/>
+    <include layout="@layout/content_manage_locations" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"

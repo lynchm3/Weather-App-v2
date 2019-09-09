@@ -1,11 +1,9 @@
 package com.marklynch.weather.activity
 
-import android.app.Instrumentation
 import android.content.Intent
 import android.content.res.Resources
 import android.location.Address
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -367,7 +365,7 @@ class MainActivityTest : KoinTest {
 
     private fun waitForLoadingToFinish() {
         val pullToRefresh: SwipeRefreshLayout =
-            activityTestRule.activity.findViewById(R.id.pullToRefresh)
+            activityTestRule.activity.findViewById(R.id.pull_to_refresh)
         val idlingResource = ViewRefreshingIdlingResource(pullToRefresh, false)
         idlingRegistry.register(idlingResource)
         idlingRegistry.unregister(idlingResource)
