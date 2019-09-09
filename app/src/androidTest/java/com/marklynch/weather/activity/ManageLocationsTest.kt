@@ -103,7 +103,53 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
     @Test
     fun checkWithNoLocations() {
+        val weatherDatabase: WeatherDatabase = get()
+        weatherDatabase.clearAllTables()
 
+        activityTestRule.launchActivity(null)
+
+        //CHeck "No locations to display" messaging shown
+        onView(withId(R.id.tv_messaging)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_messaging)).check(matches(withText(activityTestRule.activity.resources.getString(R.string.no_locations_to_display))))
+
+        activityTestRule.finishActivity()
+    }
+
+    @Test
+    fun checkWith1Location() {
+        val weatherDatabase: WeatherDatabase = get()
+        weatherDatabase.clearAllTables()
+
+        val insertLatch = CountDownLatch(1)
+        val locations = listOf(
+            ManualLocation(0L, "LOCATION1", 5.0, 6.0)
+        )
+
+        GlobalScope.launch {
+            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            manualLocationDAO.insert(locations[0])
+            insertLatch.countDown()
+        }
+
+        insertLatch.await(5, TimeUnit.SECONDS)
+
+        activityTestRule.launchActivity(null)
+
+        //Check list is visible
+        onView(withId(R.id.rv_manage_locations_list)).check(matches(isDisplayed()))
+
+        //Check size of list
+        onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(1)))
+
+        //Click on first item
+        onView(withId(R.id.rv_manage_locations_list))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+
+        //Check text of first item
+        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
+            .check(matches(hasDescendant(withText("LOCATION1"))))
+
+        activityTestRule.finishActivity()
     }
 
     @Test
@@ -129,7 +175,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //check size of list
-        onView(withId(R.id.rv_manage_locations_list)).check(ViewAssertions.matches(withListSize(2)))
+        onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(2)))
 
         //Click on first item
         onView(withId(R.id.rv_manage_locations_list))
@@ -138,22 +184,14 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         //Check text of first item
         onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
             .check(matches(hasDescendant(withText("LOCATION1"))))
-        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
-            .check(matches(hasDescendant(withText("DELETE"))))
-        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
-            .check(matches(hasDescendant(withText("RENAME"))))
 
-        //Click on first item
+        //Click on 2nd item
         onView(withId(R.id.rv_manage_locations_list))
             .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
 
         //Check text of 2nd item
         onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(1))
             .check(matches(hasDescendant(withText("LOCATION2"))))
-        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(1))
-            .check(matches(hasDescendant(withText("DELETE"))))
-        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(1))
-            .check(matches(hasDescendant(withText("RENAME"))))
 
         activityTestRule.finishActivity()
     }
