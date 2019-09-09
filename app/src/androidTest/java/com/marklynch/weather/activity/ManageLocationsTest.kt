@@ -1,15 +1,17 @@
 package com.marklynch.weather.activity
 
 import android.content.res.Resources
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.espresso.Espresso.onData
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.RootMatchers.withDecorView
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -19,6 +21,7 @@ import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.espressoutils.withListSize
+import com.marklynch.weather.espressoutils.withViewAtPosition
 import com.marklynch.weather.generateGetWeatherResponse
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
@@ -26,9 +29,8 @@ import com.marklynch.weather.utils.AppPermissionState
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.hasEntry
 import org.junit.*
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
@@ -38,9 +40,6 @@ import org.koin.standalone.get
 import org.koin.test.KoinTest
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import androidx.test.espresso.Espresso.onData
-
-
 
 
 @LargeTest
@@ -134,7 +133,43 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //check size of list
-        onView (withId (R.id.rv_manage_locations_list)).check (ViewAssertions.matches (withListSize (2)));
+        onView(withId(R.id.rv_manage_locations_list)).check(ViewAssertions.matches(withListSize(2)));
+
+        //Click on first item
+        onView(withId(R.id.rv_manage_locations_list))
+            .inRoot(withDecorView(`is`(activityTestRule.activity.window.decorView)))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+
+        //Check view at 0 is correct layout
+        onView(withId(R.id.rv_manage_locations_list))
+            .inRoot(withDecorView(`is`(activityTestRule.activity.window.decorView))).check(
+                matches(
+                    withViewAtPosition(
+                        0,
+                        Matchers.allOf(
+                            withId(R.layout.list_item_manage_locations),
+                            isDisplayed()
+                        )
+                    )
+                )
+            )
+
+//        onView(withId(R.id.rv_manage_locations_list))
+//            .inRoot(
+//                withDecorView(
+//                    Matchers.`is`(activityTestRule.activity.window.decorView)
+//                )
+//            )
+//            .check(
+//                matches(
+//                    withViewAtPosition(
+//                        1, Matchers.allOf(
+//                            withId(R.layout.list_item_manage_locations), isDisplayed()
+//                        )
+//                    )
+//                )
+//            )
+
 
 //        onData(
 //            allOf(
@@ -145,7 +180,6 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 //            .perform(click())
 //
 //        ^^^doesn't work because recyclerview is not an adapterview
-
 
 
         Thread.sleep(100_000)
