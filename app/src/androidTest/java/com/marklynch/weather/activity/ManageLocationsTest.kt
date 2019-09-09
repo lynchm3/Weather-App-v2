@@ -9,9 +9,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.RootMatchers.withDecorView
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -21,7 +19,7 @@ import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.espressoutils.withListSize
-import com.marklynch.weather.espressoutils.withViewAtPosition
+import com.marklynch.weather.espressoutils.withRecyclerView
 import com.marklynch.weather.generateGetWeatherResponse
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
@@ -29,8 +27,6 @@ import com.marklynch.weather.utils.AppPermissionState
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.Matchers
 import org.junit.*
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
@@ -133,56 +129,31 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //check size of list
-        onView(withId(R.id.rv_manage_locations_list)).check(ViewAssertions.matches(withListSize(2)));
+        onView(withId(R.id.rv_manage_locations_list)).check(ViewAssertions.matches(withListSize(2)))
 
         //Click on first item
         onView(withId(R.id.rv_manage_locations_list))
-            .inRoot(withDecorView(`is`(activityTestRule.activity.window.decorView)))
             .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
-        //Check view at 0 is correct layout
+        //Check text of first item
+        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
+            .check(matches(hasDescendant(withText("LOCATION1"))))
+        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
+            .check(matches(hasDescendant(withText("DELETE"))))
+        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
+            .check(matches(hasDescendant(withText("RENAME"))))
+
+        //Click on first item
         onView(withId(R.id.rv_manage_locations_list))
-            .inRoot(withDecorView(`is`(activityTestRule.activity.window.decorView))).check(
-                matches(
-                    withViewAtPosition(
-                        0,
-                        Matchers.allOf(
-                            withId(R.layout.list_item_manage_locations),
-                            isDisplayed()
-                        )
-                    )
-                )
-            )
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
 
-//        onView(withId(R.id.rv_manage_locations_list))
-//            .inRoot(
-//                withDecorView(
-//                    Matchers.`is`(activityTestRule.activity.window.decorView)
-//                )
-//            )
-//            .check(
-//                matches(
-//                    withViewAtPosition(
-//                        1, Matchers.allOf(
-//                            withId(R.layout.list_item_manage_locations), isDisplayed()
-//                        )
-//                    )
-//                )
-//            )
-
-
-//        onData(
-//            allOf(
-//                `is`(instanceOf(List::class.java)),
-//                hasEntry(equalTo("displayName"), `is`("LOCATION1"))
-//            )
-//        )
-//            .perform(click())
-//
-//        ^^^doesn't work because recyclerview is not an adapterview
-
-
-        Thread.sleep(100_000)
+        //Check text of 2nd item
+        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(1))
+            .check(matches(hasDescendant(withText("LOCATION2"))))
+        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(1))
+            .check(matches(hasDescendant(withText("DELETE"))))
+        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(1))
+            .check(matches(hasDescendant(withText("RENAME"))))
 
         activityTestRule.finishActivity()
     }
