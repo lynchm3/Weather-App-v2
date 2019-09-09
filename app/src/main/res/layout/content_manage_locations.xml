@@ -10,7 +10,7 @@
         tools:showIn="@layout/activity_manage_locations"
         tools:context=".activity.ManageLocationsActivity">
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_list"
+            android:id="@+id/rv_manage_locations_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="12dp"

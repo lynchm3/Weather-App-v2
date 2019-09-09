@@ -134,7 +134,8 @@ class LocationLiveDataTest : KoinTest {
 
         locationLiveData.observeXTimes(1) {
             observations++
-            assertEquals(it.location, locationResultPassed)
+            assertEquals(it.lat, locationResultPassed.lastLocation.latitude)
+            assertEquals(it.lon, locationResultPassed.lastLocation.longitude)
         }
 
         assertEquals(2, observations)

@@ -33,7 +33,7 @@ class ManualLocationListAdapter(val activity: ManageLocationsActivity, private v
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManualLocationViewHolder {
-        val itemView = mInflater.inflate(R.layout.recyclerview_item, parent, false)
+        val itemView = mInflater.inflate(R.layout.list_item_manage_locations, parent, false)
         return ManualLocationViewHolder(itemView)
     }
 

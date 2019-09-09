@@ -1,7 +1,6 @@
 package com.marklynch.weather.activity
 
 import android.content.Intent
-import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -33,9 +32,8 @@ class ManageLocationsActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         val adapter = ManualLocationListAdapter(this, viewModel)
-        rv_list.adapter = adapter
-        rv_list.layoutManager = LinearLayoutManager(this)
-
+        rv_manage_locations_list.adapter = adapter
+        rv_manage_locations_list.layoutManager = LinearLayoutManager(this)
 
         viewModel.locationLiveData.observe(this,
             Observer<LocationInformation> { locationInformation ->
@@ -46,10 +44,10 @@ class ManageLocationsActivity : BaseActivity() {
             override fun onChanged(manualLocations: List<ManualLocation>) {
                 adapter.setManualLocations(manualLocations)
                 if (manualLocations.isEmpty()) {
-                    rv_list.visibility = View.GONE
+                    rv_manage_locations_list.visibility = View.GONE
                     tv_messaging.visibility = View.VISIBLE
                 } else {
-                    rv_list.visibility = View.VISIBLE
+                    rv_manage_locations_list.visibility = View.VISIBLE
                     tv_messaging.visibility = View.GONE
                 }
             }

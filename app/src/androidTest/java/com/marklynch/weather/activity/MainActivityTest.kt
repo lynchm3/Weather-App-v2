@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.location.Address
 import android.view.View
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -20,6 +21,8 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.GrantPermissionRule
 import com.marklynch.weather.*
 import com.marklynch.weather.dependencyinjection.*
+import com.marklynch.weather.espressoutils.ViewRefreshingIdlingResource
+import com.marklynch.weather.espressoutils.ViewVisibilityIdlingResource
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.utils.*
@@ -38,6 +41,9 @@ import kotlin.math.roundToInt
 
 @LargeTest
 class MainActivityTest : KoinTest {
+
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
     @Rule
     @JvmField
@@ -366,13 +372,15 @@ class MainActivityTest : KoinTest {
     private fun waitForLoadingToFinish() {
         val pullToRefresh: SwipeRefreshLayout =
             activityTestRule.activity.findViewById(R.id.pull_to_refresh)
-        val idlingResource = ViewRefreshingIdlingResource(pullToRefresh, false)
+        val idlingResource =
+            ViewRefreshingIdlingResource(pullToRefresh, false)
         idlingRegistry.register(idlingResource)
         idlingRegistry.unregister(idlingResource)
     }
 
     private fun waitForViewToBeVisible(view: View) {
-        val idlingResource = ViewVisibilityIdlingResource(view, View.VISIBLE)
+        val idlingResource =
+            ViewVisibilityIdlingResource(view, View.VISIBLE)
         idlingRegistry.register(idlingResource)
         idlingRegistry.unregister(idlingResource)
     }
