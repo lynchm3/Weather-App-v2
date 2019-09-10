@@ -25,6 +25,7 @@ import com.marklynch.weather.R
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.dependencyinjection.*
+import com.marklynch.weather.espressoutils.checkViewHasText
 import com.marklynch.weather.espressoutils.clickView
 import com.marklynch.weather.espressoutils.withListSize
 import com.marklynch.weather.espressoutils.withRecyclerView
@@ -124,13 +125,9 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
         //CHeck "No locations to display" messaging shown
         onView(withId(R.id.tv_messaging)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_messaging)).check(
-            matches(
-                withText(
-                    activityTestRule.activity.resources.getString(
-                        R.string.no_locations_to_display
-                    )
-                )
+        checkViewHasText(
+            R.id.tv_messaging, activityTestRule.activity.resources.getString(
+                R.string.no_locations_to_display
             )
         )
 

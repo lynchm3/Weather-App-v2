@@ -4,18 +4,13 @@ import android.view.View
 import android.widget.ListView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.marklynch.weather.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -24,9 +19,9 @@ import org.hamcrest.TypeSafeMatcher
 fun withListSize(size: Int): Matcher<View> {
     return object : TypeSafeMatcher<View>() {
         override fun matchesSafely(view: View): Boolean {
-            if(view is ListView)
+            if (view is ListView)
                 return view.count === size
-            if(view is RecyclerView)
+            if (view is RecyclerView)
                 return view.childCount == size
             return false
         }
@@ -142,18 +137,25 @@ object SwipeRefreshLayoutMatchers {
 
 }
 
-
-
 fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
     return RecyclerViewMatcher(recyclerViewId)
 }
 
-fun clickView(id:Int)
-{
-    onView(withId(id)).perform(click())
+fun clickView(viewId: Int) {
+    onView(withId(viewId)).perform(click())
 }
 
-fun clickView(text:String)
-{
+fun clickView(text: String) {
     onView(withText(text)).perform(click())
 }
+
+fun checkViewHasText(viewId: Int, text: String) {
+    onView(withId(viewId)).check(
+        ViewAssertions.matches(
+            withText(
+                text
+            )
+        )
+    )
+}
+

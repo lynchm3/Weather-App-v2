@@ -8,8 +8,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -23,6 +23,7 @@ import com.marklynch.weather.*
 import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.espressoutils.ViewRefreshingIdlingResource
 import com.marklynch.weather.espressoutils.ViewVisibilityIdlingResource
+import com.marklynch.weather.espressoutils.checkViewHasText
 import com.marklynch.weather.espressoutils.clickView
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
@@ -139,7 +140,7 @@ class MainActivityTest : KoinTest {
         waitForLoadingToFinish()
 
         //Switch to degrees C as a starting point if not there already
-        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
             clickView(resources.getString(R.string.action_use_celsius))
         } catch (e: Exception) {
@@ -148,28 +149,26 @@ class MainActivityTest : KoinTest {
         }
 
         //Switch to fahrenheit
-        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickView(resources.getString(R.string.action_use_fahrenheit))
 
         //Check relevant textviews F
-        onView(withId(R.id.tv_temperature)).check(
-            matches(
-                withText(
-                    kelvinToFahrenheit(
-                        testTemperature
-                    ).roundToInt().toString()
-                )
-            )
+        checkViewHasText(
+            R.id.tv_temperature,
+            kelvinToFahrenheit(testTemperature).roundToInt().toString()
         )
-        onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesF))))
+        checkViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesF))
 
         //Switch to celcius
-        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickView(resources.getString(R.string.action_use_celsius))
 
         //Check relevant textviews C
-        onView(withId(R.id.tv_temperature)).check(matches(withText(kelvinToCelsius(testTemperature).roundToInt().toString())))
-        onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesC))))
+        checkViewHasText(
+            R.id.tv_temperature,
+            kelvinToCelsius(testTemperature).roundToInt().toString()
+        )
+        checkViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesC))
         activityTestRule.finishActivity()
     }
 
@@ -181,7 +180,7 @@ class MainActivityTest : KoinTest {
         waitForLoadingToFinish()
 
         //Switch to km as a starting point if not there already
-        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
             clickView(resources.getString(R.string.action_use_km))
         } catch (e: Exception) {
@@ -190,36 +189,28 @@ class MainActivityTest : KoinTest {
         }
 
         //Switch to miles
-        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickView(resources.getString(R.string.action_use_mi))
 
         //Check relevant textviews Mi
-        onView(withId(R.id.tv_wind)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.wind_mi,
-                        metresPerSecondToMilesPerHour(testWindSpeed).roundToInt(),
-                        directionInDegreesToCardinalDirection(testWindDeg)
-                    )
-                )
+        checkViewHasText(
+            R.id.tv_wind, resources.getString(
+                R.string.wind_mi,
+                metresPerSecondToMilesPerHour(testWindSpeed).roundToInt(),
+                directionInDegreesToCardinalDirection(testWindDeg)
             )
         )
 
         //Switch to km
-        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickView(resources.getString(R.string.action_use_km))
 
         //Check relevant textviews km
-        onView(withId(R.id.tv_wind)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.wind_km,
-                        metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
-                        directionInDegreesToCardinalDirection(testWindDeg)
-                    )
-                )
+        checkViewHasText(
+            R.id.tv_wind, resources.getString(
+                R.string.wind_km,
+                metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
+                directionInDegreesToCardinalDirection(testWindDeg)
             )
         )
         activityTestRule.finishActivity()
@@ -232,7 +223,7 @@ class MainActivityTest : KoinTest {
         waitForLoadingToFinish()
 
         //Switch to 12hr clock as a starting point if not there already
-        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
             clickView(resources.getString(R.string.action_use_12_hr_clock))
         } catch (e: Exception) {
@@ -241,31 +232,19 @@ class MainActivityTest : KoinTest {
         }
 
         //Switch to 24hr clock
-        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
 
         clickView(resources.getString(R.string.action_use_24_hr_clock))
 
         //Check relevant textviews 24hr clcok
-        onView(withId(R.id.tv_time_of_last_refresh)).check(
-            matches(
-                withText(
-                    generateTimeString(true)
-                )
-            )
-        )
+        checkViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(true))
 
         //Switch to 12hr clock
-        Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickView(resources.getString(R.string.action_use_12_hr_clock))
 
         //Check relevant textviews 12hr clock
-        onView(withId(R.id.tv_time_of_last_refresh)).check(
-            matches(
-                withText(
-                    generateTimeString(false)
-                )
-            )
-        )
+        checkViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(false))
         activityTestRule.finishActivity()
     }
 
@@ -385,57 +364,40 @@ class MainActivityTest : KoinTest {
     }
 
     private fun checkWeatherInfo() {
-        //Check weather info loaded from mockserver displayed
-        onView(withId(R.id.tv_temperature)).check(matches(withText(kelvinToCelsius(testTemperature).roundToInt().toString())))
-        onView(withId(R.id.tv_temperature_unit)).check(matches(withText(resources.getString(R.string.degreesC))))
-        onView(withId(R.id.tv_weather_description)).check(matches(withText(testDescription)))
-        onView(withId(R.id.tv_humidity)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.humidity_percentage,
-                        testHumidity.roundToInt()
-                    )
-                )
+        checkViewHasText(
+            R.id.tv_temperature,
+            kelvinToCelsius(testTemperature).roundToInt().toString()
+        )
+        checkViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesC))
+        checkViewHasText(R.id.tv_weather_description, testDescription)
+        checkViewHasText(
+            R.id.tv_humidity, resources.getString(
+                R.string.humidity_percentage,
+                testHumidity.roundToInt()
             )
         )
-        onView(withId(R.id.tv_maximum_temperature)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.maximum_temperature_C,
-                        kelvinToCelsius(testTemperatureMax).roundToInt()
-                    )
-                )
+        checkViewHasText(
+            R.id.tv_maximum_temperature, resources.getString(
+                R.string.maximum_temperature_C,
+                kelvinToCelsius(testTemperatureMax).roundToInt()
             )
         )
-        onView(withId(R.id.tv_minimum_temperature)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.minimum_temperature_C,
-                        kelvinToCelsius(testTemperatureMin).roundToInt()
-                    )
-                )
+        checkViewHasText(
+            R.id.tv_minimum_temperature, resources.getString(
+                R.string.minimum_temperature_C,
+                kelvinToCelsius(testTemperatureMin).roundToInt()
             )
         )
-        onView(withId(R.id.tv_wind)).check(
-            matches(
-                withText(
-                    resources.getString(
-                        R.string.wind_km,
-                        metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
-                        directionInDegreesToCardinalDirection(testWindDeg)
-                    )
-                )
+        checkViewHasText(
+            R.id.tv_wind, resources.getString(
+                R.string.wind_km,
+                metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
+                directionInDegreesToCardinalDirection(testWindDeg)
             )
         )
-        onView(withId(R.id.tv_cloudiness)).check(
-            matches(
-                withText(
-                    resources.getString(R.string.cloudiness_percentage, testCloudiness.roundToInt())
-                )
-            )
+        checkViewHasText(
+            R.id.tv_cloudiness,
+            resources.getString(R.string.cloudiness_percentage, testCloudiness.roundToInt())
         )
     }
 }
