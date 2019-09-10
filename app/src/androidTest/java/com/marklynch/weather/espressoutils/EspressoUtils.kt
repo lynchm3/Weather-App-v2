@@ -8,6 +8,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -174,6 +175,11 @@ fun checkViewDisplayed(viewText: String) {
             ViewMatchers.isDisplayed()
         )
     )
+}
+
+fun clickItemInList(listId: Int, position: Int) {
+    onView(withId(listId))
+        .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
 }
 
 

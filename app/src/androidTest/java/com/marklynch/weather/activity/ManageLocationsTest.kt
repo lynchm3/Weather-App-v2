@@ -158,8 +158,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(1)))
 
         //Click on first item
-        onView(withId(R.id.rv_manage_locations_list))
-            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+        clickItemInList(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
         onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
@@ -194,16 +193,14 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(2)))
 
         //Click on first item
-        onView(withId(R.id.rv_manage_locations_list))
-            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+        clickItemInList(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
         onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
             .check(matches(hasDescendant(withText("LOCATION1"))))
 
         //Click on 2nd item
-        onView(withId(R.id.rv_manage_locations_list))
-            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        clickItemInList(R.id.rv_manage_locations_list,1)
 
         //Check text of 2nd item
         onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(1))
@@ -247,8 +244,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(1)))
 
         //Click on first item
-        onView(withId(R.id.rv_manage_locations_list))
-            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+        clickItemInList(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
         onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
