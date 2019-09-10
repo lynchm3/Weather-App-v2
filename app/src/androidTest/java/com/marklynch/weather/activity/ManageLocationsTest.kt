@@ -25,10 +25,7 @@ import com.marklynch.weather.R
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.dependencyinjection.*
-import com.marklynch.weather.espressoutils.checkViewHasText
-import com.marklynch.weather.espressoutils.clickView
-import com.marklynch.weather.espressoutils.withListSize
-import com.marklynch.weather.espressoutils.withRecyclerView
+import com.marklynch.weather.espressoutils.*
 import com.marklynch.weather.generateGetWeatherResponse
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
@@ -124,7 +121,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //CHeck "No locations to display" messaging shown
-        onView(withId(R.id.tv_messaging)).check(matches(isDisplayed()))
+        checkViewDisplayed(R.id.tv_messaging)
         checkViewHasText(
             R.id.tv_messaging, activityTestRule.activity.resources.getString(
                 R.string.no_locations_to_display
@@ -155,7 +152,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //Check list is visible
-        onView(withId(R.id.rv_manage_locations_list)).check(matches(isDisplayed()))
+        checkViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
         onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(1)))

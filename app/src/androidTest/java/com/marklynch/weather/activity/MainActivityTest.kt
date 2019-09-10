@@ -7,8 +7,7 @@ import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -21,10 +20,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.GrantPermissionRule
 import com.marklynch.weather.*
 import com.marklynch.weather.dependencyinjection.*
-import com.marklynch.weather.espressoutils.ViewRefreshingIdlingResource
-import com.marklynch.weather.espressoutils.ViewVisibilityIdlingResource
-import com.marklynch.weather.espressoutils.checkViewHasText
-import com.marklynch.weather.espressoutils.clickView
+import com.marklynch.weather.espressoutils.*
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.utils.*
@@ -121,13 +117,7 @@ class MainActivityTest : KoinTest {
 //            )
 //        )
 
-        onView(withId(R.id.tv_time_of_last_refresh)).check(
-            matches(
-                withText(
-                    generateTimeString(false)
-                )
-            )
-        )
+        checkViewHasText(R.id.tv_time_of_last_refresh,generateTimeString(false))
         checkWeatherInfo()
         activityTestRule.finishActivity()
     }
@@ -145,7 +135,7 @@ class MainActivityTest : KoinTest {
             clickView(resources.getString(R.string.action_use_celsius))
         } catch (e: Exception) {
             //close menu if degrees C option wasn't aavailable
-            Espresso.pressBack()
+            pressBack()
         }
 
         //Switch to fahrenheit
@@ -184,8 +174,8 @@ class MainActivityTest : KoinTest {
         try {
             clickView(resources.getString(R.string.action_use_km))
         } catch (e: Exception) {
-            //close menu if degrees C option wasn't available
-            Espresso.pressBack()
+            //close menu if use km option wasn't available
+            pressBack()
         }
 
         //Switch to miles
@@ -228,7 +218,7 @@ class MainActivityTest : KoinTest {
             clickView(resources.getString(R.string.action_use_12_hr_clock))
         } catch (e: Exception) {
             //close menu if degrees C option wasn't available
-            Espresso.pressBack()
+            pressBack()
         }
 
         //Switch to 24hr clock
@@ -259,11 +249,7 @@ class MainActivityTest : KoinTest {
 
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
-        onView(withText(resources.getString(R.string.permission_required_body))).check(
-            matches(
-                isDisplayed()
-            )
-        )
+        checkViewDisplayed(resources.getString(R.string.permission_required_body))
         activityTestRule.finishActivity()
     }
 
@@ -272,7 +258,7 @@ class MainActivityTest : KoinTest {
         testGpsState = GpsState.Disabled
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
-        onView(withText(resources.getString(R.string.gps_required_body))).check(matches(isDisplayed()))
+        checkViewDisplayed(resources.getString(R.string.gps_required_body))
         activityTestRule.finishActivity()
     }
 
@@ -282,7 +268,7 @@ class MainActivityTest : KoinTest {
         testWeatherResponse = null
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
-        onView(withText(resources.getString(R.string.no_network_body))).check(matches(isDisplayed()))
+        checkViewDisplayed(resources.getString(R.string.no_network_body))
         activityTestRule.finishActivity()
     }
 

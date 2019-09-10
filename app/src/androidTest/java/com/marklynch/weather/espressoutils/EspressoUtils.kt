@@ -9,6 +9,7 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.BoundedMatcher
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.Description
@@ -145,8 +146,8 @@ fun clickView(viewId: Int) {
     onView(withId(viewId)).perform(click())
 }
 
-fun clickView(text: String) {
-    onView(withText(text)).perform(click())
+fun clickView(viewText: String) {
+    onView(withText(viewText)).perform(click())
 }
 
 fun checkViewHasText(viewId: Int, text: String) {
@@ -158,4 +159,21 @@ fun checkViewHasText(viewId: Int, text: String) {
         )
     )
 }
+
+fun checkViewDisplayed(viewId: Int) {
+    onView(withId(viewId)).check(
+        ViewAssertions.matches(
+            ViewMatchers.isDisplayed()
+        )
+    )
+}
+
+fun checkViewDisplayed(viewText: String) {
+    onView(withText(viewText)).check(
+        ViewAssertions.matches(
+            ViewMatchers.isDisplayed()
+        )
+    )
+}
+
 
