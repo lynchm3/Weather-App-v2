@@ -155,7 +155,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         checkViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(1)))
+        checkListSize(R.id.rv_manage_locations_list,1)
 
         //Click on first item
         clickItemInList(R.id.rv_manage_locations_list,0)
@@ -190,7 +190,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //check size of list
-        onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(2)))
+        checkListSize(R.id.rv_manage_locations_list,2)
 
         //Click on first item
         clickItemInList(R.id.rv_manage_locations_list,0)
@@ -241,7 +241,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         //check size of list
-        onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(1)))
+        checkListSize(R.id.rv_manage_locations_list,1)
 
         //Click on first item
         clickItemInList(R.id.rv_manage_locations_list,0)
