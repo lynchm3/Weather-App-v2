@@ -13,6 +13,7 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -169,6 +170,14 @@ fun checkViewDisplayed(viewId: Int) {
     )
 }
 
+fun checkViewNotDisplayed(viewId: Int) {
+    onView(withId(viewId)).check(
+        ViewAssertions.matches(
+            not(ViewMatchers.isDisplayed())
+        )
+    )
+}
+
 fun checkViewDisplayed(viewText: String) {
     onView(withText(viewText)).check(
         ViewAssertions.matches(
@@ -178,6 +187,11 @@ fun checkViewDisplayed(viewText: String) {
 }
 
 fun clickItemInRecyclerView(recyclerViewId: Int, position: Int) {
+    onView(withId(recyclerViewId))
+        .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
+}
+
+fun clickItemInRecyclerView(recyclerViewId: Int, position: Int, text: String) {
     onView(withId(recyclerViewId))
         .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
 }

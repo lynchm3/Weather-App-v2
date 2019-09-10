@@ -36,12 +36,12 @@ class ManageLocationsActivity : BaseActivity() {
         rv_manage_locations_list.layoutManager = LinearLayoutManager(this)
 
         viewModel.locationLiveData.observe(this,
-            Observer<LocationInformation> { locationInformation ->
+            Observer<LocationInformation> {
 
             })
 
-        viewModel.manualLocationLiveData?.observe(this, object : Observer<List<ManualLocation>> {
-            override fun onChanged(manualLocations: List<ManualLocation>) {
+        viewModel.manualLocationLiveData?.observe(this,
+            Observer<List<ManualLocation>> { manualLocations ->
                 adapter.setManualLocations(manualLocations)
                 if (manualLocations.isEmpty()) {
                     rv_manage_locations_list.visibility = View.GONE
@@ -50,8 +50,7 @@ class ManageLocationsActivity : BaseActivity() {
                     rv_manage_locations_list.visibility = View.VISIBLE
                     tv_messaging.visibility = View.GONE
                 }
-            }
-        })
+            })
 
         fab.setOnClickListener {
             val lat: Double? = viewModel.getLocationInformation()?.lat

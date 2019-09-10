@@ -4,7 +4,10 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.content.res.Resources
 import android.location.Address
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
@@ -245,6 +248,75 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,displayName)
 
         activityTestRule.finishActivity()
+    }
+
+    @Test
+    fun testRemove() {
+        val weatherDatabase: WeatherDatabase = get()
+        weatherDatabase.clearAllTables()
+
+        val insertLatch = CountDownLatch(1)
+        val locations = listOf(
+            ManualLocation(0L, "LOCATION1", 5.0, 6.0)
+        )
+
+        GlobalScope.launch {
+            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            manualLocationDAO.insert(locations[0])
+            insertLatch.countDown()
+        }
+
+        insertLatch.await(5, TimeUnit.SECONDS)
+
+        activityTestRule.launchActivity(null)
+
+        //Check list is visible
+        checkViewDisplayed(R.id.rv_manage_locations_list)
+
+        //Check size of list
+        checkListSize(R.id.rv_manage_locations_list,1)
+
+        //Click on first item
+        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+
+        //Check text of first item
+        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+
+        //Check remove button displayed
+        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.remove))
+        checkViewDisplayed(resources.getString(R.string.remove))
+
+        //Click remove button
+        clickView(resources.getString(R.string.remove))
+
+        //Wait for "No Locations" message to show up
+        val tvMessaging: TextView =
+            activityTestRule.activity.findViewById(R.id.tv_messaging)
+        val idlingResource =
+            ViewVisibilityIdlingResource(tvMessaging, View.VISIBLE)
+        idlingRegistry.register(idlingResource)
+        idlingRegistry.unregister(idlingResource)
+
+//        Thread.sleep(5_000)
+
+        //Check list size is now 0
+//        checkListSize(R.id.rv_manage_locations_list,0)
+
+        //CHeck "No locations to display" messaging shown
+        checkViewNotDisplayed(R.id.rv_manage_locations_list)
+        checkViewDisplayed(R.id.tv_messaging)
+        checkViewHasText(
+            R.id.tv_messaging, activityTestRule.activity.resources.getString(
+                R.string.no_locations_to_display
+            )
+        )
+
+        activityTestRule.finishActivity()
+    }
+
+    @Test
+    fun testRename() {
+
     }
 
     @Test
