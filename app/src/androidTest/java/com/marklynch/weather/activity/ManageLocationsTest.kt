@@ -1,13 +1,20 @@
 package com.marklynch.weather.activity
 
+import android.app.Instrumentation
+import android.content.Intent
 import android.content.res.Resources
+import android.location.Address
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
@@ -23,7 +30,12 @@ import com.marklynch.weather.espressoutils.withRecyclerView
 import com.marklynch.weather.generateGetWeatherResponse
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
+import com.marklynch.weather.randomiseTestWeatherData
 import com.marklynch.weather.utils.AppPermissionState
+import com.marklynch.weather.utils.randomAlphaNumeric
+import com.sucho.placepicker.AddressData
+import com.sucho.placepicker.Constants
+import com.sucho.placepicker.PlacePickerActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.mockwebserver.MockWebServer
@@ -34,6 +46,7 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.get
 import org.koin.test.KoinTest
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -110,7 +123,15 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
         //CHeck "No locations to display" messaging shown
         onView(withId(R.id.tv_messaging)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_messaging)).check(matches(withText(activityTestRule.activity.resources.getString(R.string.no_locations_to_display))))
+        onView(withId(R.id.tv_messaging)).check(
+            matches(
+                withText(
+                    activityTestRule.activity.resources.getString(
+                        R.string.no_locations_to_display
+                    )
+                )
+            )
+        )
 
         activityTestRule.finishActivity()
     }
@@ -194,6 +215,56 @@ class ManageLocationsTest : KoinTest, KoinComponent {
             .check(matches(hasDescendant(withText("LOCATION2"))))
 
         activityTestRule.finishActivity()
+    }
+
+
+    @Test
+    fun testAddLocation() {
+
+        randomiseTestWeatherData()
+
+        activityTestRule.launchActivity(null)
+
+        val lat = com.marklynch.weather.testLat
+        val lon = com.marklynch.weather.testLon
+        val displayName = randomAlphaNumeric(5)
+        val address = Address(Locale.US)
+        address.adminArea = displayName
+        val addressList: List<Address>? = listOf(address)
+        val addressData = AddressData(lat, lon, addressList)
+
+        val resultIntent = Intent()
+
+        resultIntent.putExtra(Constants.ADDRESS_INTENT, addressData)
+
+
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(
+                AppCompatActivity.RESULT_OK,
+                resultIntent
+            )
+        )
+
+        onView(withId(R.id.fab)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
+
+        //check size of list
+        onView(withId(R.id.rv_manage_locations_list)).check(matches(withListSize(1)))
+
+        //Click on first item
+        onView(withId(R.id.rv_manage_locations_list))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+
+        //Check text of first item
+        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
+            .check(matches(hasDescendant(withText(displayName))))
+
+        activityTestRule.finishActivity()
+    }
+
+    @Test
+    fun testCancelAddingLocation() {
+        //TODO Select add location, then press back on add lcoation screen rather than selecting a location
     }
 
     class ScreenshotTakingRule : TestWatcher() {
