@@ -5,18 +5,12 @@ import android.content.Intent
 import android.content.res.Resources
 import android.location.Address
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -158,11 +152,10 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         checkListSize(R.id.rv_manage_locations_list,1)
 
         //Click on first item
-        clickItemInList(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
-        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
-            .check(matches(hasDescendant(withText("LOCATION1"))))
+        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
 
         activityTestRule.finishActivity()
     }
@@ -193,18 +186,20 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         checkListSize(R.id.rv_manage_locations_list,2)
 
         //Click on first item
-        clickItemInList(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
-        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
-            .check(matches(hasDescendant(withText("LOCATION1"))))
+        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+//        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
+//            .check(matches(hasDescendant(withText(resources.getString(R.string.rename)))))
+//        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
+//            .check(matches(hasDescendant(withText(resources.getString(R.string.remove)))))
 
         //Click on 2nd item
-        clickItemInList(R.id.rv_manage_locations_list,1)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list,1)
 
         //Check text of 2nd item
-        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(1))
-            .check(matches(hasDescendant(withText("LOCATION2"))))
+        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,1,"LOCATION2")
 
         activityTestRule.finishActivity()
     }
@@ -244,11 +239,10 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         checkListSize(R.id.rv_manage_locations_list,1)
 
         //Click on first item
-        clickItemInList(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
-        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
-            .check(matches(hasDescendant(withText(displayName))))
+        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,displayName)
 
         activityTestRule.finishActivity()
     }

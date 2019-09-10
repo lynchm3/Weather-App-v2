@@ -13,7 +13,6 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.marklynch.weather.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -178,13 +177,18 @@ fun checkViewDisplayed(viewText: String) {
     )
 }
 
-fun clickItemInList(listId: Int, position: Int) {
-    onView(withId(listId))
+fun clickItemInRecyclerView(recyclerViewId: Int, position: Int) {
+    onView(withId(recyclerViewId))
         .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
 }
 
-fun checkListSize(listId:Int, size:Int) {
+fun checkListSize(listId: Int, size: Int) {
     onView(withId(listId)).check(ViewAssertions.matches(withListSize(size)))
+}
+
+fun checkItemInRecyclerViewHasText(listId: Int, position: Int, text: String) {
+    onView(withRecyclerView(listId).atPosition(position))
+        .check(ViewAssertions.matches(ViewMatchers.hasDescendant(withText(text))))
 }
 
 
