@@ -25,6 +25,7 @@ import com.marklynch.weather.R
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.dependencyinjection.*
+import com.marklynch.weather.espressoutils.clickView
 import com.marklynch.weather.espressoutils.withListSize
 import com.marklynch.weather.espressoutils.withRecyclerView
 import com.marklynch.weather.generateGetWeatherResponse
@@ -245,7 +246,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
             )
         )
 
-        onView(withId(R.id.fab)).perform(click())
+        clickView(R.id.fab)
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         //check size of list

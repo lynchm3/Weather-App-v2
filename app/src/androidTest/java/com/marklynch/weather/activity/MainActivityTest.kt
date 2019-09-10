@@ -23,6 +23,7 @@ import com.marklynch.weather.*
 import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.espressoutils.ViewRefreshingIdlingResource
 import com.marklynch.weather.espressoutils.ViewVisibilityIdlingResource
+import com.marklynch.weather.espressoutils.clickView
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.utils.*
@@ -140,8 +141,7 @@ class MainActivityTest : KoinTest {
         //Switch to degrees C as a starting point if not there already
         Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
-            onView(withText(resources.getString(R.string.action_use_celsius)))
-                .perform(click())
+            clickView(resources.getString(R.string.action_use_celsius))
         } catch (e: Exception) {
             //close menu if degrees C option wasn't aavailable
             Espresso.pressBack()
@@ -149,8 +149,7 @@ class MainActivityTest : KoinTest {
 
         //Switch to fahrenheit
         Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText(resources.getString(R.string.action_use_fahrenheit)))
-            .perform(click())
+        clickView(resources.getString(R.string.action_use_fahrenheit))
 
         //Check relevant textviews F
         onView(withId(R.id.tv_temperature)).check(
@@ -166,8 +165,7 @@ class MainActivityTest : KoinTest {
 
         //Switch to celcius
         Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText(resources.getString(R.string.action_use_celsius)))
-            .perform(click())
+        clickView(resources.getString(R.string.action_use_celsius))
 
         //Check relevant textviews C
         onView(withId(R.id.tv_temperature)).check(matches(withText(kelvinToCelsius(testTemperature).roundToInt().toString())))
@@ -185,8 +183,7 @@ class MainActivityTest : KoinTest {
         //Switch to km as a starting point if not there already
         Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
-            onView(withText(resources.getString(R.string.action_use_km)))
-                .perform(click())
+            clickView(resources.getString(R.string.action_use_km))
         } catch (e: Exception) {
             //close menu if degrees C option wasn't available
             Espresso.pressBack()
@@ -194,8 +191,7 @@ class MainActivityTest : KoinTest {
 
         //Switch to miles
         Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText(resources.getString(R.string.action_use_mi)))
-            .perform(click())
+        clickView(resources.getString(R.string.action_use_mi))
 
         //Check relevant textviews Mi
         onView(withId(R.id.tv_wind)).check(
@@ -212,8 +208,7 @@ class MainActivityTest : KoinTest {
 
         //Switch to km
         Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText(resources.getString(R.string.action_use_km)))
-            .perform(click())
+        clickView(resources.getString(R.string.action_use_km))
 
         //Check relevant textviews km
         onView(withId(R.id.tv_wind)).check(
@@ -239,8 +234,7 @@ class MainActivityTest : KoinTest {
         //Switch to 12hr clock as a starting point if not there already
         Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
-            onView(withText(resources.getString(R.string.action_use_12_hr_clock)))
-                .perform(click())
+            clickView(resources.getString(R.string.action_use_12_hr_clock))
         } catch (e: Exception) {
             //close menu if degrees C option wasn't available
             Espresso.pressBack()
@@ -248,8 +242,8 @@ class MainActivityTest : KoinTest {
 
         //Switch to 24hr clock
         Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText(resources.getString(R.string.action_use_24_hr_clock)))
-            .perform(click())
+
+        clickView(resources.getString(R.string.action_use_24_hr_clock))
 
         //Check relevant textviews 24hr clcok
         onView(withId(R.id.tv_time_of_last_refresh)).check(
@@ -262,8 +256,7 @@ class MainActivityTest : KoinTest {
 
         //Switch to 12hr clock
         Espresso.openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        onView(withText(resources.getString(R.string.action_use_12_hr_clock)))
-            .perform(click())
+        clickView(resources.getString(R.string.action_use_12_hr_clock))
 
         //Check relevant textviews 12hr clock
         onView(withId(R.id.tv_time_of_last_refresh)).check(
@@ -347,12 +340,12 @@ class MainActivityTest : KoinTest {
 //            )
 //        )
 
-        onView(withId(R.id.spinner_select_location)).perform(click())
-        onView(withText(resources.getString(R.string.add_location_ellipses))).perform(click())
+        clickView(R.id.spinner_select_location)
+        clickView(resources.getString(R.string.add_location_ellipses))
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         Thread.sleep(3_000)
-        onView(withId(com.sucho.placepicker.R.id.place_chosen_button)).perform(click())
+        clickView(com.sucho.placepicker.R.id.place_chosen_button)
 
         Thread.sleep(5_000)
 
