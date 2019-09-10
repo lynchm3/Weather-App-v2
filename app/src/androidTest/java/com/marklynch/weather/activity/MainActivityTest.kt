@@ -6,14 +6,11 @@ import android.location.Address
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -117,7 +114,7 @@ class MainActivityTest : KoinTest {
 //            )
 //        )
 
-        checkViewHasText(R.id.tv_time_of_last_refresh,generateTimeString(false))
+        assertViewHasText(R.id.tv_time_of_last_refresh,generateTimeString(false))
         checkWeatherInfo()
         activityTestRule.finishActivity()
     }
@@ -132,7 +129,7 @@ class MainActivityTest : KoinTest {
         //Switch to degrees C as a starting point if not there already
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
-            clickView(resources.getString(R.string.action_use_celsius))
+            clickViewWithText(resources.getString(R.string.action_use_celsius))
         } catch (e: Exception) {
             //close menu if degrees C option wasn't aavailable
             pressBack()
@@ -140,25 +137,25 @@ class MainActivityTest : KoinTest {
 
         //Switch to fahrenheit
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickView(resources.getString(R.string.action_use_fahrenheit))
+        clickViewWithText(resources.getString(R.string.action_use_fahrenheit))
 
         //Check relevant textviews F
-        checkViewHasText(
+        assertViewHasText(
             R.id.tv_temperature,
             kelvinToFahrenheit(testTemperature).roundToInt().toString()
         )
-        checkViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesF))
+        assertViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesF))
 
         //Switch to celcius
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickView(resources.getString(R.string.action_use_celsius))
+        clickViewWithText(resources.getString(R.string.action_use_celsius))
 
         //Check relevant textviews C
-        checkViewHasText(
+        assertViewHasText(
             R.id.tv_temperature,
             kelvinToCelsius(testTemperature).roundToInt().toString()
         )
-        checkViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesC))
+        assertViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesC))
         activityTestRule.finishActivity()
     }
 
@@ -172,7 +169,7 @@ class MainActivityTest : KoinTest {
         //Switch to km as a starting point if not there already
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
-            clickView(resources.getString(R.string.action_use_km))
+            clickViewWithText(resources.getString(R.string.action_use_km))
         } catch (e: Exception) {
             //close menu if use km option wasn't available
             pressBack()
@@ -180,10 +177,10 @@ class MainActivityTest : KoinTest {
 
         //Switch to miles
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickView(resources.getString(R.string.action_use_mi))
+        clickViewWithText(resources.getString(R.string.action_use_mi))
 
         //Check relevant textviews Mi
-        checkViewHasText(
+        assertViewHasText(
             R.id.tv_wind, resources.getString(
                 R.string.wind_mi,
                 metresPerSecondToMilesPerHour(testWindSpeed).roundToInt(),
@@ -193,10 +190,10 @@ class MainActivityTest : KoinTest {
 
         //Switch to km
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickView(resources.getString(R.string.action_use_km))
+        clickViewWithText(resources.getString(R.string.action_use_km))
 
         //Check relevant textviews km
-        checkViewHasText(
+        assertViewHasText(
             R.id.tv_wind, resources.getString(
                 R.string.wind_km,
                 metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
@@ -215,7 +212,7 @@ class MainActivityTest : KoinTest {
         //Switch to 12hr clock as a starting point if not there already
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
-            clickView(resources.getString(R.string.action_use_12_hr_clock))
+            clickViewWithText(resources.getString(R.string.action_use_12_hr_clock))
         } catch (e: Exception) {
             //close menu if degrees C option wasn't available
             pressBack()
@@ -224,17 +221,17 @@ class MainActivityTest : KoinTest {
         //Switch to 24hr clock
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
 
-        clickView(resources.getString(R.string.action_use_24_hr_clock))
+        clickViewWithText(resources.getString(R.string.action_use_24_hr_clock))
 
         //Check relevant textviews 24hr clcok
-        checkViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(true))
+        assertViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(true))
 
         //Switch to 12hr clock
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickView(resources.getString(R.string.action_use_12_hr_clock))
+        clickViewWithText(resources.getString(R.string.action_use_12_hr_clock))
 
         //Check relevant textviews 12hr clock
-        checkViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(false))
+        assertViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(false))
         activityTestRule.finishActivity()
     }
 
@@ -249,7 +246,7 @@ class MainActivityTest : KoinTest {
 
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
-        checkViewDisplayed(resources.getString(R.string.permission_required_body))
+        assertViewDisplayed(resources.getString(R.string.permission_required_body))
         activityTestRule.finishActivity()
     }
 
@@ -258,7 +255,7 @@ class MainActivityTest : KoinTest {
         testGpsState = GpsState.Disabled
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
-        checkViewDisplayed(resources.getString(R.string.gps_required_body))
+        assertViewDisplayed(resources.getString(R.string.gps_required_body))
         activityTestRule.finishActivity()
     }
 
@@ -268,7 +265,7 @@ class MainActivityTest : KoinTest {
         testWeatherResponse = null
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
-        checkViewDisplayed(resources.getString(R.string.no_network_body))
+        assertViewDisplayed(resources.getString(R.string.no_network_body))
         activityTestRule.finishActivity()
     }
 
@@ -305,12 +302,12 @@ class MainActivityTest : KoinTest {
 //            )
 //        )
 
-        clickView(R.id.spinner_select_location)
-        clickView(resources.getString(R.string.add_location_ellipses))
+        clickViewWithId(R.id.spinner_select_location)
+        clickViewWithText(resources.getString(R.string.add_location_ellipses))
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         Thread.sleep(3_000)
-        clickView(com.sucho.placepicker.R.id.place_chosen_button)
+        clickViewWithId(com.sucho.placepicker.R.id.place_chosen_button)
 
         Thread.sleep(5_000)
 
@@ -350,38 +347,38 @@ class MainActivityTest : KoinTest {
     }
 
     private fun checkWeatherInfo() {
-        checkViewHasText(
+        assertViewHasText(
             R.id.tv_temperature,
             kelvinToCelsius(testTemperature).roundToInt().toString()
         )
-        checkViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesC))
-        checkViewHasText(R.id.tv_weather_description, testDescription)
-        checkViewHasText(
+        assertViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesC))
+        assertViewHasText(R.id.tv_weather_description, testDescription)
+        assertViewHasText(
             R.id.tv_humidity, resources.getString(
                 R.string.humidity_percentage,
                 testHumidity.roundToInt()
             )
         )
-        checkViewHasText(
+        assertViewHasText(
             R.id.tv_maximum_temperature, resources.getString(
                 R.string.maximum_temperature_C,
                 kelvinToCelsius(testTemperatureMax).roundToInt()
             )
         )
-        checkViewHasText(
+        assertViewHasText(
             R.id.tv_minimum_temperature, resources.getString(
                 R.string.minimum_temperature_C,
                 kelvinToCelsius(testTemperatureMin).roundToInt()
             )
         )
-        checkViewHasText(
+        assertViewHasText(
             R.id.tv_wind, resources.getString(
                 R.string.wind_km,
                 metresPerSecondToKmPerHour(testWindSpeed).roundToInt(),
                 directionInDegreesToCardinalDirection(testWindDeg)
             )
         )
-        checkViewHasText(
+        assertViewHasText(
             R.id.tv_cloudiness,
             resources.getString(R.string.cloudiness_percentage, testCloudiness.roundToInt())
         )

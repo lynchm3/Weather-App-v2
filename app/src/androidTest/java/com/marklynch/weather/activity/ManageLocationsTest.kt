@@ -7,13 +7,16 @@ import android.location.Address
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -118,8 +121,8 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //CHeck "No locations to display" messaging shown
-        checkViewDisplayed(R.id.tv_messaging)
-        checkViewHasText(
+        assertViewDisplayed(R.id.tv_messaging)
+        assertViewHasText(
             R.id.tv_messaging, activityTestRule.activity.resources.getString(
                 R.string.no_locations_to_display
             )
@@ -149,16 +152,16 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //Check list is visible
-        checkViewDisplayed(R.id.rv_manage_locations_list)
+        assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        checkListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list,1)
 
         //Click on first item
         clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
-        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
 
         activityTestRule.finishActivity()
     }
@@ -186,13 +189,13 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //check size of list
-        checkListSize(R.id.rv_manage_locations_list,2)
+        assertListSize(R.id.rv_manage_locations_list,2)
 
         //Click on first item
         clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
-        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
 //        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
 //            .check(matches(hasDescendant(withText(resources.getString(R.string.rename)))))
 //        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
@@ -202,7 +205,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         clickItemInRecyclerView(R.id.rv_manage_locations_list,1)
 
         //Check text of 2nd item
-        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,1,"LOCATION2")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,1,"LOCATION2")
 
         activityTestRule.finishActivity()
     }
@@ -235,17 +238,17 @@ class ManageLocationsTest : KoinTest, KoinComponent {
             )
         )
 
-        clickView(R.id.fab)
+        clickViewWithId(R.id.fab)
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         //check size of list
-        checkListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list,1)
 
         //Click on first item
         clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
-        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,displayName)
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,displayName)
 
         activityTestRule.finishActivity()
     }
@@ -271,23 +274,23 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //Check list is visible
-        checkViewDisplayed(R.id.rv_manage_locations_list)
+        assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        checkListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list,1)
 
         //Click on first item
         clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
 
         //Check text of first item
-        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
 
         //Check remove button displayed
-        checkItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.remove))
-        checkViewDisplayed(resources.getString(R.string.remove))
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.remove))
+        assertViewDisplayed(resources.getString(R.string.remove))
 
         //Click remove button
-        clickView(resources.getString(R.string.remove))
+        clickViewWithText(resources.getString(R.string.remove))
 
         //Wait for "No Locations" message to show up
         val tvMessaging: TextView =
@@ -297,15 +300,10 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         idlingRegistry.register(idlingResource)
         idlingRegistry.unregister(idlingResource)
 
-//        Thread.sleep(5_000)
-
-        //Check list size is now 0
-//        checkListSize(R.id.rv_manage_locations_list,0)
-
         //CHeck "No locations to display" messaging shown
-        checkViewNotDisplayed(R.id.rv_manage_locations_list)
-        checkViewDisplayed(R.id.tv_messaging)
-        checkViewHasText(
+        assertViewNotDisplayed(R.id.rv_manage_locations_list)
+        assertViewDisplayed(R.id.tv_messaging)
+        assertViewHasText(
             R.id.tv_messaging, activityTestRule.activity.resources.getString(
                 R.string.no_locations_to_display
             )
@@ -314,13 +312,72 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.finishActivity()
     }
 
+
+
     @Test
     fun testRename() {
+        val weatherDatabase: WeatherDatabase = get()
+        weatherDatabase.clearAllTables()
 
+        val insertLatch = CountDownLatch(1)
+        val locations = listOf(
+            ManualLocation(0L, "LOCATION1", 5.0, 6.0)
+        )
+
+        GlobalScope.launch {
+            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            manualLocationDAO.insert(locations[0])
+            insertLatch.countDown()
+        }
+
+        insertLatch.await(5, TimeUnit.SECONDS)
+
+        activityTestRule.launchActivity(null)
+
+        //Check list is visible
+        assertViewDisplayed(R.id.rv_manage_locations_list)
+
+        //Check size of list
+        assertListSize(R.id.rv_manage_locations_list,1)
+
+        //Click on first item
+        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+
+        //Check text of first item
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+
+        //Check rename button displayed
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.rename))
+        assertViewDisplayed(resources.getString(R.string.rename))
+
+        //Click rename button
+        clickViewWithText(resources.getString(R.string.rename))
+
+        //Type new name
+        onView(withId(R.id.edit_text)).perform(typeText("NEWLOC"))
+
+        //Tap ok
+        clickViewWithText("OK")
+
+        //Check list is visible
+        assertViewDisplayed(R.id.rv_manage_locations_list)
+
+        //Check size of list
+        assertListSize(R.id.rv_manage_locations_list,1)
+
+        //Check text of first item
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"NEWLOC")
+
+        activityTestRule.finishActivity()
     }
 
     @Test
     fun testCancelAddingLocation() {
+        //TODO Select add location, then press back on add lcoation screen rather than selecting a location
+    }
+
+    @Test
+    fun testCancelRenaming() {
         //TODO Select add location, then press back on add lcoation screen rather than selecting a location
     }
 

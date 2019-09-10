@@ -11,8 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -144,15 +143,19 @@ fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
     return RecyclerViewMatcher(recyclerViewId)
 }
 
-fun clickView(viewId: Int) {
+fun clickViewWithId(viewId: Int) {
     onView(withId(viewId)).perform(click())
 }
 
-fun clickView(viewText: String) {
+fun clickViewWithText(viewText: String) {
     onView(withText(viewText)).perform(click())
 }
 
-fun checkViewHasText(viewId: Int, text: String) {
+fun clickViewWIthHint(viewText: String) {
+    onView(withHint(viewText)).perform(click())
+}
+
+fun assertViewHasText(viewId: Int, text: String) {
     onView(withId(viewId)).check(
         ViewAssertions.matches(
             withText(
@@ -162,7 +165,7 @@ fun checkViewHasText(viewId: Int, text: String) {
     )
 }
 
-fun checkViewDisplayed(viewId: Int) {
+fun assertViewDisplayed(viewId: Int) {
     onView(withId(viewId)).check(
         ViewAssertions.matches(
             ViewMatchers.isDisplayed()
@@ -170,7 +173,7 @@ fun checkViewDisplayed(viewId: Int) {
     )
 }
 
-fun checkViewNotDisplayed(viewId: Int) {
+fun assertViewNotDisplayed(viewId: Int) {
     onView(withId(viewId)).check(
         ViewAssertions.matches(
             not(ViewMatchers.isDisplayed())
@@ -178,7 +181,7 @@ fun checkViewNotDisplayed(viewId: Int) {
     )
 }
 
-fun checkViewDisplayed(viewText: String) {
+fun assertViewDisplayed(viewText: String) {
     onView(withText(viewText)).check(
         ViewAssertions.matches(
             ViewMatchers.isDisplayed()
@@ -191,16 +194,11 @@ fun clickItemInRecyclerView(recyclerViewId: Int, position: Int) {
         .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
 }
 
-fun clickItemInRecyclerView(recyclerViewId: Int, position: Int, text: String) {
-    onView(withId(recyclerViewId))
-        .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
-}
-
-fun checkListSize(listId: Int, size: Int) {
+fun assertListSize(listId: Int, size: Int) {
     onView(withId(listId)).check(ViewAssertions.matches(withListSize(size)))
 }
 
-fun checkItemInRecyclerViewHasText(listId: Int, position: Int, text: String) {
+fun assertItemInRecyclerViewHasText(listId: Int, position: Int, text: String) {
     onView(withRecyclerView(listId).atPosition(position))
         .check(ViewAssertions.matches(ViewMatchers.hasDescendant(withText(text))))
 }

@@ -2,14 +2,16 @@ package com.marklynch.weather.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.marklynch.weather.adapter.ManualLocationListAdapter
 import com.marklynch.weather.R
+import com.marklynch.weather.adapter.ManualLocationListAdapter
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.viewmodel.ManageLocationsViewModel
@@ -18,6 +20,7 @@ import com.sucho.placepicker.Constants
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.activity_manage_locations.*
 import kotlinx.android.synthetic.main.content_manage_locations.*
+import kotlinx.android.synthetic.main.edit_text.*
 import org.koin.android.ext.android.inject
 
 
@@ -55,7 +58,7 @@ class ManageLocationsActivity : BaseActivity() {
         fab.setOnClickListener {
             val lat: Double? = viewModel.getLocationInformation()?.lat
             val lon: Double? = viewModel.getLocationInformation()?.lon
-            if (lat != null && lon!=null) {
+            if (lat != null && lon != null) {
                 openMapForUserToAddNewLocation(lat, lon)
             } else {
                 openMapForUserToAddNewLocation()
@@ -81,7 +84,9 @@ class ManageLocationsActivity : BaseActivity() {
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Rename Location")
-        val input = EditText(this)
+        val mInflater: LayoutInflater = LayoutInflater.from(this)
+        val input = mInflater.inflate(R.layout.edit_text, null, false) as EditText
+//        val input = EditText(this)
         input.hint = "New Location Name"
         builder.setView(input)
 
@@ -100,6 +105,12 @@ class ManageLocationsActivity : BaseActivity() {
         ) { dialog, _ -> dialog.cancel() }
 
         this.alertDialog = builder.show()
+
+//        input.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+//            if (hasFocus) {
+//            }
+//        }
         input.requestFocus()
+        alertDialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
     }
 }
