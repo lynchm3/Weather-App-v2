@@ -373,12 +373,147 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
     @Test
     fun testCancelAddingLocation() {
-        //TODO Select add location, then press back on add lcoation screen rather than selecting a location
+        val weatherDatabase: WeatherDatabase = get()
+        weatherDatabase.clearAllTables()
+
+        randomiseTestWeatherData()
+
+        activityTestRule.launchActivity(null)
+
+
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(
+                AppCompatActivity.RESULT_CANCELED,
+                null
+            )
+        )
+
+        clickViewWithId(R.id.fab)
+        Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
+
+        //Check "no locations" showing
+        assertViewNotDisplayed(R.id.rv_manage_locations_list)
+        assertViewDisplayed(R.id.tv_messaging)
+        assertViewHasText(
+            R.id.tv_messaging, activityTestRule.activity.resources.getString(
+                R.string.no_locations_to_display
+            )
+        )
+
+        activityTestRule.finishActivity()
+
+        activityTestRule.finishActivity()
     }
 
     @Test
     fun testCancelRenaming() {
-        //TODO Select add location, then press back on add lcoation screen rather than selecting a location
+        val weatherDatabase: WeatherDatabase = get()
+        weatherDatabase.clearAllTables()
+
+        val insertLatch = CountDownLatch(1)
+        val locations = listOf(
+            ManualLocation(0L, "LOCATION1", 5.0, 6.0)
+        )
+
+        GlobalScope.launch {
+            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            manualLocationDAO.insert(locations[0])
+            insertLatch.countDown()
+        }
+
+        insertLatch.await(5, TimeUnit.SECONDS)
+
+        activityTestRule.launchActivity(null)
+
+        //Check list is visible
+        assertViewDisplayed(R.id.rv_manage_locations_list)
+
+        //Check size of list
+        assertListSize(R.id.rv_manage_locations_list,1)
+
+        //Click on first item
+        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+
+        //Check text of first item
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+
+        //Check rename button displayed
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.rename))
+        assertViewDisplayed(resources.getString(R.string.rename))
+
+        //Click rename button
+        clickViewWithText(resources.getString(R.string.rename))
+
+        //Type new name
+        onView(withId(R.id.edit_text)).perform(typeText("NEWLOC"))
+
+        //Tap ok
+        clickViewWithText("CANCEL")
+
+        //Check list is visible
+        assertViewDisplayed(R.id.rv_manage_locations_list)
+
+        //Check size of list
+        assertListSize(R.id.rv_manage_locations_list,1)
+
+        //Check text of first item
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+
+        activityTestRule.finishActivity()
+    }
+
+    @Test
+    fun testTryingToRenameWithoutEnteringAName() {
+        val weatherDatabase: WeatherDatabase = get()
+        weatherDatabase.clearAllTables()
+
+        val insertLatch = CountDownLatch(1)
+        val locations = listOf(
+            ManualLocation(0L, "LOCATION1", 5.0, 6.0)
+        )
+
+        GlobalScope.launch {
+            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            manualLocationDAO.insert(locations[0])
+            insertLatch.countDown()
+        }
+
+        insertLatch.await(5, TimeUnit.SECONDS)
+
+        activityTestRule.launchActivity(null)
+
+        //Check list is visible
+        assertViewDisplayed(R.id.rv_manage_locations_list)
+
+        //Check size of list
+        assertListSize(R.id.rv_manage_locations_list,1)
+
+        //Click on first item
+        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+
+        //Check text of first item
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+
+        //Check rename button displayed
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.rename))
+        assertViewDisplayed(resources.getString(R.string.rename))
+
+        //Click rename button
+        clickViewWithText(resources.getString(R.string.rename))
+
+        //Tap ok
+        clickViewWithText("CANCEL")
+
+        //Check list is visible
+        assertViewDisplayed(R.id.rv_manage_locations_list)
+
+        //Check size of list
+        assertListSize(R.id.rv_manage_locations_list,1)
+
+        //Check text of first item
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+
+        activityTestRule.finishActivity()
     }
 
     class ScreenshotTakingRule : TestWatcher() {
