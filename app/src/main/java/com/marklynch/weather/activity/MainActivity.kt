@@ -186,13 +186,14 @@ class MainActivity : BaseActivity() {
         )
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchLocation()
+    }
+
     override fun onPause() {
         super.onPause()
         alertDialog?.dismiss()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
