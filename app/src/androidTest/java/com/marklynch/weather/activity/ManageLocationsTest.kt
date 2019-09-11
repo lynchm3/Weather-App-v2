@@ -233,7 +233,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
             )
         )
 
-        clickViewWithId(R.id.fab)
+        clickViewWithId(R.id.fab_add_location)
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         //check size of list
@@ -390,7 +390,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
             )
         )
 
-        clickViewWithId(R.id.fab)
+        clickViewWithId(R.id.fab_add_location)
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         //Check "no locations" showing

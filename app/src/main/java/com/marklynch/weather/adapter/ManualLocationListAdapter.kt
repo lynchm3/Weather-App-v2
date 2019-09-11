@@ -28,11 +28,11 @@ class ManualLocationListAdapter(
     inner class ManualLocationViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         val llmainDisplay: LinearLayout = itemView.findViewById(R.id.ll_main_display)
-        val tvDisplayName: TextView = itemView.findViewById(R.id.textView)
+        val tvDisplayName: TextView = itemView.findViewById(R.id.tv_location_name)
         val ivArrow: ImageView = itemView.findViewById(R.id.iv_arrow)
-        val llSubItem: LinearLayout = itemView.findViewById(R.id.sub_item)
-        val tvRename: TextView = itemView.findViewById(R.id.sub_item_rename)
-        val tvDelete: TextView = itemView.findViewById(R.id.sub_item_delete)
+        val llSubItem: LinearLayout = itemView.findViewById(R.id.ll_buttons_container)
+        val tvRename: TextView = itemView.findViewById(R.id.tv_rename)
+        val tvDelete: TextView = itemView.findViewById(R.id.tv_delete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManualLocationViewHolder {

@@ -315,7 +315,7 @@ class MainActivityTest : KoinTest {
 
     private fun waitForLoadingToFinish() {
         val pullToRefresh: SwipeRefreshLayout =
-            activityTestRule.activity.findViewById(R.id.pull_to_refresh)
+            activityTestRule.activity.findViewById(R.id.swip_refresh_layout)
         val idlingResource =
             ViewRefreshingIdlingResource(pullToRefresh, false)
         idlingRegistry.register(idlingResource)

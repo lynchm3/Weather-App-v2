@@ -54,7 +54,7 @@ class ManageLocationsActivity : BaseActivity() {
                 }
             })
 
-        fab.setOnClickListener {
+        fab_add_location.setOnClickListener {
             val lat: Double? = viewModel.getLocationInformation()?.lat
             val lon: Double? = viewModel.getLocationInformation()?.lon
             if (lat != null && lon != null) {
