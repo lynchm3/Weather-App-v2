@@ -34,7 +34,8 @@ class ManualLocationRepository : KoinComponent {
                     addressData.longitude
                 )
             )
-            get<SharedPreferences.Editor>().putLong(SHARED_PREFERENCES_CURRENT_LOCATION_ID, newId).apply()
+            get<SharedPreferences.Editor>().putLong(SHARED_PREFERENCES_CURRENT_LOCATION_ID, newId)
+                .apply()
         }
     }
 

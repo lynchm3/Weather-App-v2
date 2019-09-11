@@ -9,7 +9,10 @@ import com.sucho.placepicker.PlacePicker
 
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity() {
-    fun openMapForUserToAddNewLocation(defaultLatitude: Double = 40.0, defaultLongitude: Double = -73.0) {
+    fun openMapForUserToAddNewLocation(
+        defaultLatitude: Double = 40.0,
+        defaultLongitude: Double = -73.0
+    ) {
         val intent = PlacePicker.IntentBuilder()
             .setLatLong(defaultLatitude, defaultLongitude)
             .showLatLong(true)

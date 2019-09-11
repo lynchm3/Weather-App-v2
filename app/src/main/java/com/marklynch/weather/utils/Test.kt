@@ -3,7 +3,8 @@ package com.marklynch.weather.utils
 import androidx.lifecycle.*
 
 
-class LimitedObserver<T>(private val triggerLimit: Int = 0, private val handler: (T) -> Unit) : Observer<T>,
+class LimitedObserver<T>(private val triggerLimit: Int = 0, private val handler: (T) -> Unit) :
+    Observer<T>,
     LifecycleOwner {
     private val lifecycle = LifecycleRegistry(this)
     private var triggerCount = 0
@@ -22,7 +23,7 @@ class LimitedObserver<T>(private val triggerLimit: Int = 0, private val handler:
     }
 }
 
-fun <T> LiveData<T>.observeXTimes(x:Int, onChangeHandler: (T) -> Unit) {
+fun <T> LiveData<T>.observeXTimes(x: Int, onChangeHandler: (T) -> Unit) {
     val observer = LimitedObserver(x, handler = onChangeHandler)
     observe(observer, observer)
 }

@@ -38,7 +38,14 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
     private val gpsSwitchStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            postValue(LocationInformation(locationPermissionState, gpsState, locationResult?.locations?.get(0)?.latitude,locationResult?.locations?.get(0)?.longitude))
+            postValue(
+                LocationInformation(
+                    locationPermissionState,
+                    gpsState,
+                    locationResult?.locations?.get(0)?.latitude,
+                    locationResult?.locations?.get(0)?.longitude
+                )
+            )
             if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
                 fetchLocation()
         }
@@ -51,7 +58,14 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
         registerGpsStateReceiver()
 
-        postValue(LocationInformation(locationPermissionState, gpsState, locationResult?.locations?.get(0)?.latitude,locationResult?.locations?.get(0)?.longitude))
+        postValue(
+            LocationInformation(
+                locationPermissionState,
+                gpsState,
+                locationResult?.locations?.get(0)?.latitude,
+                locationResult?.locations?.get(0)?.longitude
+            )
+        )
 
         if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
             fetchLocation()
@@ -68,8 +82,12 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
             val newLocation = newLocationResult.locations[0]
             if (newLocation != null) {
-                postValue(LocationInformation(locationPermissionState, gpsState, newLocationResult.locations[0]?.latitude,
-                    newLocationResult.locations[0]?.longitude))
+                postValue(
+                    LocationInformation(
+                        locationPermissionState, gpsState, newLocationResult.locations[0]?.latitude,
+                        newLocationResult.locations[0]?.longitude
+                    )
+                )
             }
         }
     }
@@ -80,13 +98,21 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
         IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
     )
 
-    private fun unregisterGpsStateReceiver() = get<Context>().unregisterReceiver(gpsSwitchStateReceiver)
+    private fun unregisterGpsStateReceiver() =
+        get<Context>().unregisterReceiver(gpsSwitchStateReceiver)
 
     @SuppressLint("MissingPermission")
     fun fetchLocation() {
 
         try {
-            postValue(LocationInformation(locationPermissionState, gpsState, fusedLocationClient.lastLocation.result?.latitude,fusedLocationClient.lastLocation.result?.longitude))
+            postValue(
+                LocationInformation(
+                    locationPermissionState,
+                    gpsState,
+                    fusedLocationClient.lastLocation.result?.latitude,
+                    fusedLocationClient.lastLocation.result?.longitude
+                )
+            )
         } catch (unlikely: IllegalStateException) {
             Timber.e("Error when fusedLocationClient.lastLocation")
         }

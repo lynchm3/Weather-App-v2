@@ -22,6 +22,8 @@ import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.espressoutils.*
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.network.ConnectionType
+import com.marklynch.weather.testLat
+import com.marklynch.weather.testLon
 import com.marklynch.weather.utils.*
 import com.sucho.placepicker.AddressData
 import com.sucho.placepicker.Constants
@@ -34,8 +36,6 @@ import org.koin.standalone.StandAloneContext
 import org.koin.test.KoinTest
 import java.util.*
 import kotlin.math.roundToInt
-import com.marklynch.weather.testLon
-import com.marklynch.weather.testLat
 
 
 @LargeTest
@@ -115,7 +115,7 @@ class MainActivityTest : KoinTest {
 //            )
 //        )
 
-        assertViewHasText(R.id.tv_time_of_last_refresh,generateTimeString(false))
+        assertViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(false))
         checkWeatherInfo()
         activityTestRule.finishActivity()
     }

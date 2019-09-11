@@ -50,14 +50,14 @@ open class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
     }
 
     private fun getRetrofitInstance(baseUrl: String): Retrofit {
-            val httpURL: HttpUrl  by inject {
-                parametersOf(baseUrl)
-            }
+        val httpURL: HttpUrl by inject {
+            parametersOf(baseUrl)
+        }
 
-            return Retrofit.Builder()
-                .baseUrl(httpURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
+        return Retrofit.Builder()
+            .baseUrl(httpURL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
     }
 
     interface RestApiService {

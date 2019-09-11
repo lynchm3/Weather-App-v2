@@ -1,33 +1,40 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context="com.marklynch.weather.MainActivity">
-    <item android:id="@+id/action_use_celsius"
-          android:title="@string/action_use_celsius"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
-    <item android:id="@+id/action_use_fahrenheit"
-          android:title="@string/action_use_fahrenheit"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
-    <item android:id="@+id/action_use_km"
-          android:title="@string/action_use_km"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
-    <item android:id="@+id/action_use_mi"
-          android:title="@string/action_use_mi"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
-    <item android:id="@+id/action_use_24_hr_clock"
-          android:title="@string/action_use_24_hr_clock"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
-    <item android:id="@+id/action_use_12_hr_clock"
-          android:title="@string/action_use_12_hr_clock"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
-    <item android:id="@+id/action_manage_locations"
-          android:title="@string/action_manage_locations"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="com.marklynch.weather.MainActivity">
+    <item
+            android:id="@+id/action_use_celsius"
+            android:orderInCategory="100"
+            android:title="@string/action_use_celsius"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/action_use_fahrenheit"
+            android:orderInCategory="100"
+            android:title="@string/action_use_fahrenheit"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/action_use_km"
+            android:orderInCategory="100"
+            android:title="@string/action_use_km"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/action_use_mi"
+            android:orderInCategory="100"
+            android:title="@string/action_use_mi"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/action_use_24_hr_clock"
+            android:orderInCategory="100"
+            android:title="@string/action_use_24_hr_clock"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/action_use_12_hr_clock"
+            android:orderInCategory="100"
+            android:title="@string/action_use_12_hr_clock"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/action_manage_locations"
+            android:orderInCategory="100"
+            android:title="@string/action_manage_locations"
+            app:showAsAction="never" />
 </menu>

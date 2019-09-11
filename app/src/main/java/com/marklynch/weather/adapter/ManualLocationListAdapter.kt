@@ -14,7 +14,10 @@ import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.viewmodel.ManageLocationsViewModel
 
 
-class ManualLocationListAdapter(val activity: ManageLocationsActivity, private val viewModel: ManageLocationsViewModel) :
+class ManualLocationListAdapter(
+    val activity: ManageLocationsActivity,
+    private val viewModel: ManageLocationsViewModel
+) :
     RecyclerView.Adapter<ManualLocationListAdapter.ManualLocationViewHolder>() {
 
     private val mInflater: LayoutInflater = LayoutInflater.from(activity)

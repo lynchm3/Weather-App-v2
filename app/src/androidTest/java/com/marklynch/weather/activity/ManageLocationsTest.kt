@@ -151,13 +151,13 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        assertListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list, 1)
 
         //Click on first item
-        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list, 0)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "LOCATION1")
 
         activityTestRule.finishActivity()
     }
@@ -185,23 +185,23 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //check size of list
-        assertListSize(R.id.rv_manage_locations_list,2)
+        assertListSize(R.id.rv_manage_locations_list, 2)
 
         //Click on first item
-        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list, 0)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "LOCATION1")
 //        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
 //            .check(matches(hasDescendant(withText(resources.getString(R.string.rename)))))
 //        onView(withRecyclerView(R.id.rv_manage_locations_list).atPosition(0))
 //            .check(matches(hasDescendant(withText(resources.getString(R.string.remove)))))
 
         //Click on 2nd item
-        clickItemInRecyclerView(R.id.rv_manage_locations_list,1)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list, 1)
 
         //Check text of 2nd item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,1,"LOCATION2")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 1, "LOCATION2")
 
         activityTestRule.finishActivity()
     }
@@ -237,13 +237,13 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         //check size of list
-        assertListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list, 1)
 
         //Click on first item
-        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list, 0)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,displayName)
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, displayName)
 
         activityTestRule.finishActivity()
     }
@@ -272,16 +272,20 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        assertListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list, 1)
 
         //Click on first item
-        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list, 0)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "LOCATION1")
 
         //Check remove button displayed
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.remove))
+        assertItemInRecyclerViewHasText(
+            R.id.rv_manage_locations_list,
+            0,
+            resources.getString(R.string.remove)
+        )
         assertViewDisplayed(resources.getString(R.string.remove))
 
         //Click remove button
@@ -308,7 +312,6 @@ class ManageLocationsTest : KoinTest, KoinComponent {
     }
 
 
-
     @Test
     fun testRename() {
         val weatherDatabase: WeatherDatabase = get()
@@ -333,16 +336,20 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        assertListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list, 1)
 
         //Click on first item
-        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list, 0)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "LOCATION1")
 
         //Check rename button displayed
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.rename))
+        assertItemInRecyclerViewHasText(
+            R.id.rv_manage_locations_list,
+            0,
+            resources.getString(R.string.rename)
+        )
         assertViewDisplayed(resources.getString(R.string.rename))
 
         //Click rename button
@@ -358,10 +365,10 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        assertListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list, 1)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"NEW LOCATION")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "NEW LOCATION")
 
         activityTestRule.finishActivity()
     }
@@ -424,16 +431,20 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        assertListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list, 1)
 
         //Click on first item
-        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list, 0)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "LOCATION1")
 
         //Check rename button displayed
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.rename))
+        assertItemInRecyclerViewHasText(
+            R.id.rv_manage_locations_list,
+            0,
+            resources.getString(R.string.rename)
+        )
         assertViewDisplayed(resources.getString(R.string.rename))
 
         //Click rename button
@@ -449,10 +460,10 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        assertListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list, 1)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "LOCATION1")
 
         activityTestRule.finishActivity()
     }
@@ -481,16 +492,20 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        assertListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list, 1)
 
         //Click on first item
-        clickItemInRecyclerView(R.id.rv_manage_locations_list,0)
+        clickItemInRecyclerView(R.id.rv_manage_locations_list, 0)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "LOCATION1")
 
         //Check rename button displayed
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,resources.getString(R.string.rename))
+        assertItemInRecyclerViewHasText(
+            R.id.rv_manage_locations_list,
+            0,
+            resources.getString(R.string.rename)
+        )
         assertViewDisplayed(resources.getString(R.string.rename))
 
         //Click rename button
@@ -503,10 +518,10 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(R.id.rv_manage_locations_list)
 
         //Check size of list
-        assertListSize(R.id.rv_manage_locations_list,1)
+        assertListSize(R.id.rv_manage_locations_list, 1)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"LOCATION1")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "LOCATION1")
 
         activityTestRule.finishActivity()
     }

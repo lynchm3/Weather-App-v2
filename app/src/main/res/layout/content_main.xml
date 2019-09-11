@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/pull_to_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:showIn="@layout/activity_main"
-        tools:context=".activity.MainActivity">
+        tools:context=".activity.MainActivity"
+        tools:showIn="@layout/activity_main">
 
     <RelativeLayout
             android:layout_width="match_parent"
@@ -19,8 +18,8 @@
                 android:id="@+id/tv_messaging"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/loading"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:text="@string/loading" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/ll_weather_info"
@@ -39,20 +38,20 @@
                         android:id="@+id/tv_temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:singleLine="true"
                         android:textSize="@dimen/temperature_text_size"
-                        android:textStyle="bold"
-                        android:layout_centerInParent="true"/>
+                        android:textStyle="bold" />
 
                 <TextView
                         android:id="@+id/tv_temperature_unit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:textSize="@dimen/temperature_unit_text_size"
-                        android:textColor="@color/lightGrey"
+                        android:layout_marginTop="@dimen/temperature_unit_margin_top"
                         android:layout_toEndOf="@id/tv_temperature"
-                        android:layout_marginTop="@dimen/temperature_unit_margin_top"/>
+                        android:singleLine="true"
+                        android:textColor="@color/lightGrey"
+                        android:textSize="@dimen/temperature_unit_text_size" />
 
             </RelativeLayout>
 
@@ -66,16 +65,16 @@
                         android:id="@+id/tv_weather_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:singleLine="true"
-                        android:textSize="@dimen/weather_description_text_size"
-                        android:layout_centerInParent="true"/>
+                        android:textSize="@dimen/weather_description_text_size" />
 
                 <ImageView
                         android:id="@+id/iv_weather_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/tv_weather_description"
                         android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/tv_weather_description"
                         tools:ignore="ContentDescription" />
 
             </RelativeLayout>
@@ -92,7 +91,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:textSize="@dimen/humidity_text_size"/>
+                        android:textSize="@dimen/humidity_text_size" />
 
             </RelativeLayout>
 
@@ -108,7 +107,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:textSize="@dimen/maximum_temperature_text_size"/>
+                        android:textSize="@dimen/maximum_temperature_text_size" />
 
             </RelativeLayout>
 
@@ -124,7 +123,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:textSize="@dimen/minimum_temperature_text_size"/>
+                        android:textSize="@dimen/minimum_temperature_text_size" />
 
             </RelativeLayout>
 
@@ -140,7 +139,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:textSize="@dimen/wind_text_size"/>
+                        android:textSize="@dimen/wind_text_size" />
 
             </RelativeLayout>
 
@@ -156,7 +155,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:textSize="@dimen/cloudiness_text_size"/>
+                        android:textSize="@dimen/cloudiness_text_size" />
 
             </RelativeLayout>
         </androidx.appcompat.widget.LinearLayoutCompat>

@@ -9,14 +9,14 @@ abstract class SharedPreferencesLiveData<T>(
     val sharedPreferencesKey: String
 ) : LiveData<T>(), KoinComponent {
 
-    val sharedPreferences:SharedPreferences = get()
+    val sharedPreferences: SharedPreferences = get()
 
-    private val onSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
-            _, key ->
-        if (key == sharedPreferencesKey) {
-            setLiveDataValue(sharedPreferencesKey)
+    private val onSharedPreferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == sharedPreferencesKey) {
+                setLiveDataValue(sharedPreferencesKey)
+            }
         }
-    }
 
     override fun onActive() {
         super.onActive()
@@ -26,7 +26,9 @@ abstract class SharedPreferencesLiveData<T>(
 
     override fun onInactive() {
         super.onInactive()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(
+            onSharedPreferenceChangeListener
+        )
     }
 
     abstract fun setLiveDataValue(sharedPreferencesKey: String)

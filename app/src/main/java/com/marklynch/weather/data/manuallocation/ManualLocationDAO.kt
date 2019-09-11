@@ -7,7 +7,7 @@ import androidx.room.*
 interface ManualLocationDAO {
 
     @Insert
-    fun insert(manualLocation: ManualLocation):Long
+    fun insert(manualLocation: ManualLocation): Long
 
     @Update
     fun update(manualLocation: ManualLocation)

@@ -4,8 +4,7 @@ import android.os.Build
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
-fun setBuildVersionSdkInt(sdk:Int)
-{
+fun setBuildVersionSdkInt(sdk: Int) {
     setFinalStatic(Build.VERSION::class.java.getField("SDK_INT"), sdk)
 }
 

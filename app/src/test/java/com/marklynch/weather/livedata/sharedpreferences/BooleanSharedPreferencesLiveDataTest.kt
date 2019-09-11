@@ -5,7 +5,10 @@ import com.marklynch.weather.dependencyinjection.*
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.BooleanSharedPreferencesLiveData
 import com.marklynch.weather.utils.observeXTimes
 import junit.framework.Assert.*
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.test.KoinTest
@@ -47,7 +50,7 @@ class BooleanSharedPreferencesLiveDataTest : KoinTest {
             assertTrue(it)
         }
 
-        assertEquals(1,observations)
+        assertEquals(1, observations)
 
     }
 
@@ -67,7 +70,7 @@ class BooleanSharedPreferencesLiveDataTest : KoinTest {
             assertFalse(it)
         }
 
-        assertEquals(1,observations)
+        assertEquals(1, observations)
     }
 
 }

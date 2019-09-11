@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.appbar.AppBarLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
         android:layout_marginBottom="0dp"
         android:padding="0dp"
         android:paddingLeft="0dp"
-        android:paddingRight="0dp"
         android:paddingTop="0dp"
+        android:paddingRight="0dp"
         android:paddingBottom="0dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -22,48 +21,52 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
             android:layout_margin="0dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
             android:layout_marginTop="0dp"
+            android:layout_marginRight="0dp"
             android:layout_marginBottom="0dp"
+            android:background="?attr/colorPrimary"
             android:padding="0dp"
             android:paddingLeft="0dp"
-            android:paddingRight="0dp"
             android:paddingTop="0dp"
+            android:paddingRight="0dp"
             android:paddingBottom="0dp"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-        <RelativeLayout android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:paddingTop="0dp"
-                        android:layout_marginTop="0dp">
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="0dp"
+                android:paddingTop="0dp">
 
-            <TextView android:id="@+id/tv_weather_in"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="@string/weather_in"
-                      android:paddingTop="0dp"
-                      android:layout_marginTop="3dp"
-                      android:layout_marginStart="8dp"
-                      android:textSize="12sp"
-                      android:layout_alignParentTop="true"/>
+            <TextView
+                    android:id="@+id/tv_weather_in"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="3dp"
+                    android:paddingTop="0dp"
+                    android:text="@string/weather_in"
+                    android:textSize="12sp" />
 
-            <Spinner android:id="@+id/spinner_select_location"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_centerVertical="true"/>
+            <Spinner
+                    android:id="@+id/spinner_select_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true" />
 
-            <TextView android:id="@+id/tv_time_of_last_refresh"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:textSize="12sp"
-                      android:layout_alignParentBottom="true"
-                      android:layout_toEndOf="@id/tv_weather_in"
-                      android:layout_marginBottom="3dp"
-                      android:paddingTop="0dp"
-                      android:layout_marginTop="0dp"/>
+            <TextView
+                    android:id="@+id/tv_time_of_last_refresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_toEndOf="@id/tv_weather_in"
+                    android:paddingTop="0dp"
+                    android:textSize="12sp" />
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 

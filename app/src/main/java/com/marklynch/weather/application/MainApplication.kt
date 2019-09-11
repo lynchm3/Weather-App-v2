@@ -12,7 +12,7 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val moduleList =  activityModules + appModules
+        val moduleList = activityModules + appModules
         startKoin(this, moduleList)
 
         val tree: Timber.Tree = get()
