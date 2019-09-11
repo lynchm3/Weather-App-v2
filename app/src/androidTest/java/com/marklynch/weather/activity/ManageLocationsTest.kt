@@ -7,6 +7,7 @@ import android.location.Address
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
@@ -52,9 +53,6 @@ import java.util.concurrent.TimeUnit
 
 @LargeTest
 class ManageLocationsTest : KoinTest, KoinComponent {
-
-//    @get:Rule
-//    val rule = InstantTaskExecutorRule()
 
     @Rule
     @JvmField

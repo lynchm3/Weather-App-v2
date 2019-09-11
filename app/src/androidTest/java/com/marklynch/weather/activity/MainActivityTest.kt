@@ -39,9 +39,6 @@ import kotlin.math.roundToInt
 @LargeTest
 class MainActivityTest : KoinTest {
 
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
     @Rule
     @JvmField
     var activityTestRule = IntentsTestRule(MainActivity::class.java, false, false)
