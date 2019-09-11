@@ -320,7 +320,7 @@ class MainActivity : BaseActivity() {
 
 
     private fun showNoNetworkConnectionDialog() {
-        tv_messaging.text = getString(R.string.no_network_title)
+        tv_messaging.text = getString(R.string.no_network_body)
         tv_messaging.visibility = View.VISIBLE
         ll_weather_info.visibility = View.GONE
 
@@ -343,7 +343,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showGpsNotEnabledDialog() {
-        tv_messaging.text = getString(R.string.gps_required_title)
+        tv_messaging.text = getString(R.string.gps_required_body)
         tv_messaging.visibility = View.VISIBLE
         ll_weather_info.visibility = View.GONE
 
@@ -366,7 +366,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showLocationPermissionNeededDialog() {
-        tv_messaging.text = getString(R.string.permission_required_title)
+        tv_messaging.text = getString(R.string.permission_required_body)
         tv_messaging.visibility = View.VISIBLE
         ll_weather_info.visibility = View.GONE
 
