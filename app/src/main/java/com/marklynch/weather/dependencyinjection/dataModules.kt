@@ -9,6 +9,7 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.database.core.utilities.Tree
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
@@ -26,7 +27,7 @@ import timber.log.Timber
 
 private val appModule = module {
 
-    single {
+    single<Timber.Tree> {
         Timber.DebugTree()
     }
 
