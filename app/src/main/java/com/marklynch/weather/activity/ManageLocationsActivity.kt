@@ -1,5 +1,6 @@
 package com.marklynch.weather.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -76,6 +77,7 @@ class ManageLocationsActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("InflateParams")
     fun showRenameDialog(manualLocationToRename: ManualLocation) {
 
         if (alertDialog?.isShowing == true) {

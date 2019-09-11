@@ -1,7 +1,5 @@
 package com.marklynch.weather.dependencyinjection
 
-import androidx.arch.core.executor.ArchTaskExecutor
-import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.generateGetWeatherResponse

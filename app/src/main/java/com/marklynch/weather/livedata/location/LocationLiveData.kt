@@ -20,6 +20,7 @@ import com.marklynch.weather.utils.AppPermissionState
 import com.marklynch.weather.utils.PermissionsChecker
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
+import timber.log.Timber
 import java.lang.IllegalStateException
 
 
@@ -88,7 +89,7 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
         try {
             postValue(LocationInformation(locationPermissionState, gpsState, fusedLocationClient.lastLocation.result?.latitude,fusedLocationClient.lastLocation.result?.longitude))
         } catch (unlikely: IllegalStateException) {
-            Log.e("","Error when fusedLocationClient.lastLocation")
+            Timber.e("Error when fusedLocationClient.lastLocation")
         }
 
         try {
@@ -103,7 +104,7 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
                 Looper.myLooper()
             )
         } catch (unlikely: SecurityException) {
-            Log.e("","Error when registerLocationUpdates()")
+            Timber.e("Error when registerLocationUpdates()")
         }
     }
 
@@ -111,7 +112,7 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
         try {
             fusedLocationClient.removeLocationUpdates(locationCallback)
         } catch (unlikely: SecurityException) {
-            Log.e("","Error when unregisterLocationUpdated()")
+            Timber.e("Error when unregisterLocationUpdated()")
         }
     }
 

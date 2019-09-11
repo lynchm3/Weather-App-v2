@@ -27,6 +27,7 @@ import com.sucho.placepicker.AddressData
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.koin.android.ext.android.inject
+import java.util.*
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
 
@@ -470,5 +471,6 @@ class MainActivity : BaseActivity() {
 
 }
 
-fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
+@UseExperimental(ExperimentalStdlibApi::class)
+fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize(Locale.US) }
 

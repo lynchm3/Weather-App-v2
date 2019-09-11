@@ -24,7 +24,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/baseline_expand_less_black_48"
-                android:alpha="0.4"/>
+                android:alpha="0.4"
+                android:contentDescription="Expand" />
     </LinearLayout>
 
     <LinearLayout

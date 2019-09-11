@@ -3,7 +3,7 @@ package com.marklynch.weather.utils
 import java.text.SimpleDateFormat
 import java.util.*
 
-private val NON_THIN = "[^iIl1\\.,']"
+private val NON_THIN = "[^iIl1.,']"
 private val ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 public fun generateTimeString(use24hrClock: Boolean?): String =

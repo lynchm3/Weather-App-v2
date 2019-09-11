@@ -63,7 +63,7 @@ class WeatherLiveDataTest : KoinTest {
 
 
         testWebServer = MockWebServer()
-        testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse()))
+        testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse().toString()))
 
         val weatherLiveData =
             WeatherLiveData()
@@ -71,7 +71,7 @@ class WeatherLiveDataTest : KoinTest {
         var observations = 0
         weatherLiveData.observeXTimes(1) {
             observations++
-            assertEquals(Gson().fromJson(generateGetWeatherResponse(), WeatherResponse::class.java), Gson().toJson(it))
+            assertEquals(generateGetWeatherResponse(), Gson().toJson(it))
         }
 
         weatherLiveData.fetchWeather(sligoLatitude, sligoLongitude)
