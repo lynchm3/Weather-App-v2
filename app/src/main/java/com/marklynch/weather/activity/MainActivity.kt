@@ -227,14 +227,17 @@ class MainActivity : BaseActivity() {
 
         if (selectedLocationId == null || selectedLocationId == 0L) {
             spinner.setSelection(0)
+            viewModel.fetchWeather(null)
         } else {
             for (i: Int in 1..spinnerList.size - 2) {
                 val manualLocation = (spinnerList[i] as ManualLocation)
                 if (manualLocation.id == selectedLocationId) {
                     spinner.setSelection(i)
+                    viewModel.fetchWeather(manualLocation)
                 }
             }
         }
+
     }
 
     private fun updateWeatherUI() {
