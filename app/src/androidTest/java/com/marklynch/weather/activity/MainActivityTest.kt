@@ -6,9 +6,9 @@ import android.content.res.Resources
 import android.location.Address
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -34,6 +34,8 @@ import org.koin.standalone.StandAloneContext
 import org.koin.test.KoinTest
 import java.util.*
 import kotlin.math.roundToInt
+import com.marklynch.weather.testLon
+import com.marklynch.weather.testLat
 
 
 @LargeTest
@@ -48,7 +50,7 @@ class MainActivityTest : KoinTest {
     val screenshotRule = ScreenshotTakingRule()
 
     @get:Rule
-    var loctionPermissionRule: GrantPermissionRule =
+    var locationPermissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
 
@@ -120,7 +122,7 @@ class MainActivityTest : KoinTest {
 
 
     @Test
-    fun testFahrenheitAndCelciusSwitch() {
+    fun testFahrenheitAndCelsiusSwitch() {
 
         activityTestRule.launchActivity(null)
         waitForLoadingToFinish()
@@ -130,7 +132,7 @@ class MainActivityTest : KoinTest {
         try {
             clickViewWithText(resources.getString(R.string.action_use_celsius))
         } catch (e: Exception) {
-            //close menu if degrees C option wasn't aavailable
+            //close menu if degrees C option wasn't available
             pressBack()
         }
 
@@ -138,18 +140,18 @@ class MainActivityTest : KoinTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickViewWithText(resources.getString(R.string.action_use_fahrenheit))
 
-        //Check relevant textviews F
+        //Check relevant textViews F
         assertViewHasText(
             R.id.tv_temperature,
             kelvinToFahrenheit(testTemperature).roundToInt().toString()
         )
         assertViewHasText(R.id.tv_temperature_unit, resources.getString(R.string.degreesF))
 
-        //Switch to celcius
+        //Switch to celsius
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickViewWithText(resources.getString(R.string.action_use_celsius))
 
-        //Check relevant textviews C
+        //Check relevant textViews C
         assertViewHasText(
             R.id.tv_temperature,
             kelvinToCelsius(testTemperature).roundToInt().toString()
@@ -178,7 +180,7 @@ class MainActivityTest : KoinTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickViewWithText(resources.getString(R.string.action_use_mi))
 
-        //Check relevant textviews Mi
+        //Check relevant textViews Mi
         assertViewHasText(
             R.id.tv_wind, resources.getString(
                 R.string.wind_mi,
@@ -191,7 +193,7 @@ class MainActivityTest : KoinTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickViewWithText(resources.getString(R.string.action_use_km))
 
-        //Check relevant textviews km
+        //Check relevant textViews km
         assertViewHasText(
             R.id.tv_wind, resources.getString(
                 R.string.wind_km,
@@ -222,14 +224,14 @@ class MainActivityTest : KoinTest {
 
         clickViewWithText(resources.getString(R.string.action_use_24_hr_clock))
 
-        //Check relevant textviews 24hr clcok
+        //Check relevant textViews 24hr clock
         assertViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(true))
 
         //Switch to 12hr clock
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         clickViewWithText(resources.getString(R.string.action_use_12_hr_clock))
 
-        //Check relevant textviews 12hr clock
+        //Check relevant textViews 12hr clock
         assertViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(false))
         activityTestRule.finishActivity()
     }
@@ -273,10 +275,10 @@ class MainActivityTest : KoinTest {
 
         randomiseTestWeatherData()
 
-        activityTestRule.launchActivity(null)
+        val launchActivity = activityTestRule.launchActivity(null)
 
-        val lat = com.marklynch.weather.testLat
-        val lon = com.marklynch.weather.testLon
+        val lat = testLat
+        val lon = testLon
         val displayName = randomAlphaNumeric(5)
         val address = Address(Locale.US)
         address.adminArea = displayName
@@ -308,7 +310,7 @@ class MainActivityTest : KoinTest {
 
     @Test
     fun testCancelAddingLocation() {
-        //TODO Select add location, then press back on add lcoation screen rather than selecting a location
+        //TODO Select add location, then press back on add location screen rather than selecting a location
     }
 
     private fun waitForLoadingToFinish() {

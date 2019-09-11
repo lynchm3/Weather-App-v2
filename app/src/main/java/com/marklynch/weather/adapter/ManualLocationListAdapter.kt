@@ -87,11 +87,6 @@ class ManualLocationListAdapter(val activity: ManageLocationsActivity, private v
     override fun getItemCount(): Int {
         return this.manualLocations.size
     }
-
-
-    fun getManualLocationAtPosition(position: Int): ManualLocation {
-        return this.manualLocations[position]
-    }
 }
 
 

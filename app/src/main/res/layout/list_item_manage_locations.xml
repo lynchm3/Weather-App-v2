@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
@@ -8,7 +9,8 @@
             android:id="@+id/ll_main_display"
             android:layout_height="48dp"
             android:layout_width="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
         <TextView
                 android:id="@+id/textView"
                 android:layout_width="0dp"
@@ -25,7 +27,7 @@
                 android:layout_height="48dp"
                 android:src="@drawable/baseline_expand_less_black_48"
                 android:alpha="0.4"
-                android:contentDescription="Expand" />
+                android:contentDescription="@string/expand" />
     </LinearLayout>
 
     <LinearLayout

@@ -105,7 +105,7 @@ class WeatherDatabaseTest : KoinTest {
     }
 
     @Test
-    fun testInsertandSelectAllManualLocationById() {
+    fun testInsertAndSelectAllManualLocationById() {
 
         //Select all
         val manualLocationsLiveData = manualLocationDAO.getManualLocationLiveData()

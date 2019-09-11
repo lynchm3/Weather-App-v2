@@ -9,7 +9,7 @@ import org.koin.standalone.get
 
 enum class ConnectionType { CONNECTED, NO_CONNECTION }
 
-open class NetworkInfoLiveData() : LiveData<ConnectionType>(),
+open class NetworkInfoLiveData : LiveData<ConnectionType>(),
     KoinComponent {
 
     private val connectivityManager = get<Context>().getSystemService(Context.CONNECTIVITY_SERVICE)

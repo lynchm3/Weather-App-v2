@@ -10,7 +10,6 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -21,7 +20,6 @@ import com.marklynch.weather.utils.PermissionsChecker
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 import timber.log.Timber
-import java.lang.IllegalStateException
 
 
 open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
@@ -68,9 +66,10 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
     val locationCallback = object : LocationCallback() {
         override fun onLocationResult(newLocationResult: LocationResult) {
 
-            val newLocation = newLocationResult.locations.get(0)
+            val newLocation = newLocationResult.locations[0]
             if (newLocation != null) {
-                postValue(LocationInformation(locationPermissionState, gpsState, newLocationResult?.locations?.get(0)?.latitude,newLocationResult?.locations?.get(0)?.longitude))
+                postValue(LocationInformation(locationPermissionState, gpsState, newLocationResult.locations[0]?.latitude,
+                    newLocationResult.locations[0]?.longitude))
             }
         }
     }

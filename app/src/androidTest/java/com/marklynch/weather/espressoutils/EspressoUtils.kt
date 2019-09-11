@@ -9,8 +9,6 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
@@ -103,42 +101,6 @@ class ViewRefreshingIdlingResource(
 
 }
 
-object SwipeRefreshLayoutMatchers {
-    @JvmStatic
-    fun isRefreshing(): Matcher<View> {
-        return object : BoundedMatcher<View, SwipeRefreshLayout>(
-            SwipeRefreshLayout::class.java
-        ) {
-
-            override fun describeTo(description: Description) {
-                description.appendText("is refreshing")
-            }
-
-            override fun matchesSafely(view: SwipeRefreshLayout): Boolean {
-                return view.isRefreshing
-            }
-        }
-    }
-
-    @JvmStatic
-    fun isNotRefreshing(): Matcher<View> {
-        return object : BoundedMatcher<View, SwipeRefreshLayout>(
-            SwipeRefreshLayout::class.java
-        ) {
-
-            override fun describeTo(description: Description) {
-                description.appendText("is not refreshing")
-            }
-
-            override fun matchesSafely(view: SwipeRefreshLayout): Boolean {
-                return !view.isRefreshing
-            }
-        }
-    }
-
-
-}
-
 fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
     return RecyclerViewMatcher(recyclerViewId)
 }
@@ -149,10 +111,6 @@ fun clickViewWithId(viewId: Int) {
 
 fun clickViewWithText(viewText: String) {
     onView(withText(viewText)).perform(click())
-}
-
-fun clickViewWIthHint(viewText: String) {
-    onView(withHint(viewText)).perform(click())
 }
 
 fun assertViewHasText(viewId: Int, text: String) {
@@ -168,7 +126,7 @@ fun assertViewHasText(viewId: Int, text: String) {
 fun assertViewDisplayed(viewId: Int) {
     onView(withId(viewId)).check(
         ViewAssertions.matches(
-            ViewMatchers.isDisplayed()
+            isDisplayed()
         )
     )
 }
@@ -176,7 +134,7 @@ fun assertViewDisplayed(viewId: Int) {
 fun assertViewNotDisplayed(viewId: Int) {
     onView(withId(viewId)).check(
         ViewAssertions.matches(
-            not(ViewMatchers.isDisplayed())
+            not(isDisplayed())
         )
     )
 }
@@ -184,7 +142,7 @@ fun assertViewNotDisplayed(viewId: Int) {
 fun assertViewDisplayed(viewText: String) {
     onView(withText(viewText)).check(
         ViewAssertions.matches(
-            ViewMatchers.isDisplayed()
+            isDisplayed()
         )
     )
 }
@@ -200,7 +158,7 @@ fun assertListSize(listId: Int, size: Int) {
 
 fun assertItemInRecyclerViewHasText(listId: Int, position: Int, text: String) {
     onView(withRecyclerView(listId).atPosition(position))
-        .check(ViewAssertions.matches(ViewMatchers.hasDescendant(withText(text))))
+        .check(ViewAssertions.matches(hasDescendant(withText(text))))
 }
 
 

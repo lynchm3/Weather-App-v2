@@ -7,17 +7,15 @@ import android.location.Address
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -351,7 +349,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         clickViewWithText(resources.getString(R.string.rename))
 
         //Type new name
-        onView(withId(R.id.edit_text)).perform(typeText("NEWLOC"))
+        onView(withId(R.id.edit_text)).perform(typeText("NEW LOCATION"))
 
         //Tap ok
         clickViewWithText("OK")
@@ -363,7 +361,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertListSize(R.id.rv_manage_locations_list,1)
 
         //Check text of first item
-        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"NEWLOC")
+        assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list,0,"NEW LOCATION")
 
         activityTestRule.finishActivity()
     }
@@ -442,7 +440,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         clickViewWithText(resources.getString(R.string.rename))
 
         //Type new name
-        onView(withId(R.id.edit_text)).perform(typeText("NEWLOC"))
+        onView(withId(R.id.edit_text)).perform(typeText("NEW LOCATION"))
 
         //Tap ok
         clickViewWithText("CANCEL")

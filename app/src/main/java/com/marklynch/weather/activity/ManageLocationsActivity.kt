@@ -16,12 +16,10 @@ import com.marklynch.weather.adapter.ManualLocationListAdapter
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.viewmodel.ManageLocationsViewModel
-import com.sucho.placepicker.AddressData
 import com.sucho.placepicker.Constants
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.activity_manage_locations.*
 import kotlinx.android.synthetic.main.content_manage_locations.*
-import kotlinx.android.synthetic.main.edit_text.*
 import org.koin.android.ext.android.inject
 
 
@@ -70,7 +68,7 @@ class ManageLocationsActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                viewModel.addManualLocation(data?.getParcelableExtra<AddressData>(Constants.ADDRESS_INTENT))
+                viewModel.addManualLocation(data?.getParcelableExtra(Constants.ADDRESS_INTENT))
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)

@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import okhttp3.HttpUrl
 import org.koin.core.parameter.parametersOf
 import org.koin.standalone.KoinComponent
-import org.koin.standalone.get
+import org.koin.standalone.inject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,9 +14,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.mockwebserver.MockWebServer
-import org.koin.standalone.inject
 
 
 open class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {

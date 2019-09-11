@@ -85,13 +85,13 @@ class WeatherLiveDataTest : KoinTest {
 
 //        assertEquals(1, observations)
 
-        testWebServer?.shutdown()
+        testWebServer.shutdown()
     }
 
     @Test
     fun `Test observe after fetch error`() {
         testWebServer = MockWebServer()
-        testWebServer?.enqueue(MockResponse().setResponseCode(403))
+        testWebServer.enqueue(MockResponse().setResponseCode(403))
 
         val weatherLiveData =
             WeatherLiveData()
@@ -105,6 +105,6 @@ class WeatherLiveDataTest : KoinTest {
 
         assertEquals(0, observations)
 
-        testWebServer?.shutdown()
+        testWebServer.shutdown()
     }
 }

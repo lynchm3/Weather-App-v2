@@ -9,12 +9,13 @@ import com.sucho.placepicker.AddressData
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
-open class ManageLocationsViewModel(application: Application) : AndroidViewModel(application), KoinComponent {
+open class ManageLocationsViewModel(application: Application) : AndroidViewModel(application),
+    KoinComponent {
 
     //Location
     val locationLiveData: LocationLiveData by inject()
-//    val manualLocationRepository = ManualLocationRepository(application)
-    val manualLocationRepository:ManualLocationRepository by inject()
+    //    val manualLocationRepository = ManualLocationRepository(application)
+    private val manualLocationRepository: ManualLocationRepository by inject()
     val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
 
     fun getLocationInformation() = locationLiveData.value
@@ -28,7 +29,7 @@ open class ManageLocationsViewModel(application: Application) : AndroidViewModel
         manualLocationRepository.delete(manualLocation)
     }
 
-    fun renameManualLocation(manualLocation: ManualLocation, displayName:String) {
+    fun renameManualLocation(manualLocation: ManualLocation, displayName: String) {
         manualLocationRepository.rename(manualLocation, displayName)
     }
 }

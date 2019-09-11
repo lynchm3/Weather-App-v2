@@ -8,30 +8,20 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.lifecycle.LiveData
-import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
-import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
-import com.marklynch.weather.data.manuallocation.ManualLocationDAO
-import com.marklynch.weather.livedata.location.LocationInformation
-import com.marklynch.weather.livedata.location.LocationLiveData
-import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.BooleanSharedPreferencesLiveData
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.Use24hrClockSharedPreferenceLiveData
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
 import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseKmSharedPreferenceLiveData
-import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
 import com.marklynch.weather.utils.AppPermissionState
 import com.marklynch.weather.utils.PermissionsChecker
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
-import okhttp3.HttpUrl
-import okhttp3.mockwebserver.MockWebServer
 import org.koin.dsl.module.module
-import org.koin.experimental.builder.single
 
 val mockModuleApplication = module(override = true) {
     single { mock<Application> {} }
@@ -125,30 +115,15 @@ val mockModuleSharedPreferencesEditor = module(override = true) {
     }
 }
 
-var mockSharedPrefLiveDataBoolean = false
-val mockModuleBooleanSharedPreferencesLiveData = module(override = true) {
-    single {
-        mock<BooleanSharedPreferencesLiveData> {
-            on { value } doAnswer {
-                mockSharedPrefLiveDataBoolean
-            }
-            on { setSharedPreference(any()) } doAnswer {
-                mockSharedPrefLiveDataBoolean = it.arguments[0] as Boolean
-                null
-            }
-        }
-    }
-}
-
-var useCelcius = false
+var useCelsius = false
 val mockModuleUseCelsiusSharedPreferenceLiveData = module(override = true) {
     single {
         mock<UseCelsiusSharedPreferenceLiveData> {
             on { value } doAnswer {
-                useCelcius
+                useCelsius
             }
             on { setSharedPreference(any()) } doAnswer {
-                useCelcius = it.arguments[0] as Boolean
+                useCelsius = it.arguments[0] as Boolean
                 null
             }
         }
@@ -183,51 +158,4 @@ val mockModuleUse24hrClockSharedPreferenceLiveData = module(override = true) {
             }
         }
     }
-}
-
-
-lateinit var mockLocationLiveDataValue: LocationInformation
-private val mockLocationLiveData = module(override = true) {
-
-    single {
-        mock<LocationLiveData> {
-            on { value } doAnswer {
-                mockLocationLiveDataValue
-            }
-        }
-    }
-}
-//val mockLocationLiveData:LocationLiveData = single()
-
-var currentLocationID = 0L
-val mockModuleCurrentLocationIdSharedPreferenceLiveData = module(override = true) {
-    single {
-        mock<CurrentLocationIdSharedPreferenceLiveData> {
-            on { value } doAnswer {
-                currentLocationID
-            }
-            on { setSharedPreference(any()) } doAnswer {
-                currentLocationID = it.arguments[0] as Long
-                null
-            }
-        }
-    }
-}
-
-//val mockManualLocationDAO= module(override = true) {
-val mockManualLocationDAO = mock<ManualLocationDAO> {
-    on { getManualLocationLiveData() } doAnswer {
-        mockManualLocationLiveData
-    }
-}
-
-lateinit var mockManualLocationLiveDataValue: List<ManualLocation>
-val mockManualLocationLiveData = mock<LiveData<List<ManualLocation>>> {
-    on { value } doAnswer {
-        mockManualLocationLiveDataValue
-    }
-//    on { setSharedPreference(ArgumentMatchers.anyBoolean()) } doAnswer {
-//        mockSharedPrefLiveDataBoolean = it.arguments[0] as Boolean
-//        null
-//    }
 }

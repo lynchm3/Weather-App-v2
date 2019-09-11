@@ -2,7 +2,6 @@ package com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference
 
 import android.content.SharedPreferences
 import com.marklynch.weather.livedata.sharedpreferences.SharedPreferencesLiveData
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_CURRENT_LOCATION_ID
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_24_HR_CLOCK
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELSIUS
 import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM

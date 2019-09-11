@@ -1,6 +1,7 @@
 package com.marklynch.weather.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -27,7 +28,6 @@ import com.sucho.placepicker.AddressData
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.koin.android.ext.android.inject
-import java.util.*
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
 
@@ -471,6 +471,6 @@ class MainActivity : BaseActivity() {
 
 }
 
-@UseExperimental(ExperimentalStdlibApi::class)
-fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize(Locale.US) }
+@SuppressLint("DefaultLocale")
+fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
