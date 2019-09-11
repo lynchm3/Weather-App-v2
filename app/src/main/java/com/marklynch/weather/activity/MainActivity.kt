@@ -63,8 +63,6 @@ class MainActivity : BaseActivity() {
                         viewModel.setSelectedLocationId(0L)
                         swip_refresh_layout.isRefreshing = true
                         viewModel.fetchLocation()
-                        Toast.makeText(parent.context, "Current Location!!", Toast.LENGTH_SHORT)
-                            .show()
                     }
                     spinnerList.size - 1 -> {
                         //Attempt to get location from gps
@@ -82,14 +80,11 @@ class MainActivity : BaseActivity() {
                         viewModel.setSelectedLocationId(selectedLocation.id)
                         swip_refresh_layout.isRefreshing = true
                         viewModel.fetchWeather(selectedLocation)
-                        Toast.makeText(parent.context, "Manual Location!!", Toast.LENGTH_SHORT)
-                            .show()
                     }
                 }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                Toast.makeText(this@MainActivity, "onNothingSelected!!", Toast.LENGTH_SHORT).show()
             }
         }
 
