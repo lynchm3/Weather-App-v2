@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -224,13 +223,13 @@ class MainActivity : BaseActivity() {
 
         if (selectedLocationId == null || selectedLocationId == 0L) {
             spinner.setSelection(0)
-            viewModel.fetchWeather(null)
+            viewModel.setSelectedLocationId(0)
         } else {
             for (i: Int in 1..spinnerList.size - 2) {
                 val manualLocation = (spinnerList[i] as ManualLocation)
                 if (manualLocation.id == selectedLocationId) {
                     spinner.setSelection(i)
-                    viewModel.fetchWeather(manualLocation)
+                    viewModel.setSelectedLocationId(manualLocation.id)
                 }
             }
         }
