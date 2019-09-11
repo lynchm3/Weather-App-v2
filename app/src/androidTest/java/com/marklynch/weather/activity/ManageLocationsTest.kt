@@ -4,9 +4,11 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.content.res.Resources
 import android.location.Address
+import android.os.Environment
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.InstrumentationRegistry.getTargetContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.typeText
@@ -18,8 +20,10 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.GrantPermissionRule
+import androidx.test.uiautomator.UiDevice
 import com.marklynch.weather.R
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.data.manuallocation.ManualLocation
@@ -44,6 +48,7 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.get
 import org.koin.test.KoinTest
+import java.io.File
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -117,7 +122,9 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         activityTestRule.launchActivity(null)
 
         //CHeck "No locations to display" messaging shown
-        assertViewDisplayed(R.id.tv_messaging)
+        assertViewDisplayed(
+            R.id.tv_messaging
+        )
         assertViewHasText(
             R.id.tv_messaging, activityTestRule.activity.resources.getString(
                 R.string.no_locations_to_display
@@ -524,11 +531,5 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertItemInRecyclerViewHasText(R.id.rv_manage_locations_list, 0, "LOCATION1")
 
         activityTestRule.finishActivity()
-    }
-
-    class ScreenshotTakingRule : TestWatcher() {
-        override fun failed(e: Throwable?, description: Description) {
-            takeScreenshot("fail_" + System.currentTimeMillis())
-        }
     }
 }

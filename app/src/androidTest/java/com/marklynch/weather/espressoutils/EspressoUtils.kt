@@ -10,10 +10,14 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import org.junit.rules.TestWatcher
+import java.io.File
 
 
 fun withListSize(size: Int): Matcher<View> {
@@ -161,4 +165,21 @@ fun assertItemInRecyclerViewHasText(listId: Int, position: Int, text: String) {
         .check(ViewAssertions.matches(hasDescendant(withText(text))))
 }
 
+
+class ScreenshotTakingRule : TestWatcher() {
+    override fun failed(e: Throwable?, description: org.junit.runner.Description) {
+        val path = File(
+            InstrumentationRegistry.getInstrumentation().targetContext.getExternalFilesDir(null)?.absolutePath
+                    + "/screenshots/" + InstrumentationRegistry.getInstrumentation().targetContext.packageName
+        )
+
+        if (!path.exists()) {
+            path.mkdirs()
+        }
+
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        val filename = description.className + "-" + description.methodName + ".png"
+        device.takeScreenshot(File(path, filename))
+    }
+}
 

@@ -329,12 +329,6 @@ class MainActivityTest : KoinTest {
         idlingRegistry.unregister(idlingResource)
     }
 
-    class ScreenshotTakingRule : TestWatcher() {
-        override fun failed(e: Throwable?, description: Description) {
-            takeScreenshot("fail_" + System.currentTimeMillis())
-        }
-    }
-
     private fun checkWeatherInfo() {
         assertViewHasText(
             R.id.tv_temperature,
