@@ -230,7 +230,6 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
         resultIntent.putExtra(Constants.ADDRESS_INTENT, addressData)
 
-
         intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(
                 AppCompatActivity.RESULT_OK,

@@ -1,5 +1,6 @@
 package com.marklynch.weather.dependencyinjection
 
+import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.marklynch.weather.data.WeatherDatabase
@@ -21,7 +22,7 @@ val testWeatherDatabase = module(override = true) {
     single {
         Room.inMemoryDatabaseBuilder(
             get(), WeatherDatabase::class.java
-        ).build()
+        ).allowMainThreadQueries().build()
     }
 }
 

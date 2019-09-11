@@ -1,9 +1,11 @@
 package com.marklynch.weather.activity
 
+import android.app.Instrumentation
 import android.content.Intent
 import android.content.res.Resources
 import android.location.Address
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso.*
@@ -275,45 +277,33 @@ class MainActivityTest : KoinTest {
         randomiseTestWeatherData()
 
         activityTestRule.launchActivity(null)
-        waitForLoadingToFinish()
-        waitForViewToBeVisible(activityTestRule.activity.findViewById(R.id.ll_weather_info))
 
-        Thread.sleep(3_000)
-
-        randomiseTestWeatherData()
-
-        var lat = com.marklynch.weather.testLat
-        var lon = com.marklynch.weather.testLon
+        val lat = com.marklynch.weather.testLat
+        val lon = com.marklynch.weather.testLon
         val displayName = randomAlphaNumeric(5)
         val address = Address(Locale.US)
         address.adminArea = displayName
-        var addressList: List<Address>? = listOf(address)
+        val addressList: List<Address>? = listOf(address)
         val addressData = AddressData(lat, lon, addressList)
 
         val resultIntent = Intent()
 
         resultIntent.putExtra(Constants.ADDRESS_INTENT, addressData)
 
-
-//        intending(anyIntent()).respondWith(
-//            ActivityResult(
-//                AppCompatActivity.RESULT_OK,
-//                resultIntent
-//            )
-//        )
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(
+            Instrumentation.ActivityResult(
+                AppCompatActivity.RESULT_OK,
+                resultIntent
+            )
+        )
 
         clickViewWithId(R.id.spinner_select_location)
         clickViewWithText(resources.getString(R.string.add_location_ellipses))
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
-        Thread.sleep(3_000)
-        clickViewWithId(com.sucho.placepicker.R.id.place_chosen_button)
-
-        Thread.sleep(5_000)
-
         waitForLoadingToFinish()
         waitForViewToBeVisible(activityTestRule.activity.findViewById(R.id.ll_weather_info))
-        Thread.sleep(5_000)
+
         checkWeatherInfo()
 
         activityTestRule.finishActivity()
