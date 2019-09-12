@@ -1,6 +1,7 @@
 package com.marklynch.weather.application
 
 import android.app.Application
+import com.marklynch.weather.BuildConfig
 import com.marklynch.weather.dependencyinjection.activityModules
 import com.marklynch.weather.dependencyinjection.appModules
 import org.koin.android.ext.android.get
@@ -15,7 +16,10 @@ class MainApplication : Application() {
         val moduleList = activityModules + appModules
         startKoin(this, moduleList)
 
-        val tree: Timber.Tree = get()
-        Timber.plant(tree)
+
+        if(BuildConfig.DEBUG) {
+            val tree: Timber.Tree = get()
+            Timber.plant(tree)
+        }
     }
 }
