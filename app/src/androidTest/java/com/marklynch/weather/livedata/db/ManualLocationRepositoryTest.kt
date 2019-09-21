@@ -50,7 +50,7 @@ class ManualLocationRepositoryTest : KoinTest {
 
         val displayName = randomAlphaNumeric(5)
         val address = Address(Locale.US)
-        address.adminArea = displayName
+        address.subAdminArea = displayName
         val latitude = Random.nextDouble()
         val longitude = Random.nextDouble()
 
@@ -94,7 +94,7 @@ class ManualLocationRepositoryTest : KoinTest {
         latch.await(2, TimeUnit.SECONDS)
 
         Assert.assertEquals(
-            addressData.addressList?.getOrNull(0)?.adminArea,
+            addressData.addressList?.getOrNull(0)?.subAdminArea,
             actualManualLocationInserted.displayName
         )
         Assert.assertEquals(addressData.latitude, actualManualLocationInserted.latitude)
@@ -127,7 +127,7 @@ class ManualLocationRepositoryTest : KoinTest {
         latchForInsert.await(2, TimeUnit.SECONDS)
 
         Assert.assertEquals(
-            addressData.addressList?.getOrNull(0)?.adminArea,
+            addressData.addressList?.getOrNull(0)?.subAdminArea,
             actualManualLocationInserted.displayName
         )
         Assert.assertEquals(addressData.latitude, actualManualLocationInserted.latitude)
@@ -177,7 +177,7 @@ class ManualLocationRepositoryTest : KoinTest {
         latchForInsert.await(2, TimeUnit.SECONDS)
 
         Assert.assertEquals(
-            addressData.addressList?.getOrNull(0)?.adminArea,
+            addressData.addressList?.getOrNull(0)?.subAdminArea,
             actualManualLocationInserted.displayName
         )
         Assert.assertEquals(addressData.latitude, actualManualLocationInserted.latitude)

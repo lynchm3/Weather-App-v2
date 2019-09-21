@@ -225,7 +225,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         val lon = com.marklynch.weather.testLon
         val displayName = randomAlphaNumeric(5)
         val address = Address(Locale.US)
-        address.adminArea = displayName
+        address.subAdminArea = displayName
         val addressList: List<Address>? = listOf(address)
         val addressData = AddressData(lat, lon, addressList)
 

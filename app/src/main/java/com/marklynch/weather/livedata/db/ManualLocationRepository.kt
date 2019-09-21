@@ -29,7 +29,7 @@ class ManualLocationRepository : KoinComponent {
             val newId = db.getManualLocationDao().insert(
                 ManualLocation(
                     0,
-                    addressData.addressList?.get(0)?.adminArea ?: "",
+                    addressData.addressList?.get(0)?.subAdminArea ?: "",
                     addressData.latitude,
                     addressData.longitude
                 )
