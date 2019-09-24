@@ -9,7 +9,7 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.database.core.utilities.Tree
+import com.marklynch.weather.BuildConfig
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
@@ -20,6 +20,7 @@ import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.
 import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.utils.PermissionsChecker
+import com.marklynch.weather.utils.TimberProductionTree
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koin.dsl.module.module
 import org.koin.experimental.builder.single
@@ -28,7 +29,11 @@ import timber.log.Timber
 private val appModule = module {
 
     single<Timber.Tree> {
-        Timber.DebugTree()
+        if (BuildConfig.DEBUG) {
+            Timber.DebugTree()
+        } else {
+            TimberProductionTree()
+        }
     }
 
 }
