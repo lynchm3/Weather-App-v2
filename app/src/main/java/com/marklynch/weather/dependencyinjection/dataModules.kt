@@ -20,6 +20,7 @@ import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.
 import com.marklynch.weather.livedata.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.utils.PermissionsChecker
+import com.marklynch.weather.utils.TimberDebugTree
 import com.marklynch.weather.utils.TimberProductionTree
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koin.dsl.module.module
@@ -30,7 +31,7 @@ private val appModule = module {
 
     single<Timber.Tree> {
         if (BuildConfig.DEBUG) {
-            Timber.DebugTree()
+            TimberDebugTree()
         } else {
             TimberProductionTree()
         }
