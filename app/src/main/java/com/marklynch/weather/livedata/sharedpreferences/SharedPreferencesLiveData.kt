@@ -11,16 +11,17 @@ abstract class SharedPreferencesLiveData<T>(
 
     val sharedPreferences: SharedPreferences = get()
 
-    private val onSharedPreferenceChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == sharedPreferencesKey) {
-                setLiveDataValue(sharedPreferencesKey)
-            }
-        }
+    private var onSharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
 
     override fun onActive() {
         super.onActive()
         setLiveDataValue(sharedPreferencesKey)
+        onSharedPreferenceChangeListener =
+            SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                if (key == sharedPreferencesKey) {
+                    setLiveDataValue(sharedPreferencesKey)
+                }
+            }
         sharedPreferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
     }
 

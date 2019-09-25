@@ -212,10 +212,10 @@ class MainActivity : BaseActivity() {
         spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
         spinnerList.add(getString(R.string.add_location_ellipses))
 
-        setSpinnerSelectionFromSelectedLocationId()
-
         spinnerArrayAdapter.notifyDataSetChanged()
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        setSpinnerSelectionFromSelectedLocationId()
     }
 
     private fun setSpinnerSelectionFromSelectedLocationId() {
