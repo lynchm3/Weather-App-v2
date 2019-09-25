@@ -83,6 +83,7 @@ dependencies {
     implementation "com.firebaseui:firebase-ui-auth:$firebase_ui_auth_version"
     implementation "com.google.gms:google-services:$google_services_version"
     implementation "com.squareup.okhttp3:mockwebserver:$okhttp_version"
+    implementation "com.squareup.sqldelight:android-driver:1.2.0"
 
     //Test implementation
     testImplementation "junit:junit:$junit_version"
