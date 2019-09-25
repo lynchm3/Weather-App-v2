@@ -9,6 +9,7 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.marklynch.weather.BuildConfig
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.livedata.db.ManualLocationRepository
@@ -81,6 +82,10 @@ private val dataModule = module {
     single<UseKmSharedPreferenceLiveData>()
     single<UseCelsiusSharedPreferenceLiveData>()
     single<CurrentLocationIdSharedPreferenceLiveData>()
+
+    single() {
+        FirebaseAnalytics.getInstance(get())
+    }
 }
 
 val appModules = listOf(
