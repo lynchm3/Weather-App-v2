@@ -1,0 +1,33 @@
+CREATE TABLE ManualLocation(
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  displayName TEXT NOT NULL,
+  latitude REAL NOT NULL,
+  longitude REAL NOT NULL
+);
+
+insert:
+INSERT INTO
+ManualLocation(
+  displayName,
+  latitude,
+  longitude
+)
+VALUES (?, ?, ?);
+
+update:
+UPDATE ManualLocation
+SET displayName = ?,
+    latitude = ?,
+    longitude = ?
+WHERE
+    id = ?;
+
+delete:
+DELETE FROM ManualLocation
+WHERE id = ?;
+
+getManualLocationLiveData:
+SELECT * FROM ManualLocation ORDER BY displayName ASC;
+
+getManualLocationById:
+SELECT * FROM ManualLocation WHERE id = ?;
