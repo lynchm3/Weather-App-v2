@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -113,8 +114,16 @@ fun clickViewWithId(viewId: Int) {
     onView(withId(viewId)).perform(click())
 }
 
+fun Int.click() {
+    onView(withId(this)).perform(ViewActions.click())
+}
+
 fun clickViewWithText(viewText: String) {
     onView(withText(viewText)).perform(click())
+}
+
+fun String.click() {
+    onView(withText(this)).perform(ViewActions.click())
 }
 
 fun assertViewHasText(viewId: Int, text: String) {

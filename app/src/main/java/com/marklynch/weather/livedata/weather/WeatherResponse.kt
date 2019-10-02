@@ -1,7 +1,9 @@
 package com.marklynch.weather.livedata.weather
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 class WeatherResponse {
 
     @Json(name = "coord")

@@ -25,6 +25,7 @@ import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.testLat
 import com.marklynch.weather.testLon
 import com.marklynch.weather.utils.*
+import com.squareup.moshi.FromJson
 import com.sucho.placepicker.AddressData
 import com.sucho.placepicker.Constants
 import com.sucho.placepicker.PlacePickerActivity
@@ -130,7 +131,7 @@ class MainActivityTest : KoinTest {
         //Switch to degrees C as a starting point if not there already
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
-            clickViewWithText(resources.getString(R.string.action_use_celsius))
+            resources.getString(R.string.action_use_celsius).click()
         } catch (e: Exception) {
             //close menu if degrees C option wasn't available
             pressBack()
@@ -138,7 +139,7 @@ class MainActivityTest : KoinTest {
 
         //Switch to fahrenheit
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickViewWithText(resources.getString(R.string.action_use_fahrenheit))
+        resources.getString(R.string.action_use_fahrenheit).click()
 
         //Check relevant textViews F
         assertViewHasText(
@@ -149,7 +150,7 @@ class MainActivityTest : KoinTest {
 
         //Switch to celsius
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickViewWithText(resources.getString(R.string.action_use_celsius))
+        resources.getString(R.string.action_use_celsius).click()
 
         //Check relevant textViews C
         assertViewHasText(
@@ -170,7 +171,7 @@ class MainActivityTest : KoinTest {
         //Switch to km as a starting point if not there already
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
-            clickViewWithText(resources.getString(R.string.action_use_km))
+            resources.getString(R.string.action_use_km).click()
         } catch (e: Exception) {
             //close menu if use km option wasn't available
             pressBack()
@@ -178,7 +179,7 @@ class MainActivityTest : KoinTest {
 
         //Switch to miles
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickViewWithText(resources.getString(R.string.action_use_mi))
+        resources.getString(R.string.action_use_mi).click()
 
         //Check relevant textViews Mi
         assertViewHasText(
@@ -191,7 +192,7 @@ class MainActivityTest : KoinTest {
 
         //Switch to km
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickViewWithText(resources.getString(R.string.action_use_km))
+        resources.getString(R.string.action_use_km).click()
 
         //Check relevant textViews km
         assertViewHasText(
@@ -213,7 +214,7 @@ class MainActivityTest : KoinTest {
         //Switch to 12hr clock as a starting point if not there already
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
         try {
-            clickViewWithText(resources.getString(R.string.action_use_12_hr_clock))
+            resources.getString(R.string.action_use_12_hr_clock).click()
         } catch (e: Exception) {
             //close menu if degrees C option wasn't available
             pressBack()
@@ -222,14 +223,14 @@ class MainActivityTest : KoinTest {
         //Switch to 24hr clock
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
 
-        clickViewWithText(resources.getString(R.string.action_use_24_hr_clock))
+        resources.getString(R.string.action_use_24_hr_clock).click()
 
         //Check relevant textViews 24hr clock
         assertViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(true))
 
         //Switch to 12hr clock
         openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-        clickViewWithText(resources.getString(R.string.action_use_12_hr_clock))
+        resources.getString(R.string.action_use_12_hr_clock).click()
 
         //Check relevant textViews 12hr clock
         assertViewHasText(R.id.tv_time_of_last_refresh, generateTimeString(false))
@@ -296,8 +297,9 @@ class MainActivityTest : KoinTest {
             )
         )
 
-        clickViewWithId(R.id.spinner_select_location)
-        clickViewWithText(resources.getString(R.string.add_location_ellipses))
+//        clickViewWithId(R.id.spinner_select_location)
+        R.id.spinner_select_location.click()
+        resources.getString(R.string.add_location_ellipses).click()
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         waitForLoadingToFinish()

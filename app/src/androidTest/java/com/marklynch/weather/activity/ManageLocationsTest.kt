@@ -240,7 +240,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
             )
         )
 
-        clickViewWithId(R.id.fab_add_location)
+        R.id.fab_add_location.click()
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         //check size of list
@@ -296,7 +296,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(resources.getString(R.string.remove))
 
         //Click remove button
-        clickViewWithText(resources.getString(R.string.remove))
+        resources.getString(R.string.remove).click()
 
         //Wait for "No Locations" message to show up
         val tvMessaging: TextView =
@@ -360,13 +360,13 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(resources.getString(R.string.rename))
 
         //Click rename button
-        clickViewWithText(resources.getString(R.string.rename))
+        resources.getString(R.string.rename).click()
 
         //Type new name
         onView(withId(R.id.edit_text)).perform(typeText("NEW LOCATION"))
 
         //Tap ok
-        clickViewWithText("OK")
+        "OK".click()
 
         //Check list is visible
         assertViewDisplayed(R.id.rv_manage_locations_list)
@@ -397,7 +397,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
             )
         )
 
-        clickViewWithId(R.id.fab_add_location)
+        R.id.fab_add_location.click()
         Intents.intended(IntentMatchers.hasComponent(PlacePickerActivity::class.java.name))
 
         //Check "no locations" showing
@@ -455,13 +455,13 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(resources.getString(R.string.rename))
 
         //Click rename button
-        clickViewWithText(resources.getString(R.string.rename))
+        resources.getString(R.string.rename).click()
 
         //Type new name
         onView(withId(R.id.edit_text)).perform(typeText("NEW LOCATION"))
 
         //Tap ok
-        clickViewWithText("CANCEL")
+        "CANCEL".click()
 
         //Check list is visible
         assertViewDisplayed(R.id.rv_manage_locations_list)
@@ -516,10 +516,10 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         assertViewDisplayed(resources.getString(R.string.rename))
 
         //Click rename button
-        clickViewWithText(resources.getString(R.string.rename))
+        resources.getString(R.string.rename).click()
 
         //Tap ok
-        clickViewWithText("CANCEL")
+        "CANCEL".click()
 
         //Check list is visible
         assertViewDisplayed(R.id.rv_manage_locations_list)
