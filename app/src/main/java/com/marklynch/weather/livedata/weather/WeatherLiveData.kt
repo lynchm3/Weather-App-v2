@@ -1,5 +1,6 @@
 package com.marklynch.weather.livedata.weather
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -15,6 +16,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import okhttp3.OkHttpClient
+import org.koin.standalone.get
+
 
 open class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
 
@@ -24,6 +29,7 @@ open class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
 
         if (lat == 0.0 && lon == 0.0)
             return
+
 
         GlobalScope.launch {
 
@@ -54,8 +60,13 @@ open class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
             parametersOf(baseUrl)
         }
 
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(ChuckInterceptor(get<Application>()))
+            .build()
+
         return Retrofit.Builder()
             .baseUrl(httpURL)
+            .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }
