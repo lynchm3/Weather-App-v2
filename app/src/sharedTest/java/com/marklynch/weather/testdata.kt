@@ -1,6 +1,5 @@
 package com.marklynch.weather
 
-import com.google.gson.Gson
 import com.marklynch.weather.dependencyinjection.testWeatherResponse
 import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.randomAlphaNumeric
@@ -35,7 +34,7 @@ fun randomiseTestWeatherData() {
 }
 
 
-fun generateGetWeatherResponse(): WeatherResponse = Gson().fromJson(
+fun generateGetWeatherResponse(): WeatherResponse = fromJson(
     """{
    "coord":{
       "lon":$testLon,

@@ -1,30 +1,30 @@
 package com.marklynch.weather.livedata.weather
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 class WeatherResponse {
 
-    @SerializedName("coord")
+    @Json(name = "coord")
     var coord: Coord? = null
-    @SerializedName("sys")
+    @field:Json(name = "sys")
     var sys: Sys? = null
-    @SerializedName("weather")
+    @field:Json(name = "weather")
     var weather: List<Weather> = listOf()
-    @SerializedName("main")
+    @field:Json(name = "main")
     var main: Main? = null
-    @SerializedName("wind")
+    @field:Json(name = "wind")
     var wind: Wind? = null
-    @SerializedName("rain")
+    @field:Json(name = "rain")
     var rain: Rain? = null
-    @SerializedName("clouds")
+    @field:Json(name = "clouds")
     var clouds: Clouds? = null
-    @SerializedName("dt")
+    @field:Json(name = "dt")
     var dt = 0.0
-    @SerializedName("id")
+    @field:Json(name = "id")
     var id: Int = 0
-    @SerializedName("name")
+    @field:Json(name = "name")
     var name: String? = null
-    @SerializedName("cod")
+    @field:Json(name = "cod")
     var cod = 0.0
 
     override fun toString(): String {
@@ -35,13 +35,13 @@ class WeatherResponse {
 }
 
 class Weather {
-    @SerializedName("id")
+    @field:Json(name = "id")
     var id: Int = 0
-    @SerializedName("main")
+    @field:Json(name = "main")
     var main: String? = null
-    @SerializedName("description")
+    @field:Json(name = "description")
     var description: String? = null
-    @SerializedName("icon")
+    @field:Json(name = "icon")
     var icon: String? = null
 
     override fun toString(): String {
@@ -50,7 +50,7 @@ class Weather {
 }
 
 class Clouds {
-    @SerializedName("all")
+    @field:Json(name = "all")
     var all = 0.0
 
     override fun toString(): String {
@@ -59,7 +59,7 @@ class Clouds {
 }
 
 class Rain {
-    @SerializedName("3h")
+    @field:Json(name = "3h")
     var h3 = 0.0
 
     override fun toString(): String {
@@ -68,9 +68,9 @@ class Rain {
 }
 
 class Wind {
-    @SerializedName("speed")
+    @field:Json(name = "speed")
     var speed = 0.0
-    @SerializedName("deg")
+    @field:Json(name = "deg")
     var deg = 0.0
 
     override fun toString(): String {
@@ -79,15 +79,15 @@ class Wind {
 }
 
 class Main {
-    @SerializedName("temp")
+    @field:Json(name = "temp")
     var temp = 0.0
-    @SerializedName("humidity")
+    @field:Json(name = "humidity")
     var humidity = 0.0
-    @SerializedName("pressure")
+    @field:Json(name = "pressure")
     var pressure = 0.0
-    @SerializedName("temp_min")
+    @field:Json(name = "temp_min")
     var tempMin = 0.0
-    @SerializedName("temp_max")
+    @field:Json(name = "temp_max")
     var tempMax = 0.0
 
     override fun toString(): String {
@@ -96,11 +96,11 @@ class Main {
 }
 
 class Sys {
-    @SerializedName("country")
+    @field:Json(name = "country")
     var country: String? = null
-    @SerializedName("sunrise")
+    @field:Json(name = "sunrise")
     var sunrise: Long = 0
-    @SerializedName("sunset")
+    @field:Json(name = "sunset")
     var sunset: Long = 0
 
     override fun toString(): String {
@@ -109,9 +109,9 @@ class Sys {
 }
 
 class Coord {
-    @SerializedName("lon")
+    @field:Json(name = "lon")
     var lon = 0.0
-    @SerializedName("lat")
+    @field:Json(name = "lat")
     var lat = 0.0
 
     override fun toString(): String {
