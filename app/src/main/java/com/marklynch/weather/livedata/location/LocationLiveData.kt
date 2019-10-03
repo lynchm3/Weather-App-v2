@@ -58,14 +58,18 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
         registerGpsStateReceiver()
 
-        postValue(
-            LocationInformation(
-                locationPermissionState,
-                gpsState,
-                locationResult?.locations?.get(0)?.latitude,
-                locationResult?.locations?.get(0)?.longitude
-            )
-        )
+        fusedLocationClient.lastLocation
+            .addOnCompleteListener { lastLocation ->
+                if (lastLocation.result != null) {
+                    val locationInformation = LocationInformation(
+                        locationPermissionState,
+                        gpsState,
+                        lastLocation.result?.latitude,
+                        lastLocation.result?.longitude
+                    )
+                    postValue(locationInformation)
+                }
+            }
 
         if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
             fetchLocation()
@@ -104,22 +108,8 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
     @SuppressLint("MissingPermission")
     fun fetchLocation() {
 
-        try {
-            postValue(
-                LocationInformation(
-                    locationPermissionState,
-                    gpsState,
-                    fusedLocationClient.lastLocation.result?.latitude,
-                    fusedLocationClient.lastLocation.result?.longitude
-                )
-            )
-        } catch (unlikely: IllegalStateException) {
-            Timber.e("Error when fusedLocationClient.lastLocation")
-        }
 
         try {
-
-
             fusedLocationClient.requestLocationUpdates(
                 LocationRequest.create().apply {
                     priority = LocationRequest.PRIORITY_HIGH_ACCURACY

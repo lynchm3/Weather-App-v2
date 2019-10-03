@@ -128,7 +128,6 @@ class MainActivity : BaseActivity() {
         //Weather
         viewModel.weatherLiveData.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
-                swip_refresh_layout.isRefreshing = false
                 if (weatherResponse == null) {
                     showNoNetworkConnectionDialog()
                     swip_refresh_layout.isRefreshing = false
