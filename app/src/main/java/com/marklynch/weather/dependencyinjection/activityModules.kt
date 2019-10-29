@@ -6,7 +6,7 @@ import org.koin.android.viewmodel.experimental.builder.viewModel
 import org.koin.dsl.module.module
 
 val mainModule = module {
-    viewModel<MainViewModel>()
+//    viewModel<MainViewModel>()
 }
 
 val manageLocationsModule = module {

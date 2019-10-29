@@ -34,10 +34,10 @@ import com.sucho.placepicker.Constants as PlacePickerConstants
 
 class MainActivity : BaseActivity() {
 
-    private val viewModel: MainViewModel by inject()
+//    private val viewModel: MainViewModel by inject()
 
-//    @Inject
-//    lateinit var viewModel: MainViewModel
+    @Inject
+    lateinit var viewModel: MainViewModel
 
     private var alertDialog: AlertDialog? = null
     private var spinnerList: MutableList<Any> = mutableListOf("")
@@ -49,7 +49,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
 
         (application as MainApplication).appComponent.inject(this)
 

@@ -15,7 +15,7 @@ import com.sucho.placepicker.AddressData
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
-open class MainViewModel(application: Application) : AndroidViewModel(application), KoinComponent {
+open class MainViewModel : KoinComponent {
 
     //Location
     val locationLiveData: LocationLiveData by inject()
