@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.marklynch.weather.R
+import com.marklynch.weather.application.MainApplication
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
@@ -27,12 +28,17 @@ import com.sucho.placepicker.AddressData
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.koin.android.ext.android.inject
+import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
 
 class MainActivity : BaseActivity() {
 
     private val viewModel: MainViewModel by inject()
+
+//    @Inject
+//    lateinit var viewModel: MainViewModel
+
     private var alertDialog: AlertDialog? = null
     private var spinnerList: MutableList<Any> = mutableListOf("")
 
@@ -43,6 +49,9 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+
+        (application as MainApplication).appComponent.inject(this)
 
         spinner = findViewById(R.id.spinner_select_location)
         spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
