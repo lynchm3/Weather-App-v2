@@ -20,7 +20,7 @@ private fun textWidth(str: String): Int {
 fun randomAlphaNumeric(count: Int): String {
     var count = count
     val builder = StringBuilder()
-    repeat (count) {
+    while (count-- != 0) {
         val character = (Math.random() * ALPHA_NUMERIC_STRING.length).toInt()
         builder.append(ALPHA_NUMERIC_STRING[character])
     }
