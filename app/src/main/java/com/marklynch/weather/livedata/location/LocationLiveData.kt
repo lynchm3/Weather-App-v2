@@ -60,15 +60,21 @@ open class LocationLiveData : LiveData<LocationInformation>(), KoinComponent {
 
         fusedLocationClient.lastLocation
             .addOnCompleteListener { lastLocation ->
-                if (lastLocation.result != null) {
-                    val locationInformation = LocationInformation(
-                        locationPermissionState,
-                        gpsState,
-                        lastLocation.result?.latitude,
-                        lastLocation.result?.longitude
-                    )
-                    postValue(locationInformation)
+                var latitude:Double? = null
+                var longitude:Double? = null
+                try {
+                    latitude = lastLocation.result?.latitude
+                    longitude = lastLocation.result?.longitude
+                } catch (e: Exception) {
+                    Timber.w(e, "Error getting last location")
                 }
+                val locationInformation = LocationInformation(
+                    locationPermissionState,
+                    gpsState,
+                    latitude,
+                    longitude
+                )
+                postValue(locationInformation)
             }
 
         if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
