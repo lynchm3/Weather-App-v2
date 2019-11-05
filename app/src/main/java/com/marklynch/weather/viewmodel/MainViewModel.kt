@@ -1,7 +1,5 @@
 package com.marklynch.weather.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.db.ManualLocationRepository

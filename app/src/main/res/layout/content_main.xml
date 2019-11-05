@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
                 name="mainViewModel"
                 type="com.marklynch.weather.viewmodel.MainViewModel" />
@@ -50,6 +50,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:singleLine="true"
+                            android:text="@{``+mainViewModel.weatherLiveData.main.temp}"
                             android:textSize="@dimen/temperature_text_size"
                             android:textStyle="bold" />
 
@@ -172,5 +173,4 @@
 
         </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 </layout>

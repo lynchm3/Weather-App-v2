@@ -1,5 +1,6 @@
 package com.marklynch.weather.activity
 
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -14,11 +15,13 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.marklynch.weather.R
 import com.marklynch.weather.application.MainApplication
 import com.marklynch.weather.data.manuallocation.ManualLocation
+import com.marklynch.weather.databinding.ActivityMainBinding
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.network.ConnectionType
@@ -28,13 +31,8 @@ import com.marklynch.weather.viewmodel.MainViewModel
 import com.sucho.placepicker.AddressData
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
-import androidx.databinding.DataBindingUtil
-
-
-import com.marklynch.weather.databinding.ContentMainBinding
 
 
 class MainActivity : BaseActivity() {
@@ -46,20 +44,27 @@ class MainActivity : BaseActivity() {
     private lateinit var spinner: Spinner
     private lateinit var spinnerArrayAdapter: ArrayAdapter<Any>
 
-    lateinit var viewModel : MainViewModel
+    lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        //View Model
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+
+        //Binding
+        val binding: ActivityMainBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.mainViewModel = viewModel
+        binding.lifecycleOwner = this
+
         (application as MainApplication).appComponent.inject(this)
 
         spinner = findViewById(R.id.spinner_select_location)
         spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
         spinner.adapter = spinnerArrayAdapter
-
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java!!)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
@@ -101,11 +106,6 @@ class MainActivity : BaseActivity() {
         }
 
         swip_refresh_layout.isRefreshing = true
-
-        //Binding
-        val binding : ContentMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.mainViewModel = viewModel
-        binding.lifecycleOwner = this
 
         //Network
         viewModel.networkInfoLiveData.observe(this,
@@ -268,8 +268,8 @@ class MainActivity : BaseActivity() {
         val useKm = viewModel.isUseKm()
 
         if (useCelsius == null || !useCelsius) {
-            tv_temperature.text =
-                kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
+//            tv_temperature.text =
+//                kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
             tv_temperature_unit.text = getString(R.string.degreesF)
             tv_maximum_temperature.text = getString(
                 R.string.maximum_temperature_F,
@@ -280,8 +280,8 @@ class MainActivity : BaseActivity() {
                 kelvinToFahrenheit(weatherResponse?.main?.tempMin).roundToInt()
             )
         } else {
-            tv_temperature.text =
-                kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
+//            tv_temperature.text =
+//                kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
             tv_temperature_unit.text = getString(R.string.degreesC)
             tv_maximum_temperature.text =
                 getString(
