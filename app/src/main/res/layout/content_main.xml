@@ -1,164 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/swip_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".activity.MainActivity"
-        tools:showIn="@layout/activity_main">
+        xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <data>
+        <variable
+                name="mainViewModel"
+                type="com.marklynch.weather.viewmodel.MainViewModel" />
+    </data>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swip_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:context=".activity.MainActivity"
+            tools:showIn="@layout/activity_main">
 
-        <TextView
-                android:id="@+id/tv_messaging"
+
+        <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/loading" />
+                android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/ll_weather_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-            <!-- Temperature -->
-
-            <RelativeLayout
+            <TextView
+                    android:id="@+id/tv_messaging"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/loading" />
 
-                <TextView
-                        android:id="@+id/tv_temperature"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:singleLine="true"
-                        android:textSize="@dimen/temperature_text_size"
-                        android:textStyle="bold" />
-
-                <TextView
-                        android:id="@+id/tv_temperature_unit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/temperature_unit_margin_top"
-                        android:layout_toEndOf="@id/tv_temperature"
-                        android:singleLine="true"
-                        android:textColor="@color/lightGrey"
-                        android:textSize="@dimen/temperature_unit_text_size" />
-
-            </RelativeLayout>
-
-            <!-- Weather Description -->
-
-            <RelativeLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_weather_info"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                <TextView
-                        android:id="@+id/tv_weather_description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:singleLine="true"
-                        android:textSize="@dimen/weather_description_text_size" />
-
-                <ImageView
-                        android:id="@+id/iv_weather_description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toEndOf="@id/tv_weather_description"
-                        tools:ignore="ContentDescription" />
-
-            </RelativeLayout>
-
-            <!-- Humidity -->
-
-            <RelativeLayout
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <TextView
-                        android:id="@+id/tv_humidity"
+                <!-- Temperature -->
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <TextView
+                            android:id="@+id/tv_temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:singleLine="true"
+                            android:textSize="@dimen/temperature_text_size"
+                            android:textStyle="bold" />
+
+                    <TextView
+                            android:id="@+id/tv_temperature_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/temperature_unit_margin_top"
+                            android:layout_toEndOf="@id/tv_temperature"
+                            android:singleLine="true"
+                            android:textColor="@color/lightGrey"
+                            android:textSize="@dimen/temperature_unit_text_size" />
+
+                </RelativeLayout>
+
+                <!-- Weather Description -->
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <TextView
+                            android:id="@+id/tv_weather_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:singleLine="true"
+                            android:textSize="@dimen/weather_description_text_size" />
+
+                    <ImageView
+                            android:id="@+id/iv_weather_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@id/tv_weather_description"
+                            tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <!-- Humidity -->
+
+                <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:textSize="@dimen/humidity_text_size" />
+                        android:layout_gravity="center">
 
-            </RelativeLayout>
+                    <TextView
+                            android:id="@+id/tv_humidity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textSize="@dimen/humidity_text_size" />
 
-            <!--Max temperature-->
+                </RelativeLayout>
 
-            <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                <!--Max temperature-->
 
-                <TextView
-                        android:id="@+id/tv_maximum_temperature"
+                <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:textSize="@dimen/maximum_temperature_text_size" />
+                        android:layout_gravity="center">
 
-            </RelativeLayout>
+                    <TextView
+                            android:id="@+id/tv_maximum_temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textSize="@dimen/maximum_temperature_text_size" />
 
-            <!--Min temperature-->
+                </RelativeLayout>
 
-            <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                <!--Min temperature-->
 
-                <TextView
-                        android:id="@+id/tv_minimum_temperature"
+                <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:textSize="@dimen/minimum_temperature_text_size" />
+                        android:layout_gravity="center">
 
-            </RelativeLayout>
+                    <TextView
+                            android:id="@+id/tv_minimum_temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textSize="@dimen/minimum_temperature_text_size" />
 
-            <!--Wind-->
+                </RelativeLayout>
 
-            <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                <!--Wind-->
 
-                <TextView
-                        android:id="@+id/tv_wind"
+                <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:textSize="@dimen/wind_text_size" />
+                        android:layout_gravity="center">
 
-            </RelativeLayout>
+                    <TextView
+                            android:id="@+id/tv_wind"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textSize="@dimen/wind_text_size" />
 
-            <!--Cloudiness-->
+                </RelativeLayout>
 
-            <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                <!--Cloudiness-->
 
-                <TextView
-                        android:id="@+id/tv_cloudiness"
+                <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:textSize="@dimen/cloudiness_text_size" />
+                        android:layout_gravity="center">
 
-            </RelativeLayout>
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                    <TextView
+                            android:id="@+id/tv_cloudiness"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textSize="@dimen/cloudiness_text_size" />
 
-    </RelativeLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                </RelativeLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</layout>

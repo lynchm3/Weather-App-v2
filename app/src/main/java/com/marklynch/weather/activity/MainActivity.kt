@@ -15,6 +15,7 @@ import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.marklynch.weather.R
 import com.marklynch.weather.application.MainApplication
 import com.marklynch.weather.data.manuallocation.ManualLocation
@@ -27,23 +28,25 @@ import com.marklynch.weather.viewmodel.MainViewModel
 import com.sucho.placepicker.AddressData
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import org.koin.android.ext.android.inject
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
+import androidx.databinding.DataBindingUtil
+
+
+import com.marklynch.weather.databinding.ContentMainBinding
+
 
 class MainActivity : BaseActivity() {
 
-//    private val viewModel: MainViewModel by inject()
-
-    @Inject
-    lateinit var viewModel: MainViewModel
 
     private var alertDialog: AlertDialog? = null
     private var spinnerList: MutableList<Any> = mutableListOf("")
 
     private lateinit var spinner: Spinner
     private lateinit var spinnerArrayAdapter: ArrayAdapter<Any>
+
+    lateinit var viewModel : MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +58,8 @@ class MainActivity : BaseActivity() {
         spinner = findViewById(R.id.spinner_select_location)
         spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
         spinner.adapter = spinnerArrayAdapter
+
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java!!)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
@@ -96,6 +101,11 @@ class MainActivity : BaseActivity() {
         }
 
         swip_refresh_layout.isRefreshing = true
+
+        //Binding
+        val binding : ContentMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.mainViewModel = viewModel
+        binding.lifecycleOwner = this
 
         //Network
         viewModel.networkInfoLiveData.observe(this,

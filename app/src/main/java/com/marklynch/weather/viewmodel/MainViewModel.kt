@@ -2,6 +2,7 @@ package com.marklynch.weather.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import com.marklynch.weather.data.manuallocation.ManualLocation
 import com.marklynch.weather.livedata.db.ManualLocationRepository
 import com.marklynch.weather.livedata.location.LocationLiveData
@@ -15,7 +16,7 @@ import com.sucho.placepicker.AddressData
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
-open class MainViewModel : KoinComponent {
+open class MainViewModel : ViewModel(), KoinComponent {
 
     //Location
     val locationLiveData: LocationLiveData by inject()
