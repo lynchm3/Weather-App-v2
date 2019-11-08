@@ -5,7 +5,6 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
                 name="mainViewModel"
                 type="com.marklynch.weather.viewmodel.MainViewModel" />
@@ -50,9 +49,12 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:singleLine="true"
-                            android:text="@{``+mainViewModel.weatherLiveData.main.temp}"
                             android:textSize="@dimen/temperature_text_size"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            app:temperature="@{mainViewModel.weatherLiveData}"/>
+
+
+<!--                            android:text = "@{mainViewModel.weatherLiveData.toString()}"-->
 
                     <TextView
                             android:id="@+id/tv_temperature_unit"

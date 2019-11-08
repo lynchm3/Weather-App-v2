@@ -13,8 +13,11 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.databinding.BindingAdapter
+import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -25,6 +28,7 @@ import com.marklynch.weather.databinding.ActivityMainBinding
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.network.ConnectionType
+import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.*
 import com.marklynch.weather.viewmodel.MainViewModel
@@ -35,8 +39,20 @@ import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
 
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), DataBindingComponent {
 
+    override fun getMainActivity(): MainActivity = this
+
+    @BindingAdapter("temperature")
+    fun bindTemperature(textView: TextView, weatherLiveData: WeatherLiveData?) {
+        val weatherResponse = weatherLiveData?.value
+        if (viewModel.isUseCelsius() == true)
+            tv_temperature.text =
+                kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
+        else
+            tv_temperature.text =
+                kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
+    }
 
     private var alertDialog: AlertDialog? = null
     private var spinnerList: MutableList<Any> = mutableListOf("")
@@ -48,16 +64,20 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
 
         //View Model
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        //Binding
+
         val binding: ActivityMainBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_main)
+            DataBindingUtil.setContentView(this, R.layout.activity_main, this)
+
         binding.mainViewModel = viewModel
+
+
+        setSupportActionBar(toolbar)
+
+        //Binding
         binding.lifecycleOwner = this
 
         (application as MainApplication).appComponent.inject(this)
@@ -65,6 +85,13 @@ class MainActivity : BaseActivity() {
         spinner = findViewById(R.id.spinner_select_location)
         spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
         spinner.adapter = spinnerArrayAdapter
+
+        tv_temperature.setOnClickListener()
+        {
+            println("calling viewModel.stringLiveData.value = ${generateTimeString(true)}")
+            viewModel.stringLiveData.value = generateTimeString(true)
+            println("viewModel.stringLiveData.value = ${viewModel.stringLiveData.value}")
+        }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
