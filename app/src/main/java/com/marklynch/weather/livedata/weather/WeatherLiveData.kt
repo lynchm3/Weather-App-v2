@@ -2,6 +2,7 @@ package com.marklynch.weather.livedata.weather
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.HttpUrl
@@ -21,7 +22,7 @@ import okhttp3.OkHttpClient
 import org.koin.standalone.get
 
 
-open class WeatherLiveData : LiveData<WeatherResponse>(), KoinComponent {
+open class WeatherLiveData : MutableLiveData<WeatherResponse>(), KoinComponent {
 
     private val appId = "74f01822a2b8950db2986d7e28a5978a"
 

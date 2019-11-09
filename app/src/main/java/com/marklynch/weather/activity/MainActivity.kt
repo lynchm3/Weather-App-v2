@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.marklynch.weather.R
@@ -38,7 +39,6 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
 
-
 class MainActivity : BaseActivity(), DataBindingComponent {
 
     override fun getMainActivity(): MainActivity = this
@@ -46,12 +46,14 @@ class MainActivity : BaseActivity(), DataBindingComponent {
     @BindingAdapter("temperature")
     fun bindTemperature(textView: TextView, weatherLiveData: WeatherLiveData?) {
         val weatherResponse = weatherLiveData?.value
-        if (viewModel.isUseCelsius() == true)
-            tv_temperature.text =
-                kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
-        else
-            tv_temperature.text =
-                kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
+        weatherResponse.let{
+            if (viewModel.isUseCelsius() == true)
+                textView.text =
+                    kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
+            else
+                textView.text =
+                    kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
+        }
     }
 
     private var alertDialog: AlertDialog? = null
@@ -85,13 +87,6 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         spinner = findViewById(R.id.spinner_select_location)
         spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
         spinner.adapter = spinnerArrayAdapter
-
-        tv_temperature.setOnClickListener()
-        {
-            println("calling viewModel.stringLiveData.value = ${generateTimeString(true)}")
-            viewModel.stringLiveData.value = generateTimeString(true)
-            println("viewModel.stringLiveData.value = ${viewModel.stringLiveData.value}")
-        }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
@@ -177,7 +172,9 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                     showNoNetworkConnectionDialog()
                     swip_refresh_layout.isRefreshing = false
                 } else {
-                    updateWeatherUI()
+                    if (alertDialog?.isShowing == true) {
+                        alertDialog?.dismiss()
+                    }
                     swip_refresh_layout.isRefreshing = false
                 }
             })
@@ -186,7 +183,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         viewModel.useCelsiusSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 invalidateOptionsMenu()
-                updateWeatherUI()
+                viewModel.weatherLiveData.forceRefresh()
             }
         )
 
@@ -194,7 +191,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         viewModel.useKmSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 invalidateOptionsMenu()
-                updateWeatherUI()
+                viewModel.weatherLiveData.forceRefresh()
             }
         )
 
@@ -202,7 +199,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         viewModel.use24hrClockSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 invalidateOptionsMenu()
-                updateWeatherUI()
+                viewModel.weatherLiveData.forceRefresh()
             }
         )
 
