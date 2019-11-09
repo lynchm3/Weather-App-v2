@@ -10,16 +10,12 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.marklynch.weather.R
@@ -29,6 +25,7 @@ import com.marklynch.weather.databinding.ActivityMainBinding
 import com.marklynch.weather.livedata.location.GpsState
 import com.marklynch.weather.livedata.location.LocationInformation
 import com.marklynch.weather.livedata.network.ConnectionType
+import com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
 import com.marklynch.weather.livedata.weather.WeatherLiveData
 import com.marklynch.weather.livedata.weather.WeatherResponse
 import com.marklynch.weather.utils.*
@@ -46,13 +43,125 @@ class MainActivity : BaseActivity(), DataBindingComponent {
     @BindingAdapter("temperature")
     fun bindTemperature(textView: TextView, weatherLiveData: WeatherLiveData?) {
         val weatherResponse = weatherLiveData?.value
-        weatherResponse.let{
+        weatherResponse.let {
             if (viewModel.isUseCelsius() == true)
                 textView.text =
                     kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
             else
                 textView.text =
                     kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
+        }
+    }
+
+    @BindingAdapter("temperatureUnit")
+    fun bindTemperatureUnit(textView: TextView, useCelsiusLD: UseCelsiusSharedPreferenceLiveData) {
+        val useCelsius = useCelsiusLD?.value
+        textView.text = when (useCelsius) {
+            null, true -> getString(R.string.degreesC)
+            false -> getString(R.string.degreesF)
+        }
+    }
+
+    @BindingAdapter("weatherDescription")
+    fun bindWeatherDescription(textView: TextView, weatherLiveData: WeatherLiveData?) {
+        val weatherResponse = weatherLiveData?.value
+        weatherResponse.let {
+            textView.text =
+                weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
+        }
+    }
+
+    @BindingAdapter("weatherDescriptionImage")
+    fun bindWeatherDescriptionImage(imageView: ImageView, weatherLiveData: WeatherLiveData?) {
+        val weatherResponse = weatherLiveData?.value
+        weatherResponse.let {
+            imageView.setImageResource(
+                mapWeatherCodeToDrawable[weatherResponse?.weather?.getOrNull(0)?.icon]
+                    ?: R.drawable.weather01d
+            )
+        }
+    }
+
+    @BindingAdapter("humidity")
+    fun bindHumidity(textView: TextView, weatherLiveData: WeatherLiveData?) {
+        val weatherResponse = weatherLiveData?.value
+        weatherResponse.let {
+            textView.text =
+                getString(
+                    R.string.humidity_percentage,
+                    weatherResponse?.main?.humidity?.roundToInt()
+                )
+        }
+    }
+
+    @BindingAdapter("maximumTemperature")
+    fun bindMaximumTemperature(textView: TextView, weatherLiveData: WeatherLiveData?) {
+        val weatherResponse = weatherLiveData?.value
+        weatherResponse.let {
+            if (viewModel.isUseCelsius() == true)
+                textView.text =
+                    getString(
+                        R.string.maximum_temperature_C,
+                        kelvinToCelsius(weatherResponse?.main?.tempMax).roundToInt()
+                    )
+            else
+                textView.text =
+                    getString(
+                        R.string.maximum_temperature_F,
+                        kelvinToFahrenheit(weatherResponse?.main?.tempMax).roundToInt()
+                    )
+        }
+    }
+
+    @BindingAdapter("minimumTemperature")
+    fun bindMinimumTemperature(textView: TextView, weatherLiveData: WeatherLiveData?) {
+        val weatherResponse = weatherLiveData?.value
+        weatherResponse.let {
+            if (viewModel.isUseCelsius() == true)
+                textView.text =
+                    getString(
+                        R.string.minimum_temperature_C,
+                        kelvinToCelsius(weatherResponse?.main?.tempMin).roundToInt()
+                    )
+            else
+                textView.text =
+                    getString(
+                        R.string.minimum_temperature_F,
+                        kelvinToFahrenheit(weatherResponse?.main?.tempMin).roundToInt()
+                    )
+        }
+    }
+
+    @BindingAdapter("wind")
+    fun bindWind(textView: TextView, weatherLiveData: WeatherLiveData?) {
+        val weatherResponse = weatherLiveData?.value
+        weatherResponse.let {
+            if (viewModel.isUseKm() == true) {
+                textView.text = getString(
+                    R.string.wind_km,
+                    metresPerSecondToKmPerHour(weatherResponse?.wind?.speed ?: 0.0).roundToInt(),
+                    directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0)
+                )
+
+            } else {
+                textView.text = getString(
+                    R.string.wind_mi,
+                    metresPerSecondToMilesPerHour(weatherResponse?.wind?.speed ?: 0.0).roundToInt(),
+                    directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0)
+                )
+            }
+        }
+    }
+
+    @BindingAdapter("cloudiness")
+    fun bindCloudiness(textView: TextView, weatherLiveData: WeatherLiveData?) {
+        val weatherResponse = weatherLiveData?.value
+        weatherResponse.let {
+            tv_cloudiness.text =
+                getString(
+                    R.string.cloudiness_percentage,
+                    weatherResponse?.clouds?.all?.roundToInt()
+                )
         }
     }
 
@@ -176,6 +285,9 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                         alertDialog?.dismiss()
                     }
                     swip_refresh_layout.isRefreshing = false
+                    tv_messaging.visibility = View.GONE
+                    ll_weather_info.visibility = View.VISIBLE
+                    tv_time_of_last_refresh.text = generateTimeString(viewModel.isUse24hrClock())
                 }
             })
 
@@ -278,83 +390,6 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         }
         spinner.setSelection(0)
         viewModel.setSelectedLocationId(0)
-    }
-
-    private fun updateWeatherUI() {
-        if (viewModel.getWeather() == null)
-            return
-
-        tv_messaging.visibility = View.GONE
-        ll_weather_info.visibility = View.VISIBLE
-
-        val weatherResponse = viewModel.getWeather()
-        val useCelsius = viewModel.isUseCelsius()
-        val useKm = viewModel.isUseKm()
-
-        if (useCelsius == null || !useCelsius) {
-//            tv_temperature.text =
-//                kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
-            tv_temperature_unit.text = getString(R.string.degreesF)
-            tv_maximum_temperature.text = getString(
-                R.string.maximum_temperature_F,
-                kelvinToFahrenheit(weatherResponse?.main?.tempMax).roundToInt()
-            )
-            tv_minimum_temperature.text = getString(
-                R.string.minimum_temperature_F,
-                kelvinToFahrenheit(weatherResponse?.main?.tempMin).roundToInt()
-            )
-        } else {
-//            tv_temperature.text =
-//                kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
-            tv_temperature_unit.text = getString(R.string.degreesC)
-            tv_maximum_temperature.text =
-                getString(
-                    R.string.maximum_temperature_C,
-                    kelvinToCelsius(weatherResponse?.main?.tempMax).roundToInt()
-                )
-            tv_minimum_temperature.text =
-                getString(
-                    R.string.minimum_temperature_C,
-                    kelvinToCelsius(weatherResponse?.main?.tempMin).roundToInt()
-                )
-        }
-
-        if (useKm == null || !useKm) {
-            tv_wind.text = getString(
-                R.string.wind_mi,
-                metresPerSecondToMilesPerHour(weatherResponse?.wind?.speed ?: 0.0).roundToInt(),
-                directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0)
-            )
-        } else {
-            tv_wind.text = getString(
-                R.string.wind_km,
-                metresPerSecondToKmPerHour(weatherResponse?.wind?.speed ?: 0.0).roundToInt(),
-                directionInDegreesToCardinalDirection(weatherResponse?.wind?.deg ?: 0.0)
-            )
-        }
-
-        iv_weather_description.setImageResource(
-            mapWeatherCodeToDrawable[weatherResponse?.weather?.getOrNull(0)?.icon]
-                ?: R.drawable.weather01d
-        )
-
-        tv_weather_description.text =
-            weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
-
-        if (viewModel.getSelectedLocationId() == 0L && weatherResponse?.name != null) {
-            spinnerList[0] =
-                getString(R.string.current_location_brackets_name, weatherResponse.name)
-            val spinner = findViewById<Spinner>(R.id.spinner_select_location)
-            spinner.invalidate()
-            spinnerArrayAdapter.notifyDataSetChanged()
-        }
-        tv_time_of_last_refresh.text = generateTimeString(viewModel.isUse24hrClock())
-
-        tv_humidity.text =
-            getString(R.string.humidity_percentage, weatherResponse?.main?.humidity?.roundToInt())
-        tv_cloudiness.text =
-            getString(R.string.cloudiness_percentage, weatherResponse?.clouds?.all?.roundToInt())
-
     }
 
 
