@@ -1,5 +1,6 @@
 package com.marklynch.weather.livedata.weather
 
+import com.marklynch.weather.R
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -31,6 +32,30 @@ class WeatherResponse {
 
     override fun toString(): String {
         return "WeatherResponse(coord=$coord, sys=$sys, weather=$weather, main=$main, wind=$wind, rain=$rain, clouds=$clouds, dt=$dt, id=$id, name=$name, cod=$cod)"
+    }
+
+    companion object {
+        val mapWeatherCodeToDrawable: Map<String, Int> = mapOf(
+            "01d" to R.drawable.weather01d,
+            "01n" to R.drawable.weather01n,
+            "02d" to R.drawable.weather02d,
+            "02n" to R.drawable.weather02n,
+            "03d" to R.drawable.weather03d,
+            "03n" to R.drawable.weather03d,
+            "04d" to R.drawable.weather04d,
+            "04n" to R.drawable.weather04d,
+            "09d" to R.drawable.weather09d,
+            "09n" to R.drawable.weather09d,
+            "10d" to R.drawable.weather10d,
+            "10n" to R.drawable.weather10n,
+            "11d" to R.drawable.weather11d,
+            "11n" to R.drawable.weather11d,
+            "13d" to R.drawable.weather13d,
+            "13n" to R.drawable.weather13d,
+            "50d" to R.drawable.weather50d,
+            "50n" to R.drawable.weather50d
+        )
+
     }
 
 

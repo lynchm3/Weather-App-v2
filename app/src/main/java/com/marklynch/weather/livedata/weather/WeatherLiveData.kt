@@ -3,6 +3,7 @@ package com.marklynch.weather.livedata.weather
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.marklynch.weather.R
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.HttpUrl
@@ -75,5 +76,8 @@ open class WeatherLiveData : MutableLiveData<WeatherResponse>(), KoinComponent {
     interface RestApiService {
         @GET("data/2.5/weather?")
         fun getCurrentWeatherData(@Query("lat") lat: Double, @Query("lon") lon: Double, @Query("appid") app_id: String): Call<WeatherResponse>
+
+
+
     }
 }
