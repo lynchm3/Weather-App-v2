@@ -13,8 +13,7 @@
         android:paddingLeft="0dp"
         android:paddingTop="0dp"
         android:paddingRight="0dp"
-        android:paddingBottom="0dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:paddingBottom="0dp">
 
 
     <androidx.appcompat.widget.Toolbar
@@ -31,7 +30,6 @@
             android:paddingLeft="0dp"
             android:paddingTop="0dp"
             android:paddingRight="0dp"
-            android:paddingBottom="0dp"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:paddingBottom="0dp" />
 
 </com.google.android.material.appbar.AppBarLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="h1" parent="AppTheme">
+        <item name="android:textSize">96sp</item>
+        <item name="android:fontFamily">Roboto</item>
+        <item name="android:fontWeight">100</item>
+    </style>
+
+    <style name="h6" parent="AppTheme">
+        <item name="android:textSize">32sp</item>
+        <item name="android:fontFamily">Roboto</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <style name="body1" parent="AppTheme">
+        <item name="android:textSize">28sp</item>
+        <item name="android:fontFamily">Roboto</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+</resources>

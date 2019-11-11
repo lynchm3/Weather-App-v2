@@ -23,7 +23,7 @@
             android:paddingTop="0dp"
             android:paddingRight="0dp"
             android:paddingBottom="0dp"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            app:elevation="0dp">
 
 
         <androidx.appcompat.widget.Toolbar
@@ -41,7 +41,7 @@
                 android:paddingTop="0dp"
                 android:paddingRight="0dp"
                 android:paddingBottom="0dp"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
+                android:elevation="0dp">
 
             <RelativeLayout
                     android:layout_width="fill_parent"
@@ -58,13 +58,17 @@
                         android:layout_marginTop="3dp"
                         android:paddingTop="0dp"
                         android:text="@string/weather_in"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textColor="@color/onPrimary"
+                        android:visibility="gone"/>
 
                 <Spinner
                         android:id="@+id/spinner_select_location"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true" />
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/onPrimary"
+                        android:paddingStart="64dp"/>
 
                 <TextView
                         android:id="@+id/tv_time_of_last_refresh"
@@ -75,7 +79,9 @@
                         android:layout_marginBottom="3dp"
                         android:layout_toEndOf="@id/tv_weather_in"
                         android:paddingTop="0dp"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textColor="@color/onPrimary"
+                        android:visibility="gone"/>
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 

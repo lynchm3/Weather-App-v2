@@ -5,6 +5,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.fonts.FontFamily
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
@@ -34,6 +36,7 @@ import com.marklynch.weather.viewmodel.MainViewModel
 import com.sucho.placepicker.AddressData
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import java.time.format.TextStyle
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
 
@@ -51,6 +54,12 @@ class MainActivity : BaseActivity(), DataBindingComponent {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+        } else {
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        }
 
         //View Model
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
@@ -403,10 +412,11 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         weatherResponse.let {
             if (viewModel.isUseCelsius() == true)
                 textView.text =
-                    kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString()
+                    kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString() + getString(R.string.degreesC)
             else
                 textView.text =
-                    kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString()
+                    kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString() + getString(R.string.degreesF)
+
         }
     }
 

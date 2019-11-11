@@ -49,23 +49,8 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:singleLine="true"
-                            android:textSize="@dimen/temperature_text_size"
-                            android:textStyle="bold"
-                            app:temperature="@{mainViewModel.weatherLiveData}"/>
-
-
-<!--                            android:text = "@{mainViewModel.weatherLiveData.toString()}"-->
-
-                    <TextView
-                            android:id="@+id/tv_temperature_unit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/temperature_unit_margin_top"
-                            android:layout_toEndOf="@id/tv_temperature"
-                            android:singleLine="true"
-                            android:textColor="@color/lightGrey"
-                            android:textSize="@dimen/temperature_unit_text_size"
-                            app:temperatureUnit="@{mainViewModel.useCelsiusSharedPreferencesLiveData}" />
+                            app:temperature="@{mainViewModel.weatherLiveData}"
+                            style="@style/h1"/>
 
                 </RelativeLayout>
 
@@ -81,8 +66,8 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:singleLine="true"
-                            android:textSize="@dimen/weather_description_text_size"
-                            app:weatherDescription="@{mainViewModel.weatherLiveData}" />
+                            app:weatherDescription="@{mainViewModel.weatherLiveData}"
+                            style="@style/h6" />
 
                     <ImageView
                             android:id="@+id/iv_weather_description"
@@ -107,8 +92,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textSize="@dimen/humidity_text_size"
-                            app:humidity="@{mainViewModel.weatherLiveData}" />
+                            app:humidity="@{mainViewModel.weatherLiveData}"
+                            style="@style/body1" />
 
                 </RelativeLayout>
 
@@ -124,7 +109,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textSize="@dimen/maximum_temperature_text_size"
+                            style="@style/body1"
                             app:maximumTemperature="@{mainViewModel.weatherLiveData}" />
 
                 </RelativeLayout>
@@ -141,7 +126,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textSize="@dimen/minimum_temperature_text_size"
+                            style="@style/body1"
                             app:minimumTemperature="@{mainViewModel.weatherLiveData}" />
 
                 </RelativeLayout>
@@ -158,7 +143,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textSize="@dimen/wind_text_size"
+                            style="@style/body1"
                             app:wind="@{mainViewModel.weatherLiveData}" />
 
                 </RelativeLayout>
@@ -175,7 +160,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textSize="@dimen/cloudiness_text_size"
+                            style="@style/body1"
                             app:cloudiness="@{mainViewModel.weatherLiveData}" />
 
                 </RelativeLayout>
