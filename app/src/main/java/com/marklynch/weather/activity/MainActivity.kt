@@ -2,10 +2,8 @@ package com.marklynch.weather.activity
 
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.fonts.FontFamily
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -36,7 +34,6 @@ import com.marklynch.weather.viewmodel.MainViewModel
 import com.sucho.placepicker.AddressData
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import java.time.format.TextStyle
 import kotlin.math.roundToInt
 import com.sucho.placepicker.Constants as PlacePickerConstants
 
@@ -94,7 +91,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                     0 -> {
                         if (viewModel.getSelectedLocationId() == 0L) return
                         viewModel.setSelectedLocationId(0L)
-                        swip_refresh_layout.isRefreshing = true
+                        swipe_refresh_layout.isRefreshing = true
                         viewModel.fetchLocation()
                     }
                     spinnerList.size - 1 -> {
@@ -111,7 +108,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                         val selectedLocation = (spinnerList[position] as ManualLocation)
                         if (viewModel.getSelectedLocationId() == selectedLocation.id) return
                         viewModel.setSelectedLocationId(selectedLocation.id)
-                        swip_refresh_layout.isRefreshing = true
+                        swipe_refresh_layout.isRefreshing = true
                         viewModel.fetchWeather(selectedLocation)
                     }
                 }
@@ -121,17 +118,15 @@ class MainActivity : BaseActivity(), DataBindingComponent {
             }
         }
 
-        swip_refresh_layout.isRefreshing = true
-
         //Network
         viewModel.networkInfoLiveData.observe(this,
             Observer<ConnectionType> { connectionType ->
                 if (connectionType == ConnectionType.CONNECTED) {
-                    swip_refresh_layout.isRefreshing = true
+                    swipe_refresh_layout.isRefreshing = true
                     viewModel.fetchWeather(viewModel.getCurrentlySelectedLocation())
                 } else {
                     showNoNetworkConnectionDialog()
-                    swip_refresh_layout.isRefreshing = false
+                    swipe_refresh_layout.isRefreshing = false
                 }
             })
 
@@ -143,15 +138,15 @@ class MainActivity : BaseActivity(), DataBindingComponent {
 
                     locationInformation.locationPermission != AppPermissionState.Granted -> {
                         showLocationPermissionNeededDialog()
-                        swip_refresh_layout.isRefreshing = false
+                        swipe_refresh_layout.isRefreshing = false
                     }
                     locationInformation.gpsState != GpsState.Enabled -> {
                         showGpsNotEnabledDialog()
-                        swip_refresh_layout.isRefreshing = false
+                        swipe_refresh_layout.isRefreshing = false
                     }
                     else -> {
                         if (viewModel.getSelectedLocationId() == 0L) {
-                            swip_refresh_layout.isRefreshing = true
+                            swipe_refresh_layout.isRefreshing = true
                             updateLocationSpinner()
                             viewModel.fetchWeather(null)
                         }
@@ -163,13 +158,12 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         viewModel.weatherLiveData.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
                 if (weatherResponse == null && swipe_refresh_layout.isRefreshing) {
-                    showNoNetworkConnectionDialog()
                     swipe_refresh_layout.isRefreshing = false
                 } else if(weatherResponse != null){
                     if (alertDialog?.isShowing == true) {
                         alertDialog?.dismiss()
                     }
-                    swip_refresh_layout.isRefreshing = false
+                    swipe_refresh_layout.isRefreshing = false
                     tv_messaging.visibility = View.GONE
                     ll_weather_info.visibility = View.VISIBLE
                     tv_time_of_last_refresh.text = generateTimeString(viewModel.isUse24hrClock())
@@ -207,7 +201,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
             }
         )
 
-        swip_refresh_layout.setOnRefreshListener {
+        swipe_refresh_layout.setOnRefreshListener {
             viewModel.fetchLocation()
         }
 
@@ -217,6 +211,8 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                 updateLocationSpinner()
             }
         )
+
+        swipe_refresh_layout.isRefreshing = true
     }
 
     override fun onResume() {

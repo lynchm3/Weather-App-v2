@@ -14,7 +14,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
-import androidx.test.internal.platform.util.TestOutputEmitter.takeScreenshot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.GrantPermissionRule
 import com.marklynch.weather.*
@@ -25,14 +24,11 @@ import com.marklynch.weather.livedata.network.ConnectionType
 import com.marklynch.weather.testLat
 import com.marklynch.weather.testLon
 import com.marklynch.weather.utils.*
-import com.squareup.moshi.FromJson
 import com.sucho.placepicker.AddressData
 import com.sucho.placepicker.Constants
 import com.sucho.placepicker.PlacePickerActivity
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
-import org.junit.rules.TestWatcher
-import org.junit.runner.Description
 import org.koin.standalone.StandAloneContext
 import org.koin.test.KoinTest
 import java.util.*
@@ -317,7 +313,7 @@ class MainActivityTest : KoinTest {
 
     private fun waitForLoadingToFinish() {
         val pullToRefresh: SwipeRefreshLayout =
-            activityTestRule.activity.findViewById(R.id.swip_refresh_layout)
+            activityTestRule.activity.findViewById(R.id.swipe_refresh_layout)
         val idlingResource =
             ViewRefreshingIdlingResource(pullToRefresh, false)
         idlingRegistry.register(idlingResource)

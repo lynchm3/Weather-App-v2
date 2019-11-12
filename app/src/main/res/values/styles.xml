@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="actionBarSize">48dp</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -23,11 +24,11 @@
 
     <style name="h6" parent="AppTheme">
         <item name="android:textSize">28sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textStyle">bold</item>bo
     </style>
 
     <style name="body1" parent="AppTheme">
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>

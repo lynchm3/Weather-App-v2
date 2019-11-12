@@ -12,7 +12,7 @@
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swip_refresh_layout"
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -47,7 +47,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        app:temperature="@{mainViewModel.weatherLiveData}" />
+                        app:temperature="@{mainViewModel.weatherLiveData}"
+                        android:padding="0dp"
+                        android:layout_margin="0dp"/>
 
                 <!-- Weather Description -->
 
