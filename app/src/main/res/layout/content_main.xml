@@ -40,6 +40,10 @@
                     android:visibility="gone"
                     android:layout_alignParentTop="true">
 
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"/>
+
                 <!-- Temperature -->
 
                 <TextView
@@ -50,7 +54,6 @@
                         android:singleLine="true"
                         app:temperature="@{mainViewModel.weatherLiveData}"
                         android:padding="0dp"
-                        android:paddingTop="8dp"
                         android:layout_margin="0dp"
                         android:includeFontPadding="false"/>
 
@@ -60,7 +63,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
 
                     <TextView
                             android:id="@+id/tv_weather_description"
@@ -73,8 +77,9 @@
 
                     <ImageView
                             android:id="@+id/iv_weather_description"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginStart="8dp"
                             app:weatherDescriptionImage="@{mainViewModel.weatherLiveData}"
                             tools:ignore="ContentDescription" />
 
