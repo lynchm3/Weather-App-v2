@@ -162,10 +162,10 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         //Weather
         viewModel.weatherLiveData.observe(this,
             Observer<WeatherResponse> { weatherResponse ->
-                if (weatherResponse == null) {
+                if (weatherResponse == null && swipe_refresh_layout.isRefreshing) {
                     showNoNetworkConnectionDialog()
-                    swip_refresh_layout.isRefreshing = false
-                } else {
+                    swipe_refresh_layout.isRefreshing = false
+                } else if(weatherResponse != null){
                     if (alertDialog?.isShowing == true) {
                         alertDialog?.dismiss()
                     }
