@@ -3,19 +3,18 @@
 
     <style name="h1" parent="AppTheme">
         <item name="android:textSize">96sp</item>
-        <item name="android:fontFamily">Roboto</item>
         <item name="android:fontWeight">100</item>
+        <item name="android:fontFamily">sans-serif-thin</item>
     </style>
 
     <style name="h6" parent="AppTheme">
-        <item name="android:textSize">32sp</item>
-        <item name="android:fontFamily">Roboto</item>
+        <item name="android:textSize">28sp</item>
         <item name="android:fontWeight">400</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="body1" parent="AppTheme">
-        <item name="android:textSize">28sp</item>
-        <item name="android:fontFamily">Roboto</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:fontWeight">400</item>
     </style>
 </resources>
