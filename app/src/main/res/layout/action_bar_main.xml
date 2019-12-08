@@ -68,19 +68,32 @@
                         android:layout_height="match_parent"
                         android:paddingStart="24dp">
 
-                    <Spinner
-                            android:id="@+id/spinner_select_location"
+
+                    <!-- Auto-complete fragment-->
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/spinner_with_shadow">
+                        <fragment android:id="@+id/autocomplete_fragment"
+                            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:background="@drawable/spinner_with_shadow"
-                            android:textColor="@color/onPrimary"
-                            android:clipToPadding="false"/>
+                            android:layout_height="wrap_content" />
+                    </RelativeLayout>
+
+<!--                    <Spinner-->
+<!--                            android:id="@+id/spinner_select_location"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_alignParentStart="true"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:paddingStart="16dp"-->
+<!--                            android:paddingEnd="16dp"-->
+<!--                            android:paddingTop="8dp"-->
+<!--                            android:paddingBottom="8dp"-->
+<!--                            android:background="@drawable/spinner_with_shadow"-->
+<!--                            android:textColor="@color/onPrimary"-->
+<!--                            android:clipToPadding="false"/>-->
                 </RelativeLayout>
 
 

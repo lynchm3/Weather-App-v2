@@ -39,4 +39,6 @@
     <string name="current_location_brackets_name">Current Location (%1$s)</string>
     <string name="add_location_ellipses">Add Location…</string>
     <string name="expand">Expand</string>
+
+    <string name="places_api_key">AIzaSyBvqZgpGDQroCJQ7XXP9n6_z2Wd5NMfyfw</string>
 </resources>

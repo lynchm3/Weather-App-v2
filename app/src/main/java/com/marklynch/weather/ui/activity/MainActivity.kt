@@ -2,7 +2,6 @@ package com.marklynch.weather.ui.activity
 
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,7 +9,8 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.databinding.BindingAdapter
@@ -19,8 +19,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.gms.common.api.Status
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.marklynch.weather.R
-import com.marklynch.weather.application.MainApplication
 import com.marklynch.weather.databinding.ActivityMainBinding
 import com.marklynch.weather.model.ManualLocation
 import com.marklynch.weather.model.WeatherResponse
@@ -29,22 +33,23 @@ import com.marklynch.weather.repository.location.GpsState
 import com.marklynch.weather.repository.location.LocationInformation
 import com.marklynch.weather.repository.network.ConnectionType
 import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
-import com.marklynch.weather.repository.weather.WeatherRepository
 import com.marklynch.weather.ui.viewmodel.MainViewModel
 import com.marklynch.weather.utils.*
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import timber.log.Timber
 import kotlin.math.roundToInt
+
 
 class MainActivity : BaseActivity(), DataBindingComponent {
 
     override fun getMainActivity(): MainActivity = this
 
     private var alertDialog: AlertDialog? = null
-    private var spinnerList: MutableList<Any> = mutableListOf("")
 
-    private lateinit var spinner: Spinner
-    private lateinit var spinnerArrayAdapter: ArrayAdapter<Any>
+//    private var spinnerList: MutableList<Any> = mutableListOf("")
+//    private lateinit var spinner: Spinner
+//    private lateinit var spinnerArrayAdapter: ArrayAdapter<Any>
 
     lateinit var viewModel: MainViewModel
 
@@ -73,48 +78,91 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         //Binding
         binding.lifecycleOwner = this
 
-        spinner = findViewById(R.id.spinner_select_location)
-        spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
-        spinner.adapter = spinnerArrayAdapter
+        //Auto-complete
+        // Initialize the AutocompleteSupportFragment.
 
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                when (position) {
-                    0 -> {
-                        if (viewModel.getSelectedLocationId() == 0L) return
-                        viewModel.setSelectedLocationId(0L)
-                        swipe_refresh_layout.isRefreshing = true
-                        viewModel.fetchLocation()
-                    }
-                    spinnerList.size - 1 -> {
-                        //Attempt to get location from gps
-                        val lat: Double? = viewModel.getLocationInformation()?.lat
-                        val lon: Double? = viewModel.getLocationInformation()?.lon
-                        if (lat != null && lon != null) {
-//                            openMapForUserToAddNewLocation(lat, lon)
-                        } else {
-//                            openMapForUserToAddNewLocation()
-                        }
-                    }
-                    else -> {
-                        val selectedLocation = (spinnerList[position] as ManualLocation)
-                        if (viewModel.getSelectedLocationId() == selectedLocation.id) return
-                        viewModel.setSelectedLocationId(selectedLocation.id)
-                        swipe_refresh_layout.isRefreshing = true
-                        viewModel.fetchWeather(selectedLocation)
-                    }
-                }
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
+        if (!Places.isInitialized()) {
+            Places.initialize(
+                applicationContext,
+                getString(R.string.places_api_key),
+                resources.configuration.locale
+            )
         }
+        val autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment?
+
+        // Specify the types of place data to return.
+        autocompleteFragment!!.setPlaceFields(
+            listOf(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.LAT_LNG
+            )
+        )
+
+        autocompleteFragment.setHint("Current Location")
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                Timber.i("""Place: ${place.name}, ${place.id}, ${place.latLng?.latitude}, ${place.latLng?.longitude}""")
+                swipe_refresh_layout.isRefreshing = true
+                viewModel.fetchWeather(
+                    ManualLocation(
+                        place.id!!,
+                        place.name!!,
+                        place.latLng!!.latitude,
+                        place.latLng!!.longitude
+                    )
+                )
+            }
+
+            override fun onError(status: Status) {
+                Timber.i("An error occurred: $status")
+            }
+        })
+
+
+//        spinner = findViewById(R.id.spinner_select_location)
+//        spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
+//        spinner.adapter = spinnerArrayAdapter
+//
+//        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//
+//            override fun onItemSelected(
+//                parent: AdapterView<*>,
+//                view: View?,
+//                position: Int,
+//                id: Long
+//            ) {
+//                when (position) {
+//                    0 -> {
+//                        if (viewModel.getSelectedLocationId() == 0L) return
+//                        viewModel.setSelectedLocationId(0L)
+//                        swipe_refresh_layout.isRefreshing = true
+//                        viewModel.fetchLocation()
+//                    }
+//                    spinnerList.size - 1 -> {
+//                        //Attempt to get location from gps
+//                        val lat: Double? = viewModel.getLocationInformation()?.lat
+//                        val lon: Double? = viewModel.getLocationInformation()?.lon
+//                        if (lat != null && lon != null) {
+////                            openMapForUserToAddNewLocation(lat, lon)
+//                        } else {
+////                            openMapForUserToAddNewLocation()
+//                        }
+//                    }
+//                    else -> {
+//                        val selectedLocation = (spinnerList[position] as ManualLocation)
+//                        if (viewModel.getSelectedLocationId() == selectedLocation.id) return
+//                        viewModel.setSelectedLocationId(selectedLocation.id)
+//                        swipe_refresh_layout.isRefreshing = true
+//                        viewModel.fetchWeather(selectedLocation)
+//                    }
+//                }
+//            }
+//
+//            override fun onNothingSelected(p0: AdapterView<*>?) {
+//            }
+//        }
 
         //Network
         viewModel.networkInfoLiveData.observe(this,
@@ -145,7 +193,6 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                     else -> {
                         if (viewModel.getSelectedLocationId() == 0L) {
                             swipe_refresh_layout.isRefreshing = true
-                            updateLocationSpinner()
                             viewModel.fetchWeather(null)
                         }
                     }
@@ -199,7 +246,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         //Selected location shared preference
         viewModel.selectedLocationIdSharedPreferencesLiveData.observe(this,
             Observer<Long> {
-                updateLocationSpinner()
+                //                updateLocationSpinner()
             }
         )
 
@@ -208,7 +255,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
 
     override fun onResume() {
         super.onResume()
-        viewModel.fetchLocation()
+//        viewModel.fetchLocation()
     }
 
     override fun onPause() {
@@ -216,38 +263,38 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         alertDialog?.dismiss()
     }
 
-    private fun updateLocationSpinner() {
-        spinnerList.clear()
-        spinnerList.add(getString(R.string.current_location))
+//    private fun updateLocationSpinner() {
+//        spinnerList.clear()
+//        spinnerList.add(getString(R.string.current_location))
 //        spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
 //        spinnerList.add(getString(R.string.add_location_ellipses))
+//
+//        spinnerArrayAdapter.notifyDataSetChanged()
+//        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//
+//        setSpinnerSelectionFromSelectedLocationId()
+//    }
 
-        spinnerArrayAdapter.notifyDataSetChanged()
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        setSpinnerSelectionFromSelectedLocationId()
-    }
-
-    private fun setSpinnerSelectionFromSelectedLocationId() {
-        val selectedLocationId = viewModel.getSelectedLocationId()
-
-        if (selectedLocationId == null || selectedLocationId == 0L) {
-            spinner.setSelection(0)
-            viewModel.setSelectedLocationId(0)
-            return
-        } else {
-            for (i: Int in 1..spinnerList.size - 2) {
-                val manualLocation = (spinnerList[i] as ManualLocation)
-                if (manualLocation.id == selectedLocationId) {
-                    spinner.setSelection(i)
-                    viewModel.setSelectedLocationId(manualLocation.id)
-                    return
-                }
-            }
-        }
-        spinner.setSelection(0)
-        viewModel.setSelectedLocationId(0)
-    }
+//    private fun setSpinnerSelectionFromSelectedLocationId() {
+//        val selectedLocationId = viewModel.getSelectedLocationId()
+//
+//        if (selectedLocationId == null || selectedLocationId == 0L) {
+//            spinner.setSelection(0)
+//            viewModel.setSelectedLocationId(0)
+//            return
+//        } else {
+//            for (i: Int in 1..spinnerList.size - 2) {
+//                val manualLocation = (spinnerList[i] as ManualLocation)
+//                if (manualLocation.id == selectedLocationId) {
+//                    spinner.setSelection(i)
+//                    viewModel.setSelectedLocationId(manualLocation.id)
+//                    return
+//                }
+//            }
+//        }
+//        spinner.setSelection(0)
+//        viewModel.setSelectedLocationId(0)
+//    }
 
 
     private fun showNoNetworkConnectionDialog() {
@@ -411,7 +458,10 @@ class MainActivity : BaseActivity(), DataBindingComponent {
     }
 
     @BindingAdapter("weatherDescriptionImage")
-    fun bindWeatherDescriptionImage(imageView: ImageView, weatherLiveData: LiveData<WeatherResponse>?) {
+    fun bindWeatherDescriptionImage(
+        imageView: ImageView,
+        weatherLiveData: LiveData<WeatherResponse>?
+    ) {
         val weatherResponse = weatherLiveData?.value
         weatherResponse.let {
             imageView.setImageResource(
