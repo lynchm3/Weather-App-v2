@@ -2,7 +2,6 @@ package com.marklynch.weather.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.marklynch.weather.model.ManualLocation
-import com.marklynch.weather.repository.db.ManualLocationRepository
 import com.marklynch.weather.repository.location.LocationRepository
 import com.marklynch.weather.repository.network.NetworkInfoLiveData
 import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.Use24hrClockSharedPreferenceLiveData
@@ -10,7 +9,6 @@ import com.marklynch.weather.repository.sharedpreferences.booleansharedpreferenc
 import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseKmSharedPreferenceLiveData
 import com.marklynch.weather.repository.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
 import com.marklynch.weather.repository.weather.WeatherRepository
-import com.sucho.placepicker.AddressData
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
@@ -36,12 +34,9 @@ open class MainViewModel : ViewModel(), KoinComponent {
 
     val selectedLocationIdSharedPreferencesLiveData: CurrentLocationIdSharedPreferenceLiveData by inject()
 
-    //        val manualLocationRepository = ManualLocationRepository(application)
-    private val manualLocationRepository: ManualLocationRepository by inject()
-    val manualLocationLiveData = manualLocationRepository.manualLocationLiveData
-
     fun getLocationInformation() = locationRepository.value
-    fun getWeather() = weatherRepository.value
+    fun getWeather() = weatherRepository.liveData.value
+    fun getWeatherLiveData() = weatherRepository.liveData
     fun isUseCelsius() = useCelsiusSharedPreferencesLiveData.value
     fun isUseKm() = useKmSharedPreferencesLiveData.value
     fun isUse24hrClock() = use24hrClockSharedPreferencesLiveData.value
@@ -76,14 +71,5 @@ open class MainViewModel : ViewModel(), KoinComponent {
         } else {
             weatherRepository.fetchWeather(manualLocation.latitude, manualLocation.longitude)
         }
-    }
-
-    fun addManualLocation(addressData: AddressData?) {
-        if (addressData != null)
-            manualLocationRepository.insert(addressData)
-    }
-
-    fun getCurrentlySelectedLocation(): ManualLocation? {
-        return manualLocationLiveData?.value?.firstOrNull { it.id == getSelectedLocationId() }
     }
 }

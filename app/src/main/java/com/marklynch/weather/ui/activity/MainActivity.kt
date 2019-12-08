@@ -16,26 +16,25 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.marklynch.weather.R
 import com.marklynch.weather.application.MainApplication
-import com.marklynch.weather.model.ManualLocation
 import com.marklynch.weather.databinding.ActivityMainBinding
+import com.marklynch.weather.model.ManualLocation
+import com.marklynch.weather.model.WeatherResponse
+import com.marklynch.weather.model.WeatherResponse.Companion.mapWeatherCodeToDrawable
 import com.marklynch.weather.repository.location.GpsState
 import com.marklynch.weather.repository.location.LocationInformation
 import com.marklynch.weather.repository.network.ConnectionType
 import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
 import com.marklynch.weather.repository.weather.WeatherRepository
-import com.marklynch.weather.model.WeatherResponse
-import com.marklynch.weather.model.WeatherResponse.Companion.mapWeatherCodeToDrawable
-import com.marklynch.weather.utils.*
 import com.marklynch.weather.ui.viewmodel.MainViewModel
-import com.sucho.placepicker.AddressData
+import com.marklynch.weather.utils.*
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlin.math.roundToInt
-import com.sucho.placepicker.Constants as PlacePickerConstants
 
 class MainActivity : BaseActivity(), DataBindingComponent {
 
@@ -53,7 +52,8 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         super.onCreate(savedInstanceState)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+            window.decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
         } else {
             window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
         }
@@ -72,8 +72,6 @@ class MainActivity : BaseActivity(), DataBindingComponent {
 
         //Binding
         binding.lifecycleOwner = this
-
-        (application as MainApplication).appComponent.inject(this)
 
         spinner = findViewById(R.id.spinner_select_location)
         spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
@@ -99,9 +97,9 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                         val lat: Double? = viewModel.getLocationInformation()?.lat
                         val lon: Double? = viewModel.getLocationInformation()?.lon
                         if (lat != null && lon != null) {
-                            openMapForUserToAddNewLocation(lat, lon)
+//                            openMapForUserToAddNewLocation(lat, lon)
                         } else {
-                            openMapForUserToAddNewLocation()
+//                            openMapForUserToAddNewLocation()
                         }
                     }
                     else -> {
@@ -123,7 +121,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
             Observer<ConnectionType> { connectionType ->
                 if (connectionType == ConnectionType.CONNECTED) {
                     swipe_refresh_layout.isRefreshing = true
-                    viewModel.fetchWeather(viewModel.getCurrentlySelectedLocation())
+//                    viewModel.fetchWeather(viewModel.getCurrentlySelectedLocation())
                 } else {
                     showNoNetworkConnectionDialog()
                     swipe_refresh_layout.isRefreshing = false
@@ -155,11 +153,11 @@ class MainActivity : BaseActivity(), DataBindingComponent {
             })
 
         //Weather
-        viewModel.weatherRepository.observe(this,
+        viewModel.getWeatherLiveData().observe(this,
             Observer<WeatherResponse> { weatherResponse ->
                 if (weatherResponse == null && swipe_refresh_layout.isRefreshing) {
                     swipe_refresh_layout.isRefreshing = false
-                } else if(weatherResponse != null){
+                } else if (weatherResponse != null) {
                     if (alertDialog?.isShowing == true) {
                         alertDialog?.dismiss()
                     }
@@ -174,7 +172,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         viewModel.useCelsiusSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 invalidateOptionsMenu()
-                viewModel.weatherRepository.forceRefresh()
+                viewModel.getWeatherLiveData().forceRefresh()
             }
         )
 
@@ -182,7 +180,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         viewModel.useKmSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 invalidateOptionsMenu()
-                viewModel.weatherRepository.forceRefresh()
+                viewModel.getWeatherLiveData().forceRefresh()
             }
         )
 
@@ -190,14 +188,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         viewModel.use24hrClockSharedPreferencesLiveData.observe(this,
             Observer<Boolean> {
                 invalidateOptionsMenu()
-                viewModel.weatherRepository.forceRefresh()
-            }
-        )
-
-        //Manual Location
-        viewModel.manualLocationLiveData?.observe(this,
-            Observer<List<ManualLocation>> {
-                updateLocationSpinner()
+                viewModel.getWeatherLiveData().forceRefresh()
             }
         )
 
@@ -225,26 +216,11 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         alertDialog?.dismiss()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == PlacePickerConstants.PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                val addressData: AddressData? = data?.getParcelableExtra(
-                    PlacePickerConstants.ADDRESS_INTENT
-                )
-                viewModel.addManualLocation(addressData)
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                setSpinnerSelectionFromSelectedLocationId()
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
     private fun updateLocationSpinner() {
         spinnerList.clear()
         spinnerList.add(getString(R.string.current_location))
-        spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
-        spinnerList.add(getString(R.string.add_location_ellipses))
+//        spinnerList.addAll(viewModel.manualLocationLiveData?.value ?: listOf())
+//        spinnerList.add(getString(R.string.add_location_ellipses))
 
         spinnerArrayAdapter.notifyDataSetChanged()
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -394,24 +370,24 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                 viewModel.setUse24hrClock(false)
                 return true
             }
-            R.id.action_manage_locations -> {
-                startActivity(Intent(this@MainActivity, ManageLocationsActivity::class.java))
-                return true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     @BindingAdapter("temperature")
-    fun bindTemperature(textView: TextView, weatherRepository: WeatherRepository?) {
-        val weatherResponse = weatherRepository?.value
+    fun bindTemperature(textView: TextView, weatherLiveData: LiveData<WeatherResponse>) {
+        val weatherResponse = weatherLiveData.value
         weatherResponse.let {
             if (viewModel.isUseCelsius() == true)
                 textView.text =
-                    kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString() + getString(R.string.degreesC)
+                    kelvinToCelsius(weatherResponse?.main?.temp).roundToInt().toString() + getString(
+                        R.string.degreesC
+                    )
             else
                 textView.text =
-                    kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString() + getString(R.string.degreesF)
+                    kelvinToFahrenheit(weatherResponse?.main?.temp).roundToInt().toString() + getString(
+                        R.string.degreesF
+                    )
 
         }
     }
@@ -426,8 +402,8 @@ class MainActivity : BaseActivity(), DataBindingComponent {
     }
 
     @BindingAdapter("weatherDescription")
-    fun bindWeatherDescription(textView: TextView, weatherRepository: WeatherRepository?) {
-        val weatherResponse = weatherRepository?.value
+    fun bindWeatherDescription(textView: TextView, weatherLiveData: LiveData<WeatherResponse>?) {
+        val weatherResponse = weatherLiveData?.value
         weatherResponse.let {
             textView.text =
                 weatherResponse?.weather?.getOrNull(0)?.description?.capitalizeWords()
@@ -435,19 +411,19 @@ class MainActivity : BaseActivity(), DataBindingComponent {
     }
 
     @BindingAdapter("weatherDescriptionImage")
-    fun bindWeatherDescriptionImage(imageView: ImageView, weatherRepository: WeatherRepository?) {
-        val weatherResponse = weatherRepository?.value
+    fun bindWeatherDescriptionImage(imageView: ImageView, weatherLiveData: LiveData<WeatherResponse>?) {
+        val weatherResponse = weatherLiveData?.value
         weatherResponse.let {
             imageView.setImageResource(
-               mapWeatherCodeToDrawable[weatherResponse?.weather?.getOrNull(0)?.icon]
+                mapWeatherCodeToDrawable[weatherResponse?.weather?.getOrNull(0)?.icon]
                     ?: R.drawable.weather01d
             )
         }
     }
 
     @BindingAdapter("humidity")
-    fun bindHumidity(textView: TextView, weatherRepository: WeatherRepository?) {
-        val weatherResponse = weatherRepository?.value
+    fun bindHumidity(textView: TextView, weatherLiveData: LiveData<WeatherResponse>?) {
+        val weatherResponse = weatherLiveData?.value
         weatherResponse.let {
             textView.text =
                 getString(
@@ -458,8 +434,8 @@ class MainActivity : BaseActivity(), DataBindingComponent {
     }
 
     @BindingAdapter("maximumTemperature")
-    fun bindMaximumTemperature(textView: TextView, weatherRepository: WeatherRepository?) {
-        val weatherResponse = weatherRepository?.value
+    fun bindMaximumTemperature(textView: TextView, weatherLiveData: LiveData<WeatherResponse>?) {
+        val weatherResponse = weatherLiveData?.value
         weatherResponse.let {
             if (viewModel.isUseCelsius() == true)
                 textView.text =
@@ -477,8 +453,8 @@ class MainActivity : BaseActivity(), DataBindingComponent {
     }
 
     @BindingAdapter("minimumTemperature")
-    fun bindMinimumTemperature(textView: TextView, weatherRepository: WeatherRepository?) {
-        val weatherResponse = weatherRepository?.value
+    fun bindMinimumTemperature(textView: TextView, weatherLiveData: LiveData<WeatherResponse>?) {
+        val weatherResponse = weatherLiveData?.value
         weatherResponse.let {
             if (viewModel.isUseCelsius() == true)
                 textView.text =
@@ -496,8 +472,8 @@ class MainActivity : BaseActivity(), DataBindingComponent {
     }
 
     @BindingAdapter("wind")
-    fun bindWind(textView: TextView, weatherRepository: WeatherRepository?) {
-        val weatherResponse = weatherRepository?.value
+    fun bindWind(textView: TextView, weatherLiveData: LiveData<WeatherResponse>?) {
+        val weatherResponse = weatherLiveData?.value
         weatherResponse.let {
             if (viewModel.isUseKm() == true) {
                 textView.text = getString(
@@ -517,8 +493,8 @@ class MainActivity : BaseActivity(), DataBindingComponent {
     }
 
     @BindingAdapter("cloudiness")
-    fun bindCloudiness(textView: TextView, weatherRepository: WeatherRepository?) {
-        val weatherResponse = weatherRepository?.value
+    fun bindCloudiness(textView: TextView, weatherLiveData: LiveData<WeatherResponse>?) {
+        val weatherResponse = weatherLiveData?.value
         weatherResponse.let {
             textView.text =
                 getString(

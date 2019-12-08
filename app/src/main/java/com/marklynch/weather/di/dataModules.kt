@@ -12,7 +12,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.marklynch.weather.BuildConfig
 import com.marklynch.weather.data.WeatherDatabase
-import com.marklynch.weather.repository.db.ManualLocationRepository
 import com.marklynch.weather.repository.location.LocationRepository
 import com.marklynch.weather.repository.network.NetworkInfoLiveData
 import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.Use24hrClockSharedPreferenceLiveData
@@ -77,7 +76,6 @@ private val dataModule = module {
     single<LocationRepository>()
     single<WeatherRepository>()
     single<NetworkInfoLiveData>()
-    single<ManualLocationRepository>()
     single<Use24hrClockSharedPreferenceLiveData>()
     single<UseKmSharedPreferenceLiveData>()
     single<UseCelsiusSharedPreferenceLiveData>()

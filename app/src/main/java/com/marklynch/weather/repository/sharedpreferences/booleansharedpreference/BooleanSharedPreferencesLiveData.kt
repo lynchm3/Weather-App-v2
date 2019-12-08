@@ -1,10 +1,10 @@
-package com.marklynch.weather.livedata.sharedpreferences.booleansharedpreference
+package com.marklynch.weather.repository.sharedpreferences.booleansharedpreference
 
 import android.content.SharedPreferences
-import com.marklynch.weather.livedata.sharedpreferences.SharedPreferencesLiveData
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_24_HR_CLOCK
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_CELSIUS
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_USE_KM
+import com.marklynch.weather.repository.sharedpreferences.SharedPreferencesLiveData
+import com.marklynch.weather.utils.SHARED_PREFERENCES_USE_24_HR_CLOCK
+import com.marklynch.weather.utils.SHARED_PREFERENCES_USE_CELSIUS
+import com.marklynch.weather.utils.SHARED_PREFERENCES_USE_KM
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 

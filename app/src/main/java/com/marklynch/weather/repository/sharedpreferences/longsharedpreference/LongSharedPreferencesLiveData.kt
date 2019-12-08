@@ -1,8 +1,8 @@
-package com.marklynch.weather.livedata.sharedpreferences.longsharedpreference
+package com.marklynch.weather.repository.sharedpreferences.longsharedpreference
 
 import android.content.SharedPreferences
-import com.marklynch.weather.livedata.sharedpreferences.SharedPreferencesLiveData
-import com.marklynch.weather.sharedpreferences.SHARED_PREFERENCES_CURRENT_LOCATION_ID
+import com.marklynch.weather.repository.sharedpreferences.SharedPreferencesLiveData
+import com.marklynch.weather.utils.SHARED_PREFERENCES_CURRENT_LOCATION_ID
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 

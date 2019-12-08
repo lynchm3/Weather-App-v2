@@ -22,15 +22,16 @@ import okhttp3.OkHttpClient
 import org.koin.standalone.get
 
 
-open class WeatherRepository : MutableLiveData<WeatherResponse>(), KoinComponent {
+open class WeatherRepository: KoinComponent {
 
     private val appId = "74f01822a2b8950db2986d7e28a5978a"
+
+    val liveData: MutableLiveData<WeatherResponse> = MutableLiveData()
 
     fun fetchWeather(lat: Double = 0.0, lon: Double = 0.0) {
 
         if (lat == 0.0 && lon == 0.0)
             return
-
 
         GlobalScope.launch {
 
@@ -42,7 +43,7 @@ open class WeatherRepository : MutableLiveData<WeatherResponse>(), KoinComponent
 
             call.enqueue(object : Callback<WeatherResponse> {
                 override fun onFailure(call: Call<WeatherResponse>?, t: Throwable?) {
-                    postValue(null)
+                    liveData.postValue(null)
                 }
 
                 override fun onResponse(
@@ -50,7 +51,7 @@ open class WeatherRepository : MutableLiveData<WeatherResponse>(), KoinComponent
                     weatherResponseWrapper: Response<WeatherResponse>
                 ) {
                     val weatherResponse = weatherResponseWrapper.body()
-                    postValue(weatherResponse)
+                    liveData.postValue(weatherResponse)
                 }
             })
         }
