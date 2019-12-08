@@ -41,4 +41,5 @@
     <string name="expand">Expand</string>
 
     <string name="places_api_key">AIzaSyBvqZgpGDQroCJQ7XXP9n6_z2Wd5NMfyfw</string>
+    <string name="locations_query_hint">Search Locations</string>
 </resources>

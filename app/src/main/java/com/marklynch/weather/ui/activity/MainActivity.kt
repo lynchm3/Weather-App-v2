@@ -2,37 +2,42 @@ package com.marklynch.weather.ui.activity
 
 
 import android.Manifest
+import android.app.Activity
+import android.app.SearchManager
 import android.content.Intent
+import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
+import androidx.cursoradapter.widget.CursorAdapter
+import androidx.cursoradapter.widget.SimpleCursorAdapter
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.marklynch.weather.R
 import com.marklynch.weather.databinding.ActivityMainBinding
-import com.marklynch.weather.model.ManualLocation
 import com.marklynch.weather.model.WeatherResponse
 import com.marklynch.weather.model.WeatherResponse.Companion.mapWeatherCodeToDrawable
 import com.marklynch.weather.repository.location.GpsState
 import com.marklynch.weather.repository.location.LocationInformation
 import com.marklynch.weather.repository.network.ConnectionType
 import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
+import com.marklynch.weather.ui.fragment.LocationSuggestionsRepository
 import com.marklynch.weather.ui.viewmodel.MainViewModel
 import com.marklynch.weather.utils.*
 import kotlinx.android.synthetic.main.action_bar_main.*
@@ -52,6 +57,7 @@ class MainActivity : BaseActivity(), DataBindingComponent {
 //    private lateinit var spinnerArrayAdapter: ArrayAdapter<Any>
 
     lateinit var viewModel: MainViewModel
+    lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,91 +84,80 @@ class MainActivity : BaseActivity(), DataBindingComponent {
         //Binding
         binding.lifecycleOwner = this
 
-        //Auto-complete
-        // Initialize the AutocompleteSupportFragment.
 
+//Init places UI
         if (!Places.isInitialized()) {
             Places.initialize(
                 applicationContext,
                 getString(R.string.places_api_key),
                 resources.configuration.locale
             )
-        }
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment?
 
-        // Specify the types of place data to return.
-        autocompleteFragment!!.setPlaceFields(
-            listOf(
-                Place.Field.ID,
-                Place.Field.NAME,
-                Place.Field.LAT_LNG
-            )
+        }
+
+        //SearchView
+        searchView = findViewById(R.id.search_view)
+        val searchAutoCompleteTextView =
+            searchView.findViewById(androidx.appcompat.R.id.search_src_text) as AutoCompleteTextView
+        searchAutoCompleteTextView.threshold = 0
+
+
+        val from = arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1)
+        val to = intArrayOf(R.id.item_label)
+        val cursorAdapter = SimpleCursorAdapter(
+            this,
+            R.layout.suggestion_list_item,
+            null,
+            from,
+            to,
+            CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER
         )
 
-        autocompleteFragment.setHint("Current Location")
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                Timber.i("""Place: ${place.name}, ${place.id}, ${place.latLng?.latitude}, ${place.latLng?.longitude}""")
-                swipe_refresh_layout.isRefreshing = true
-                viewModel.fetchWeather(
-                    ManualLocation(
-                        place.id!!,
-                        place.name!!,
-                        place.latLng!!.latitude,
-                        place.latLng!!.longitude
-                    )
-                )
+        searchView.suggestionsAdapter = cursorAdapter
+        searchView.setIconifiedByDefault(false)
+//        searchView.threshold???? i thought that was it, set it to 0 so we can suggest hirstoy
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+//                hideKeyboard()
+                return false
             }
 
-            override fun onError(status: Status) {
-                Timber.i("An error occurred: $status")
+            override fun onQueryTextChange(query: String): Boolean {
+                LocationSuggestionsRepository().runQuery(
+                    query,
+                    Places.createClient(this@MainActivity),
+                    AutocompleteSessionToken.newInstance(),
+                    searchView
+                )
+                return true
             }
         })
 
+        searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+            override fun onSuggestionSelect(position: Int): Boolean {
+                return false
+            }
 
-//        spinner = findViewById(R.id.spinner_select_location)
-//        spinnerArrayAdapter = ArrayAdapter(this, R.layout.action_bar_spinner_textview, spinnerList)
-//        spinner.adapter = spinnerArrayAdapter
-//
-//        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//
-//            override fun onItemSelected(
-//                parent: AdapterView<*>,
-//                view: View?,
-//                position: Int,
-//                id: Long
-//            ) {
-//                when (position) {
-//                    0 -> {
-//                        if (viewModel.getSelectedLocationId() == 0L) return
-//                        viewModel.setSelectedLocationId(0L)
-//                        swipe_refresh_layout.isRefreshing = true
-//                        viewModel.fetchLocation()
-//                    }
-//                    spinnerList.size - 1 -> {
-//                        //Attempt to get location from gps
-//                        val lat: Double? = viewModel.getLocationInformation()?.lat
-//                        val lon: Double? = viewModel.getLocationInformation()?.lon
-//                        if (lat != null && lon != null) {
-////                            openMapForUserToAddNewLocation(lat, lon)
-//                        } else {
-////                            openMapForUserToAddNewLocation()
-//                        }
-//                    }
-//                    else -> {
-//                        val selectedLocation = (spinnerList[position] as ManualLocation)
-//                        if (viewModel.getSelectedLocationId() == selectedLocation.id) return
-//                        viewModel.setSelectedLocationId(selectedLocation.id)
-//                        swipe_refresh_layout.isRefreshing = true
-//                        viewModel.fetchWeather(selectedLocation)
-//                    }
-//                }
-//            }
-//
-//            override fun onNothingSelected(p0: AdapterView<*>?) {
-//            }
-//        }
+            override fun onSuggestionClick(position: Int): Boolean {
+//                hideKeyboard()
+                val cursor = searchView.suggestionsAdapter.getItem(position) as Cursor
+                val selection = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1))
+                searchView.setQuery(selection, false)
+                hideKeyboard()
+                return true
+            }
+        })
+
+        searchAutoCompleteTextView.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                LocationSuggestionsRepository().runQuery(
+                    "",
+                    Places.createClient(this@MainActivity),
+                    AutocompleteSessionToken.newInstance(),
+                    searchView
+                )
+            }
+        }
 
         //Network
         viewModel.networkInfoLiveData.observe(this,
@@ -211,7 +206,6 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                     swipe_refresh_layout.isRefreshing = false
                     tv_messaging.visibility = View.GONE
                     ll_weather_info.visibility = View.VISIBLE
-                    tv_time_of_last_refresh.text = generateTimeString(viewModel.isUse24hrClock())
                 }
             })
 
@@ -552,6 +546,17 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                     weatherResponse?.clouds?.all?.roundToInt()
                 )
         }
+    }
+
+    fun hideKeyboard() {
+        val imm = this.getSystemService(
+            Activity.INPUT_METHOD_SERVICE
+        ) as InputMethodManager
+        var view = this.currentFocus
+        if (view == null) {
+            view = View(this)
+        }
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
 
