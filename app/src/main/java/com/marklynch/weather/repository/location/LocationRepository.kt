@@ -22,7 +22,7 @@ import org.koin.standalone.get
 import timber.log.Timber
 
 
-open class LocationRepository : LiveData<LocationInformation>(), KoinComponent {
+open class LocationRepository : LiveData<CurrentLocationInformation>(), KoinComponent {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -39,11 +39,11 @@ open class LocationRepository : LiveData<LocationInformation>(), KoinComponent {
     private val gpsSwitchStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             postValue(
-                LocationInformation(
+                CurrentLocationInformation(
                     locationPermissionState,
                     gpsState,
-                    locationResult?.locations?.get(0)?.latitude,
-                    locationResult?.locations?.get(0)?.longitude
+                    locationResult?.locations?.get(0)?.latitude ?: 0.0,
+                    locationResult?.locations?.get(0)?.longitude ?: 0.0
                 )
             )
             if (locationPermissionState == AppPermissionState.Granted && gpsState == GpsState.Enabled)
@@ -68,11 +68,11 @@ open class LocationRepository : LiveData<LocationInformation>(), KoinComponent {
                 } catch (e: Exception) {
                     Timber.w(e, "Error getting last location")
                 }
-                val locationInformation = LocationInformation(
+                val locationInformation = CurrentLocationInformation(
                     locationPermissionState,
                     gpsState,
-                    latitude,
-                    longitude
+                    latitude ?: 0.0,
+                    longitude ?: 0.0
                 )
                 postValue(locationInformation)
             }
@@ -93,9 +93,9 @@ open class LocationRepository : LiveData<LocationInformation>(), KoinComponent {
             val newLocation = newLocationResult.locations[0]
             if (newLocation != null) {
                 postValue(
-                    LocationInformation(
-                        locationPermissionState, gpsState, newLocationResult.locations[0]?.latitude,
-                        newLocationResult.locations[0]?.longitude
+                    CurrentLocationInformation(
+                        locationPermissionState, gpsState, newLocationResult.locations[0]?.latitude ?: 0.0,
+                        newLocationResult.locations[0]?.longitude ?: 0.0
                     )
                 )
             }

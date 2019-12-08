@@ -31,10 +31,12 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.marklynch.weather.R
 import com.marklynch.weather.databinding.ActivityMainBinding
+import com.marklynch.weather.model.SearchedLocation
 import com.marklynch.weather.model.WeatherResponse
 import com.marklynch.weather.model.WeatherResponse.Companion.mapWeatherCodeToDrawable
+import com.marklynch.weather.model.currentLocation
 import com.marklynch.weather.repository.location.GpsState
-import com.marklynch.weather.repository.location.LocationInformation
+import com.marklynch.weather.repository.location.CurrentLocationInformation
 import com.marklynch.weather.repository.network.ConnectionType
 import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
 import com.marklynch.weather.ui.fragment.LocationSuggestionsRepository
@@ -42,7 +44,6 @@ import com.marklynch.weather.ui.viewmodel.MainViewModel
 import com.marklynch.weather.utils.*
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 
@@ -118,7 +119,6 @@ class MainActivity : BaseActivity(), DataBindingComponent {
 //        searchView.threshold???? i thought that was it, set it to 0 so we can suggest hirstoy
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-//                hideKeyboard()
                 return false
             }
 
@@ -139,11 +139,17 @@ class MainActivity : BaseActivity(), DataBindingComponent {
             }
 
             override fun onSuggestionClick(position: Int): Boolean {
-//                hideKeyboard()
                 val cursor = searchView.suggestionsAdapter.getItem(position) as Cursor
-                val selection = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1))
-                searchView.setQuery(selection, false)
+                val displayName =
+                    cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1))
+                val id =
+                    cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_2))
+                val searchedLocation = SearchedLocation(id,displayName)
+                searchView.setQuery(displayName, false)
                 hideKeyboard()
+                swipe_refresh_layout.isRefreshing = true
+                viewModel.fetchWeather(searchedLocation,
+                    Places.createClient(this@MainActivity))
                 return true
             }
         })
@@ -173,10 +179,9 @@ class MainActivity : BaseActivity(), DataBindingComponent {
 
         //Location
         viewModel.locationRepository.observe(this,
-            Observer<LocationInformation> { locationInformation ->
+            Observer<CurrentLocationInformation> { locationInformation ->
 
                 when {
-
                     locationInformation.locationPermission != AppPermissionState.Granted -> {
                         showLocationPermissionNeededDialog()
                         swipe_refresh_layout.isRefreshing = false
@@ -188,7 +193,8 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                     else -> {
                         if (viewModel.getSelectedLocationId() == 0L) {
                             swipe_refresh_layout.isRefreshing = true
-                            viewModel.fetchWeather(null)
+                            viewModel.fetchWeather(currentLocation,
+                                Places.createClient(this@MainActivity))
                         }
                     }
                 }

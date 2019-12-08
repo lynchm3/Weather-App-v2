@@ -2,7 +2,7 @@ package com.marklynch.weather.repository.db
 
 import android.location.Address
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.marklynch.weather.model.ManualLocation
+import com.marklynch.weather.model.SearchedLocation
 import com.marklynch.weather.di.testWeatherDatabase
 import com.marklynch.weather.repository.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
 import com.marklynch.weather.utils.randomAlphaNumeric
@@ -23,7 +23,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-class ManualLocationRepositoryTest : KoinTest {
+class SearchedLocationRepositoryTest : KoinTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -76,12 +76,12 @@ class ManualLocationRepositoryTest : KoinTest {
         val latch = CountDownLatch(2)
 
         val addressData = insertLocation()
-        lateinit var actualManualLocationInserted: ManualLocation
+        lateinit var actualSearchedLocationInserted: SearchedLocation
 
         //Check the inserted data
         manualLocationLiveData?.observeForever {
             if (it.isNotEmpty()) {
-                actualManualLocationInserted = it[0]
+                actualSearchedLocationInserted = it[0]
                 latch.countDown()
             }
         }
@@ -95,10 +95,10 @@ class ManualLocationRepositoryTest : KoinTest {
 
         Assert.assertEquals(
             addressData.addressList?.getOrNull(0)?.subAdminArea,
-            actualManualLocationInserted.displayName
+            actualSearchedLocationInserted.displayName
         )
-        Assert.assertEquals(addressData.latitude, actualManualLocationInserted.latitude)
-        Assert.assertEquals(addressData.longitude, actualManualLocationInserted.longitude)
+        Assert.assertEquals(addressData.latitude, actualSearchedLocationInserted.latitude)
+        Assert.assertEquals(addressData.longitude, actualSearchedLocationInserted.longitude)
     }
 
 
@@ -114,12 +114,12 @@ class ManualLocationRepositoryTest : KoinTest {
         val latchForInsert = CountDownLatch(1)
 
         val addressData = insertLocation()
-        lateinit var actualManualLocationInserted: ManualLocation
+        lateinit var actualSearchedLocationInserted: SearchedLocation
 
         //Check the inserted data
         manualLocationLiveData?.observeForever {
             if (it.isNotEmpty()) {
-                actualManualLocationInserted = it[0]
+                actualSearchedLocationInserted = it[0]
                 latchForInsert.countDown()
             }
         }
@@ -128,13 +128,13 @@ class ManualLocationRepositoryTest : KoinTest {
 
         Assert.assertEquals(
             addressData.addressList?.getOrNull(0)?.subAdminArea,
-            actualManualLocationInserted.displayName
+            actualSearchedLocationInserted.displayName
         )
-        Assert.assertEquals(addressData.latitude, actualManualLocationInserted.latitude)
-        Assert.assertEquals(addressData.longitude, actualManualLocationInserted.longitude)
+        Assert.assertEquals(addressData.latitude, actualSearchedLocationInserted.latitude)
+        Assert.assertEquals(addressData.longitude, actualSearchedLocationInserted.longitude)
 
         //Call delete
-        manualLocationRepository.delete(actualManualLocationInserted)
+        manualLocationRepository.delete(actualSearchedLocationInserted)
 
         val latchForDelete = CountDownLatch(2)
 
@@ -164,12 +164,12 @@ class ManualLocationRepositoryTest : KoinTest {
         val latchForInsert = CountDownLatch(1)
 
         val addressData = insertLocation()
-        lateinit var actualManualLocationInserted: ManualLocation
+        lateinit var actualSearchedLocationInserted: SearchedLocation
 
         //Check the inserted data
         manualLocationLiveData?.observeForever {
             if (it.isNotEmpty()) {
-                actualManualLocationInserted = it[0]
+                actualSearchedLocationInserted = it[0]
                 latchForInsert.countDown()
             }
         }
@@ -178,10 +178,10 @@ class ManualLocationRepositoryTest : KoinTest {
 
         Assert.assertEquals(
             addressData.addressList?.getOrNull(0)?.subAdminArea,
-            actualManualLocationInserted.displayName
+            actualSearchedLocationInserted.displayName
         )
-        Assert.assertEquals(addressData.latitude, actualManualLocationInserted.latitude)
-        Assert.assertEquals(addressData.longitude, actualManualLocationInserted.longitude)
+        Assert.assertEquals(addressData.latitude, actualSearchedLocationInserted.latitude)
+        Assert.assertEquals(addressData.longitude, actualSearchedLocationInserted.longitude)
 
         //Testing rename...
         val latchForRename = CountDownLatch(2)
@@ -197,7 +197,7 @@ class ManualLocationRepositoryTest : KoinTest {
 
         //Call rename
         val renameTo = randomAlphaNumeric(5)
-        manualLocationRepository.rename(actualManualLocationInserted, renameTo)
+        manualLocationRepository.rename(actualSearchedLocationInserted, renameTo)
 
         latchForRename.await(2, TimeUnit.SECONDS)
 

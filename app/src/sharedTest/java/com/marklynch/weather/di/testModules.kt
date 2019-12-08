@@ -4,7 +4,7 @@ import androidx.room.Room
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.generateGetWeatherResponse
 import com.marklynch.weather.repository.location.GpsState
-import com.marklynch.weather.repository.location.LocationInformation
+import com.marklynch.weather.repository.location.CurrentLocationInformation
 import com.marklynch.weather.repository.location.LocationRepository
 import com.marklynch.weather.repository.network.ConnectionType
 import com.marklynch.weather.repository.network.NetworkInfoLiveData
@@ -51,9 +51,9 @@ var testLon = 6.0
 val testLocationLiveData = module(override = true) {
     factory<LocationRepository> {
         object : LocationRepository() {
-            override fun postValue(value: LocationInformation?) {
+            override fun postValue(value: CurrentLocationInformation?) {
                 super.postValue(
-                    LocationInformation(
+                    CurrentLocationInformation(
                         testLocationPermissionState,
                         testGpsState,
                         testLat,

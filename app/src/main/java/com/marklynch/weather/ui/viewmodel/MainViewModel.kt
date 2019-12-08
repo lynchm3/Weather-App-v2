@@ -1,7 +1,9 @@
 package com.marklynch.weather.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.marklynch.weather.model.ManualLocation
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.marklynch.weather.model.SearchedLocation
+import com.marklynch.weather.model.currentLocation
 import com.marklynch.weather.repository.location.LocationRepository
 import com.marklynch.weather.repository.network.NetworkInfoLiveData
 import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.Use24hrClockSharedPreferenceLiveData
@@ -62,14 +64,13 @@ open class MainViewModel : ViewModel(), KoinComponent {
         locationRepository.fetchLocation()
     }
 
-    fun fetchWeather(manualLocation: ManualLocation?) {
-        if (manualLocation == null) {
-            val lat = getLocationInformation()?.lat
-            val lon = getLocationInformation()?.lon
-            if (lat != null && lon != null)
+    fun fetchWeather(searchedLocation: SearchedLocation, placesClient: PlacesClient) {
+        if (searchedLocation == currentLocation) {
+            locationRepository.value?.run {
                 weatherRepository.fetchWeather(lat, lon)
+            }
         } else {
-            weatherRepository.fetchWeather(manualLocation.latitude, manualLocation.longitude)
+            weatherRepository.fetchWeather(searchedLocation, placesClient)
         }
     }
 }
