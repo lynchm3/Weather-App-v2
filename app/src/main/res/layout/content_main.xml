@@ -8,7 +8,7 @@
 
         <variable
                 name="mainViewModel"
-                type="com.marklynch.weather.viewmodel.MainViewModel" />
+                type="com.marklynch.weather.ui.viewmodel.MainViewModel" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:context=".activity.MainActivity"
+            tools:context=".ui.activity.MainActivity"
             tools:showIn="@layout/activity_main">
 
 
@@ -52,7 +52,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        app:temperature="@{mainViewModel.weatherLiveData}"
+                        app:temperature="@{mainViewModel.weatherRepository}"
                         android:padding="0dp"
                         android:layout_margin="0dp"
                         android:includeFontPadding="false"/>
@@ -72,7 +72,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            app:weatherDescription="@{mainViewModel.weatherLiveData}"
+                            app:weatherDescription="@{mainViewModel.weatherRepository}"
                             android:includeFontPadding="false" />
 
                     <ImageView
@@ -80,7 +80,7 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginStart="8dp"
-                            app:weatherDescriptionImage="@{mainViewModel.weatherLiveData}"
+                            app:weatherDescriptionImage="@{mainViewModel.weatherRepository}"
                             tools:ignore="ContentDescription" />
 
                 </LinearLayout>
@@ -93,7 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        app:humidity="@{mainViewModel.weatherLiveData}" />
+                        app:humidity="@{mainViewModel.weatherRepository}" />
 
                 <!--Max temperature-->
 
@@ -103,7 +103,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        app:maximumTemperature="@{mainViewModel.weatherLiveData}" />
+                        app:maximumTemperature="@{mainViewModel.weatherRepository}" />
 
                 <!--Min temperature-->
 
@@ -113,7 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        app:minimumTemperature="@{mainViewModel.weatherLiveData}" />
+                        app:minimumTemperature="@{mainViewModel.weatherRepository}" />
 
                 <!--Wind-->
 
@@ -123,7 +123,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        app:wind="@{mainViewModel.weatherLiveData}" />
+                        app:wind="@{mainViewModel.weatherRepository}" />
 
                 <!--Cloudiness-->
 
@@ -133,7 +133,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        app:cloudiness="@{mainViewModel.weatherLiveData}" />
+                        app:cloudiness="@{mainViewModel.weatherRepository}" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </RelativeLayout>

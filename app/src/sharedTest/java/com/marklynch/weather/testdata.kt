@@ -1,9 +1,8 @@
 package com.marklynch.weather
 
-import com.marklynch.weather.dependencyinjection.testWeatherResponse
-import com.marklynch.weather.livedata.weather.WeatherResponse
+import com.marklynch.weather.di.testWeatherResponse
+import com.marklynch.weather.model.WeatherResponse
 import com.marklynch.weather.utils.randomAlphaNumeric
-import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
 import kotlin.random.Random
 
@@ -38,7 +37,8 @@ fun randomiseTestWeatherData() {
 
 
 
-fun generateGetWeatherResponse(): WeatherResponse? = Moshi.Builder().build().adapter(WeatherResponse::class.java).fromJson(
+fun generateGetWeatherResponse(): WeatherResponse? = Moshi.Builder().build().adapter(
+    WeatherResponse::class.java).fromJson(
     """{
    "coord":{
       "lon":$testLon,

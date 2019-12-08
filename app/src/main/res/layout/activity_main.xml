@@ -7,14 +7,14 @@
 
         <variable
                 name="mainViewModel"
-                type="com.marklynch.weather.viewmodel.MainViewModel" />
+                type="com.marklynch.weather.ui.viewmodel.MainViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorPrimary"
-            tools:context=".activity.MainActivity">
+            tools:context=".ui.activity.MainActivity">
 
         <include layout="@layout/action_bar_main"
                 bind:mainViewModel="@{mainViewModel}"/>
