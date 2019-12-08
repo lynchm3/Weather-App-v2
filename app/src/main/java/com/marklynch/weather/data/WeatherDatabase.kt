@@ -7,5 +7,5 @@ import com.marklynch.weather.data.manuallocation.SearchedLocationDAO
 
 @Database(entities = [SearchedLocation::class], version = 1)
 abstract class WeatherDatabase : RoomDatabase() {
-    abstract fun getManualLocationDao(): SearchedLocationDAO
+    abstract fun getSearchedLocationDao(): SearchedLocationDAO
 }

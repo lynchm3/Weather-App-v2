@@ -10,10 +10,16 @@ import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.marklynch.weather.data.WeatherDatabase
+import com.marklynch.weather.model.SearchedLocation
 import com.marklynch.weather.model.currentLocation
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
 import timber.log.Timber
 
-internal class LocationSuggestionsRepository {
+internal class LocationSuggestionsRepository : KoinComponent {
 
     //If query string is empty give options "current location" and search history for location suggestions
     //If user has entered text for a query use GOolge places API for location ssuggestions
@@ -25,23 +31,39 @@ internal class LocationSuggestionsRepository {
         searchView: SearchView
     ) {
 
+
         if (query.isBlank()) {
 
-            val suggestions = listOf(currentLocation)
-            val cursor = MatrixCursor(
-                arrayOf(
-                    BaseColumns._ID,
-                    SearchManager.SUGGEST_COLUMN_TEXT_1,
-                    SearchManager.SUGGEST_COLUMN_TEXT_2
-                )
-            )
-            query.let {
-                suggestions.forEachIndexed { index, suggestion ->
-                    if (suggestion.displayName.contains(query, true))
-                        cursor.addRow(arrayOf(index, suggestion.displayName, suggestion.id))
+
+            GlobalScope.launch {
+
+                val suggestions = mutableListOf(currentLocation)
+
+
+                val weatherDatabase: WeatherDatabase = get()
+                val searchedLocations: List<SearchedLocation>? =
+                    weatherDatabase.getSearchedLocationDao().getSearchedLocations()
+
+                searchedLocations?.let()
+                {
+                    suggestions += it
                 }
+
+                val cursor = MatrixCursor(
+                    arrayOf(
+                        BaseColumns._ID,
+                        SearchManager.SUGGEST_COLUMN_TEXT_1,
+                        SearchManager.SUGGEST_COLUMN_TEXT_2
+                    )
+                )
+                query.let {
+                    suggestions.forEachIndexed { index, suggestion ->
+                        if (suggestion.displayName.contains(query, true))
+                            cursor.addRow(arrayOf(index, suggestion.displayName, suggestion.id))
+                    }
+                }
+                searchView.suggestionsAdapter.changeCursor(cursor)
             }
-            searchView.suggestionsAdapter.changeCursor(cursor)
 
             return
         }

@@ -31,7 +31,7 @@ class WeatherDatabaseTest : KoinTest {
             testWeatherDatabase
 
         StandAloneContext.loadKoinModules(moduleList)
-        searchedLocationDAO = db.getManualLocationDao()
+        searchedLocationDAO = db.getSearchedLocationDao()
         db.clearAllTables()
     }
 
@@ -114,7 +114,7 @@ class WeatherDatabaseTest : KoinTest {
     fun testInsertAndSelectAllManualLocationById() {
 
         //Select all
-        val manualLocationsLiveData = searchedLocationDAO.getManualLocationLiveData()
+        val manualLocationsLiveData = searchedLocationDAO.getSearchedLocations()
 
         //Insert
         val insertedManualLocation = insertAndCheckLocation()

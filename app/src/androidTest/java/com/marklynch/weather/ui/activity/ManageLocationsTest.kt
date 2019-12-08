@@ -137,7 +137,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         )
 
         GlobalScope.launch {
-            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            val manualLocationDAO = weatherDatabase.getSearchedLocationDao()
             manualLocationDAO.insert(locations[0])
             insertLatch.countDown()
         }
@@ -178,7 +178,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         )
 
         GlobalScope.launch {
-            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            val manualLocationDAO = weatherDatabase.getSearchedLocationDao()
             manualLocationDAO.insert(locations[0])
             manualLocationDAO.insert(locations[1])
             insertLatch.countDown()
@@ -263,7 +263,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         )
 
         GlobalScope.launch {
-            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            val manualLocationDAO = weatherDatabase.getSearchedLocationDao()
             manualLocationDAO.insert(locations[0])
             insertLatch.countDown()
         }
@@ -327,7 +327,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         )
 
         GlobalScope.launch {
-            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            val manualLocationDAO = weatherDatabase.getSearchedLocationDao()
             manualLocationDAO.insert(locations[0])
             insertLatch.countDown()
         }
@@ -422,7 +422,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         )
 
         GlobalScope.launch {
-            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            val manualLocationDAO = weatherDatabase.getSearchedLocationDao()
             manualLocationDAO.insert(locations[0])
             insertLatch.countDown()
         }
@@ -483,7 +483,7 @@ class ManageLocationsTest : KoinTest, KoinComponent {
         )
 
         GlobalScope.launch {
-            val manualLocationDAO = weatherDatabase.getManualLocationDao()
+            val manualLocationDAO = weatherDatabase.getSearchedLocationDao()
             manualLocationDAO.insert(locations[0])
             insertLatch.countDown()
         }

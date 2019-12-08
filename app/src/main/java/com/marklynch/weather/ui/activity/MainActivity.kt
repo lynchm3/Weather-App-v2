@@ -30,13 +30,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.marklynch.weather.R
+import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.databinding.ActivityMainBinding
 import com.marklynch.weather.model.SearchedLocation
 import com.marklynch.weather.model.WeatherResponse
 import com.marklynch.weather.model.WeatherResponse.Companion.mapWeatherCodeToDrawable
 import com.marklynch.weather.model.currentLocation
-import com.marklynch.weather.repository.location.GpsState
 import com.marklynch.weather.repository.location.CurrentLocationInformation
+import com.marklynch.weather.repository.location.GpsState
 import com.marklynch.weather.repository.network.ConnectionType
 import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
 import com.marklynch.weather.ui.fragment.LocationSuggestionsRepository
@@ -44,10 +45,15 @@ import com.marklynch.weather.ui.viewmodel.MainViewModel
 import com.marklynch.weather.utils.*
 import kotlinx.android.synthetic.main.action_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.get
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 
-class MainActivity : BaseActivity(), DataBindingComponent {
+class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
 
     override fun getMainActivity(): MainActivity = this
 
@@ -144,18 +150,38 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                     cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1))
                 val id =
                     cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_2))
-                val searchedLocation = SearchedLocation(id,displayName)
+                val searchedLocation = SearchedLocation(id, displayName)
                 searchView.setQuery(displayName, false)
                 hideKeyboard()
                 swipe_refresh_layout.isRefreshing = true
-                viewModel.fetchWeather(searchedLocation,
-                    Places.createClient(this@MainActivity))
+                viewModel.fetchWeather(
+                    searchedLocation,
+                    Places.createClient(this@MainActivity)
+                )
+
+                if (searchedLocation != currentLocation) {
+                    GlobalScope.launch {
+                        val weatherDatabase: WeatherDatabase = get()
+
+                        try {
+                            Timber.d("getManualLocationLiveData = " + weatherDatabase.getSearchedLocationDao().getSearchedLocations())
+//                        weatherDatabase.getManualLocationDao().
+
+                            weatherDatabase.getSearchedLocationDao().insert(searchedLocation)
+                        } catch (exception: Exception) {
+                            exception.printStackTrace()
+                            Timber.e(exception, "INSERT EXCEPTION")
+                        }
+                    }
+                }
+
                 return true
             }
         })
 
         searchAutoCompleteTextView.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
+                searchView.setQuery("", false)
                 LocationSuggestionsRepository().runQuery(
                     "",
                     Places.createClient(this@MainActivity),
@@ -193,8 +219,10 @@ class MainActivity : BaseActivity(), DataBindingComponent {
                     else -> {
                         if (viewModel.getSelectedLocationId() == 0L) {
                             swipe_refresh_layout.isRefreshing = true
-                            viewModel.fetchWeather(currentLocation,
-                                Places.createClient(this@MainActivity))
+                            viewModel.fetchWeather(
+                                currentLocation,
+                                Places.createClient(this@MainActivity)
+                            )
                         }
                     }
                 }

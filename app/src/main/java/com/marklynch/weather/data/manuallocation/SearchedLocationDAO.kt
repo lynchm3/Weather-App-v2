@@ -7,8 +7,8 @@ import com.marklynch.weather.model.SearchedLocation
 @Dao
 interface SearchedLocationDAO {
 
-    @Insert
-    fun insert(searchedLocation: SearchedLocation): Long
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(searchedLocation: SearchedLocation)
 
     @Update
     fun update(searchedLocation: SearchedLocation)
@@ -17,7 +17,7 @@ interface SearchedLocationDAO {
     fun delete(searchedLocation: SearchedLocation)
 
     @Query("SELECT * FROM ManualLocation ORDER BY displayName ASC")
-    fun getManualLocationLiveData(): LiveData<List<SearchedLocation>>
+    fun getSearchedLocations(): List<SearchedLocation>
 
     @Query("SELECT * FROM ManualLocation WHERE id = :id")
     fun getManualLocationById(id: Long): SearchedLocation
