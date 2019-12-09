@@ -2,7 +2,7 @@ package com.marklynch.weather.repository.db
 
 import android.location.Address
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.marklynch.weather.model.SearchedLocation
+import com.marklynch.weather.model.db.SearchedLocation
 import com.marklynch.weather.di.testWeatherDatabase
 import com.marklynch.weather.repository.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
 import com.marklynch.weather.utils.randomAlphaNumeric

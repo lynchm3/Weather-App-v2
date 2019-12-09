@@ -6,8 +6,11 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.marklynch.weather.model.SearchedLocation
-import com.marklynch.weather.model.WeatherResponse
+import com.marklynch.weather.model.db.SearchedLocation
+import com.marklynch.weather.model.domain.ForecastEvent
+import com.marklynch.weather.model.response.ForecastResponse
+import com.marklynch.weather.model.response.WeatherResponse
+import com.marklynch.weather.utils.dayFormat
 import com.readystatesoftware.chuck.ChuckInterceptor
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -24,13 +27,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.text.SimpleDateFormat
 
 
 open class WeatherRepository : KoinComponent {
 
     private val appId = "74f01822a2b8950db2986d7e28a5978a"
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
 
-    val liveData: MutableLiveData<WeatherResponse> = MutableLiveData()
+    val liveData: MutableLiveData<List<ForecastEvent>> = MutableLiveData()
 
     fun fetchWeather(searchedLocation: SearchedLocation, placesClient: PlacesClient) {
 
@@ -56,19 +61,31 @@ open class WeatherRepository : KoinComponent {
 
             val apiService = retrofit.create(RestApiService::class.java)
 
-            val call = apiService.getCurrentWeatherData(lat, lon, appId)
+//            val call = apiService.getCurrentWeatherData(lat, lon, appId)
+            val call = apiService.getForecastWeatherData(lat, lon, appId)
 
-            call.enqueue(object : Callback<WeatherResponse> {
-                override fun onFailure(call: Call<WeatherResponse>?, t: Throwable?) {
+            call.enqueue(object : Callback<ForecastResponse> {
+                override fun onFailure(call: Call<ForecastResponse>?, t: Throwable?) {
                     liveData.postValue(null)
                 }
 
                 override fun onResponse(
-                    call: Call<WeatherResponse>,
-                    weatherResponseWrapper: Response<WeatherResponse>
+                    call: Call<ForecastResponse>,
+                    weatherResponseWrapper: Response<ForecastResponse>
                 ) {
-                    val weatherResponse = weatherResponseWrapper.body()
-                    liveData.postValue(weatherResponse)
+                    val forecastResponse = weatherResponseWrapper.body()
+                    val forecastDays = mutableListOf<ForecastEvent>()
+                    for (forecastDay in forecastResponse!!.list) {
+                        forecastDays.add(
+                            ForecastEvent(
+                                dayAndTime = dayFormat.format(dateFormat.parse(forecastDay.dtTxt)),
+                                description = forecastDay.weather[0].description,
+                                icon = forecastDay.weather[0].icon,
+                                temperature = forecastDay.weatherInfo.temperature
+                            )
+                        )
+                    }
+                    liveData.postValue(forecastDays)
                 }
             })
         }
@@ -95,6 +112,7 @@ open class WeatherRepository : KoinComponent {
         @GET("data/2.5/weather?")
         fun getCurrentWeatherData(@Query("lat") lat: Double, @Query("lon") lon: Double, @Query("appid") app_id: String): Call<WeatherResponse>
 
-
+        @GET("data/2.5/forecast?")
+        fun getForecastWeatherData(@Query("lat") lat: Double, @Query("lon") lon: Double, @Query("appid") app_id: String): Call<ForecastResponse>
     }
 }

@@ -11,8 +11,8 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.marklynch.weather.data.WeatherDatabase
-import com.marklynch.weather.model.SearchedLocation
-import com.marklynch.weather.model.currentLocation
+import com.marklynch.weather.model.db.SearchedLocation
+import com.marklynch.weather.model.db.currentLocation
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.standalone.KoinComponent

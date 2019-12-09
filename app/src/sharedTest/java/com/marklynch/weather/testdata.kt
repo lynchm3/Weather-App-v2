@@ -1,7 +1,7 @@
 package com.marklynch.weather
 
 import com.marklynch.weather.di.testWeatherResponse
-import com.marklynch.weather.model.WeatherResponse
+import com.marklynch.weather.model.response.WeatherResponse
 import com.marklynch.weather.utils.randomAlphaNumeric
 import com.squareup.moshi.Moshi
 import kotlin.random.Random

@@ -1,8 +1,7 @@
 package com.marklynch.weather.data.manuallocation
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.marklynch.weather.model.SearchedLocation
+import com.marklynch.weather.model.db.SearchedLocation
 
 @Dao
 interface SearchedLocationDAO {

@@ -21,7 +21,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.GrantPermissionRule
 import com.marklynch.weather.R
 import com.marklynch.weather.data.WeatherDatabase
-import com.marklynch.weather.model.SearchedLocation
+import com.marklynch.weather.model.db.SearchedLocation
 import com.marklynch.weather.di.*
 import com.marklynch.weather.espressoutils.*
 import com.marklynch.weather.generateGetWeatherResponse
@@ -133,7 +133,12 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
         val insertLatch = CountDownLatch(1)
         val locations = listOf(
-            SearchedLocation(0L, "LOCATION1", 5.0, 6.0)
+            SearchedLocation(
+                0L,
+                "LOCATION1",
+                5.0,
+                6.0
+            )
         )
 
         GlobalScope.launch {
@@ -174,7 +179,12 @@ class ManageLocationsTest : KoinTest, KoinComponent {
                 5.0,
                 6.0
             ),
-            SearchedLocation(0L, "LOCATION2", 8.0, 7.0)
+            SearchedLocation(
+                0L,
+                "LOCATION2",
+                8.0,
+                7.0
+            )
         )
 
         GlobalScope.launch {
@@ -259,7 +269,12 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
         val insertLatch = CountDownLatch(1)
         val locations = listOf(
-            SearchedLocation(0L, "LOCATION1", 5.0, 6.0)
+            SearchedLocation(
+                0L,
+                "LOCATION1",
+                5.0,
+                6.0
+            )
         )
 
         GlobalScope.launch {
@@ -323,7 +338,12 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
         val insertLatch = CountDownLatch(1)
         val locations = listOf(
-            SearchedLocation(0L, "LOCATION1", 5.0, 6.0)
+            SearchedLocation(
+                0L,
+                "LOCATION1",
+                5.0,
+                6.0
+            )
         )
 
         GlobalScope.launch {
@@ -418,7 +438,12 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
         val insertLatch = CountDownLatch(1)
         val locations = listOf(
-            SearchedLocation(0L, "LOCATION1", 5.0, 6.0)
+            SearchedLocation(
+                0L,
+                "LOCATION1",
+                5.0,
+                6.0
+            )
         )
 
         GlobalScope.launch {
@@ -479,7 +504,12 @@ class ManageLocationsTest : KoinTest, KoinComponent {
 
         val insertLatch = CountDownLatch(1)
         val locations = listOf(
-            SearchedLocation(0L, "LOCATION1", 5.0, 6.0)
+            SearchedLocation(
+                0L,
+                "LOCATION1",
+                5.0,
+                6.0
+            )
         )
 
         GlobalScope.launch {

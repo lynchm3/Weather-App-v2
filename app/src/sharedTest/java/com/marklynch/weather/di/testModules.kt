@@ -9,7 +9,7 @@ import com.marklynch.weather.repository.location.LocationRepository
 import com.marklynch.weather.repository.network.ConnectionType
 import com.marklynch.weather.repository.network.NetworkInfoLiveData
 import com.marklynch.weather.repository.weather.WeatherRepository
-import com.marklynch.weather.model.WeatherResponse
+import com.marklynch.weather.model.response.WeatherResponse
 import com.marklynch.weather.utils.AppPermissionState
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
