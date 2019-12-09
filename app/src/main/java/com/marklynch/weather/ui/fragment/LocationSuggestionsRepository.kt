@@ -3,7 +3,7 @@ package com.marklynch.weather.ui.fragment
 import android.app.SearchManager
 import android.database.MatrixCursor
 import android.provider.BaseColumns
-import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.TypeFilter
@@ -18,55 +18,70 @@ import kotlinx.coroutines.launch
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicLong
 
-internal class LocationSuggestionsRepository : KoinComponent {
+class LocationSuggestionsRepository : KoinComponent {
 
-    //If query string is empty give options "current location" and search history for location suggestions
-    //If user has entered text for a query use GOolge places API for location ssuggestions
+    val suggestionsLiveData = MutableLiveData<MatrixCursor>()
+    private val requestCount = AtomicLong(0)
 
-    fun runQuery(
+    fun fetchSuggestions(
+        query: String,
+        placesClient: PlacesClient,
+        token: AutocompleteSessionToken
+    ) {
+        GlobalScope.launch {
+            if (query.isBlank()) {
+                loadHistorySuggestions(query, requestCount.incrementAndGet())
+            } else {
+                loadAutoCompleteSuggestion(
+                    query,
+                    placesClient,
+                    token,
+                    requestCount.incrementAndGet()
+                )
+            }
+        }
+    }
+
+    private fun loadHistorySuggestions(query: String, requestId: Long) {
+
+        val suggestions = mutableListOf(currentLocation)
+
+        val weatherDatabase: WeatherDatabase = get()
+        val searchedLocations: List<SearchedLocation>? =
+            weatherDatabase.getSearchedLocationDao().getSearchedLocations()
+
+        searchedLocations?.let()
+        {
+            suggestions += it
+        }
+
+        val cursor = MatrixCursor(
+            arrayOf(
+                BaseColumns._ID,
+                SearchManager.SUGGEST_COLUMN_TEXT_1,
+                SearchManager.SUGGEST_COLUMN_TEXT_2
+            )
+        )
+        query.let {
+            suggestions.forEachIndexed { index, suggestion ->
+                if (suggestion.displayName.contains(query, true))
+                    cursor.addRow(arrayOf(index, suggestion.displayName, suggestion.id))
+            }
+        }
+
+        if (requestId == requestCount.get())
+            suggestionsLiveData.postValue(cursor)
+    }
+
+    private fun loadAutoCompleteSuggestion(
         query: String,
         placesClient: PlacesClient,
         token: AutocompleteSessionToken,
-        searchView: SearchView
+        requestId: Long
     ) {
 
-
-        if (query.isBlank()) {
-
-
-            GlobalScope.launch {
-
-                val suggestions = mutableListOf(currentLocation)
-
-
-                val weatherDatabase: WeatherDatabase = get()
-                val searchedLocations: List<SearchedLocation>? =
-                    weatherDatabase.getSearchedLocationDao().getSearchedLocations()
-
-                searchedLocations?.let()
-                {
-                    suggestions += it
-                }
-
-                val cursor = MatrixCursor(
-                    arrayOf(
-                        BaseColumns._ID,
-                        SearchManager.SUGGEST_COLUMN_TEXT_1,
-                        SearchManager.SUGGEST_COLUMN_TEXT_2
-                    )
-                )
-                query.let {
-                    suggestions.forEachIndexed { index, suggestion ->
-                        if (suggestion.displayName.contains(query, true))
-                            cursor.addRow(arrayOf(index, suggestion.displayName, suggestion.id))
-                    }
-                }
-                searchView.suggestionsAdapter.changeCursor(cursor)
-            }
-
-            return
-        }
 
         // Use the builder to create a FindAutocompletePredictionsRequest.
         val request =
@@ -102,7 +117,8 @@ internal class LocationSuggestionsRepository : KoinComponent {
                             )
                     }
                 }
-                searchView.suggestionsAdapter.changeCursor(cursor)
+                if (requestId == requestCount.get())
+                    suggestionsLiveData.postValue(cursor)
 
             }.addOnFailureListener { exception: Exception? ->
                 if (exception is ApiException) {
@@ -115,7 +131,10 @@ internal class LocationSuggestionsRepository : KoinComponent {
                         SearchManager.SUGGEST_COLUMN_TEXT_2
                     )
                 )
-                searchView.suggestionsAdapter.changeCursor(cursor)
+                if (requestId == requestCount.get())
+                    suggestionsLiveData.postValue(cursor)
             }
+
+
     }
 }

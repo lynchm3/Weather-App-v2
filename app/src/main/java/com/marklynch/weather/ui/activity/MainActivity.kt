@@ -32,7 +32,6 @@ import com.marklynch.weather.model.domain.ForecastEvent
 import com.marklynch.weather.repository.location.CurrentLocationInformation
 import com.marklynch.weather.repository.location.GpsState
 import com.marklynch.weather.repository.network.ConnectionType
-import com.marklynch.weather.ui.fragment.LocationSuggestionsRepository
 import com.marklynch.weather.ui.viewmodel.MainViewModel
 import com.marklynch.weather.utils.AppPermissionState
 import kotlinx.android.synthetic.main.action_bar_main.*
@@ -77,6 +76,8 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
         }
 
         //SearchView
+        val placesClient = Places.createClient(this)
+        val autocompleteSessionToken = AutocompleteSessionToken.newInstance()
         searchView = findViewById(R.id.search_view)
         val searchAutoCompleteTextView =
             searchView.findViewById(androidx.appcompat.R.id.search_src_text) as AutoCompleteTextView
@@ -101,11 +102,10 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
             }
 
             override fun onQueryTextChange(query: String): Boolean {
-                LocationSuggestionsRepository().runQuery(
+                viewModel.fetchSuggestions(
                     query,
-                    Places.createClient(this@MainActivity),
-                    AutocompleteSessionToken.newInstance(),
-                    searchView
+                    placesClient,
+                    autocompleteSessionToken
                 )
                 return true
             }
@@ -132,7 +132,7 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
                 swipe_refresh_layout.isRefreshing = true
                 viewModel.fetchWeather(
                     searchedLocation,
-                    Places.createClient(this@MainActivity)
+                    placesClient
                 )
 
                 if (searchedLocation != currentLocation) {
@@ -156,11 +156,10 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
         searchAutoCompleteTextView.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 searchView.setQuery("", false)
-                LocationSuggestionsRepository().runQuery(
+                viewModel.fetchSuggestions(
                     "",
-                    Places.createClient(this@MainActivity),
-                    AutocompleteSessionToken.newInstance(),
-                    searchView
+                    placesClient,
+                    autocompleteSessionToken
                 )
             }
         }
@@ -170,6 +169,13 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
         val recyclerViewAdapter = ForecastListAdapter(this)
         recyclerView.adapter = recyclerViewAdapter
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        //Suggestions livedata
+        viewModel.getSuggestionsLiveData().observe(this,
+            Observer<Cursor> { suggestionsCursor ->
+                searchView.suggestionsAdapter.changeCursor(suggestionsCursor)
+            })
+
 
         //Network
         viewModel.networkInfoLiveData.observe(this,
@@ -201,7 +207,7 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
                             swipe_refresh_layout.isRefreshing = true
                             viewModel.fetchWeather(
                                 currentLocation,
-                                Places.createClient(this@MainActivity)
+                                placesClient
                             )
                         }
                     }
