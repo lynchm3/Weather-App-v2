@@ -8,9 +8,10 @@ Simple database table is used to provide suggestions from previous searches
 The app and tests can be built and run using Android Studio
 
 ## The App
-There's a single activity - [MainActivty](app/src/main/java/com/marklynch/weather/ui/activity/MainActivity.java)
-Repositories for location, network status, search suggestions and weather data
-DB for storing searhc history
+There's a single activity - [MainActivty](app/src/main/java/com/marklynch/weather/ui/activity/MainActivity.kt)
+
+Repositories for location, network status, search suggestions and weather data, 
+DB for storing searhc history, 
 Viewmodel to connect the back and front
 
 ## Tests
