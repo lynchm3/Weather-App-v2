@@ -1,4 +1,4 @@
-package com.marklynch.weather.ui.fragment
+package com.marklynch.weather.repository.locationsuggestion
 
 import android.app.SearchManager
 import android.database.MatrixCursor
@@ -64,6 +64,7 @@ class LocationSuggestionsRepository : KoinComponent {
                 SearchManager.SUGGEST_COLUMN_TEXT_2
             )
         )
+
         query.let {
             suggestions.forEachIndexed { index, suggestion ->
                 if (suggestion.displayName.contains(query, true))

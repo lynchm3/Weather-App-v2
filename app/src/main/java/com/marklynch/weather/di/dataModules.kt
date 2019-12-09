@@ -14,10 +14,6 @@ import com.marklynch.weather.BuildConfig
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.repository.location.LocationRepository
 import com.marklynch.weather.repository.network.NetworkInfoLiveData
-import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.Use24hrClockSharedPreferenceLiveData
-import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
-import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseKmSharedPreferenceLiveData
-import com.marklynch.weather.repository.sharedpreferences.longsharedpreference.CurrentLocationIdSharedPreferenceLiveData
 import com.marklynch.weather.repository.weather.WeatherRepository
 import com.marklynch.weather.utils.PermissionsChecker
 import com.marklynch.weather.utils.TimberDebugTree
@@ -76,10 +72,6 @@ private val dataModule = module {
     single<LocationRepository>()
     single<WeatherRepository>()
     single<NetworkInfoLiveData>()
-    single<Use24hrClockSharedPreferenceLiveData>()
-    single<UseKmSharedPreferenceLiveData>()
-    single<UseCelsiusSharedPreferenceLiveData>()
-    single<CurrentLocationIdSharedPreferenceLiveData>()
 
     single() {
         FirebaseAnalytics.getInstance(get())

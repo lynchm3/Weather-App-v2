@@ -13,6 +13,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.cursoradapter.widget.CursorAdapter
@@ -32,6 +33,7 @@ import com.marklynch.weather.model.domain.ForecastEvent
 import com.marklynch.weather.repository.location.CurrentLocationInformation
 import com.marklynch.weather.repository.location.GpsState
 import com.marklynch.weather.repository.network.ConnectionType
+import com.marklynch.weather.ui.adapter.ForecastListAdapter
 import com.marklynch.weather.ui.viewmodel.MainViewModel
 import com.marklynch.weather.utils.AppPermissionState
 import kotlinx.android.synthetic.main.action_bar_main.*
@@ -43,7 +45,7 @@ import org.koin.standalone.get
 import timber.log.Timber
 
 
-class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
+class MainActivity : AppCompatActivity(), DataBindingComponent, KoinComponent {
 
     private var alertDialog: AlertDialog? = null
     lateinit var viewModel: MainViewModel
@@ -65,7 +67,7 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
 
         setSupportActionBar(toolbar)
 
-        //Init places UI
+        //Init places api
         if (!Places.isInitialized()) {
             Places.initialize(
                 applicationContext,
@@ -140,7 +142,6 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
                         val weatherDatabase: WeatherDatabase = get()
 
                         try {
-                            Timber.d("getManualLocationLiveData = " + weatherDatabase.getSearchedLocationDao().getSearchedLocations())
                             weatherDatabase.getSearchedLocationDao().insert(searchedLocation)
                         } catch (exception: Exception) {
                             exception.printStackTrace()
@@ -166,7 +167,8 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
 
         //Recycler view
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
-        val recyclerViewAdapter = ForecastListAdapter(this)
+        val recyclerViewAdapter =
+            ForecastListAdapter(this)
         recyclerView.adapter = recyclerViewAdapter
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
@@ -202,15 +204,6 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
                         showGpsNotEnabledDialog()
                         swipe_refresh_layout.isRefreshing = false
                     }
-                    else -> {
-                        if (viewModel.getSelectedLocationId() == 0L) {
-                            swipe_refresh_layout.isRefreshing = true
-                            viewModel.fetchWeather(
-                                currentLocation,
-                                placesClient
-                            )
-                        }
-                    }
                 }
             })
 
@@ -234,27 +227,13 @@ class MainActivity : BaseActivity(), DataBindingComponent, KoinComponent {
             viewModel.fetchLocation()
         }
         swipe_refresh_layout.setProgressViewOffset (true, 0, 200)
-
-        //Selected location shared preference
-        viewModel.selectedLocationIdSharedPreferencesLiveData.observe(this,
-            Observer<Long> {
-                //                updateLocationSpinner()
-            }
-        )
-
         swipe_refresh_layout.isRefreshing = true
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        viewModel.fetchLocation()
     }
 
     override fun onPause() {
         super.onPause()
         alertDialog?.dismiss()
     }
-
 
     private fun showNoNetworkConnectionDialog() {
         tv_messaging.text = getString(R.string.no_network_body)

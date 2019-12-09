@@ -1,4 +1,4 @@
-package com.marklynch.weather.ui.activity
+package com.marklynch.weather.ui.adapter
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -11,7 +11,6 @@ import com.marklynch.weather.R
 import com.marklynch.weather.model.domain.ForecastEvent
 import com.marklynch.weather.model.response.WeatherResponse.Companion.mapWeatherCodeToDrawable
 import com.marklynch.weather.utils.capitalizeWords
-import com.marklynch.weather.utils.dpToPixels
 import com.marklynch.weather.utils.kelvinToCelsius
 import kotlin.math.roundToInt
 
