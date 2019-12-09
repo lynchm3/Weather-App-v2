@@ -10,9 +10,6 @@ import android.location.LocationManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
-import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.Use24hrClockSharedPreferenceLiveData
-import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseCelsiusSharedPreferenceLiveData
-import com.marklynch.weather.repository.sharedpreferences.booleansharedpreference.UseKmSharedPreferenceLiveData
 import com.marklynch.weather.utils.AppPermissionState
 import com.marklynch.weather.utils.PermissionsChecker
 import com.nhaarman.mockitokotlin2.any
@@ -107,51 +104,6 @@ val mockModuleSharedPreferencesEditor = module(override = true) {
                 this.mock
             }
             on { apply() } doAnswer {
-                null
-            }
-        }
-    }
-}
-
-var useCelsius = false
-val mockModuleUseCelsiusSharedPreferenceLiveData = module(override = true) {
-    single {
-        mock<UseCelsiusSharedPreferenceLiveData> {
-            on { value } doAnswer {
-                useCelsius
-            }
-            on { setSharedPreference(any()) } doAnswer {
-                useCelsius = it.arguments[0] as Boolean
-                null
-            }
-        }
-    }
-}
-
-var useKm = false
-val mockModuleUseKmSharedPreferenceLiveData = module(override = true) {
-    single {
-        mock<UseKmSharedPreferenceLiveData> {
-            on { value } doAnswer {
-                useKm
-            }
-            on { setSharedPreference(any()) } doAnswer {
-                useKm = it.arguments[0] as Boolean
-                null
-            }
-        }
-    }
-}
-
-var use24hrClock = false
-val mockModuleUse24hrClockSharedPreferenceLiveData = module(override = true) {
-    single {
-        mock<Use24hrClockSharedPreferenceLiveData> {
-            on { value } doAnswer {
-                use24hrClock
-            }
-            on { setSharedPreference(any()) } doAnswer {
-                use24hrClock = it.arguments[0] as Boolean
                 null
             }
         }

@@ -2,10 +2,12 @@ package com.marklynch.weather.repository.weather
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.marklynch.weather.di.*
-import com.marklynch.weather.generateGetWeatherResponse
-import com.marklynch.weather.testLocationName
+import com.marklynch.weather.generateGetForecastResponse
+import com.marklynch.weather.model.response.ForecastData
+import com.marklynch.weather.model.response.ForecastResponse
+import com.marklynch.weather.model.response.Weather
+import com.marklynch.weather.model.response.WeatherInfo
 import com.marklynch.weather.utils.observeXTimes
-import com.marklynch.weather.utils.randomAlphaNumeric
 import junit.framework.Assert.assertEquals
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -16,6 +18,8 @@ import org.junit.Test
 import org.koin.standalone.StandAloneContext.loadKoinModules
 import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.test.KoinTest
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 
 class WeatherRepositoryTest : KoinTest {
@@ -40,49 +44,33 @@ class WeatherRepositoryTest : KoinTest {
     fun after() {
         stopKoin()
     }
-
-    @Test
-    fun `Test observe with no data fetched`() {
-
-        val weatherLiveData =
-            WeatherRepository()
-
-        var observations = 0
-        weatherLiveData.observeXTimes(1) {
-            observations++
-        }
-
-        assertEquals(0, observations)
-    }
-
     @Test
     fun `Test observe after fetch success`() {
 
-        testLocationName = randomAlphaNumeric(5)
-
+        val weatherRepository = WeatherRepository()
 
         testWebServer = MockWebServer()
-        testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse().toString()))
+        testWebServer.start()
+        testWebServer.enqueue(MockResponse().setBody(generateGetForecastResponse().toString()))
 
         val weatherLiveData =
-            WeatherRepository()
+            weatherRepository.liveData
 
-        var observations = 0
+        val countDownLatch = CountDownLatch(1)
+
+        val expected = ForecastResponse(listOf(ForecastData("2014-07-23 09:00:00",
+            WeatherInfo(298.77), listOf(Weather("overcast clouds", "04d")))))
+
         weatherLiveData.observeXTimes(1) {
-            observations++
-            assertEquals(generateGetWeatherResponse(), toJson(it))
+            countDownLatch.countDown()
+            assertEquals("Forecast response not as expected",generateGetForecastResponse(), expected)
         }
 
-        weatherLiveData.fetchWeather(sligoLatitude, sligoLongitude)
+        weatherRepository.fetchWeather(sligoLatitude, sligoLongitude)
 
-        val timeout = 1000
-        var timeSoFar = 0
-        while (observations == 0 && timeSoFar < timeout) {
-            Thread.sleep(100)
-            timeSoFar += 100
-        }
+        countDownLatch.await(2, TimeUnit.SECONDS)
 
-//        assertEquals(1, observations)
+        assertEquals("livedata not observed", 0, countDownLatch.count)
 
         testWebServer.shutdown()
     }
@@ -92,18 +80,39 @@ class WeatherRepositoryTest : KoinTest {
         testWebServer = MockWebServer()
         testWebServer.enqueue(MockResponse().setResponseCode(403))
 
-        val weatherLiveData =
+        val weatherRepository =
             WeatherRepository()
 
-        var observations = 0
-        weatherLiveData.observeXTimes(1) {
-            observations++
+        val countDownLatch = CountDownLatch(1)
+        weatherRepository.liveData.observeXTimes(1) {
+            countDownLatch.countDown()
         }
 
-        weatherLiveData.fetchWeather(sligoLatitude, sligoLongitude)
+        weatherRepository.fetchWeather(sligoLatitude, sligoLongitude)
 
-        assertEquals(0, observations)
+        countDownLatch.await(2, TimeUnit.SECONDS)
+
+        assertEquals(1, countDownLatch.count)
 
         testWebServer.shutdown()
     }
+
+    @Test
+    fun `Test observe with no data fetched`() {
+
+        val weatherRepository =
+            WeatherRepository()
+
+        val countDownLatch = CountDownLatch(1)
+        weatherRepository.liveData.observeXTimes(1) {
+            countDownLatch.countDown()
+        }
+
+        countDownLatch.await(2, TimeUnit.SECONDS)
+
+        assertEquals(1, countDownLatch.count)
+
+        assertEquals(0, observations)
+    }
+
 }

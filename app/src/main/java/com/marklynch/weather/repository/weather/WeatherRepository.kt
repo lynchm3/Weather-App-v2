@@ -9,7 +9,6 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.marklynch.weather.model.db.SearchedLocation
 import com.marklynch.weather.model.domain.ForecastEvent
 import com.marklynch.weather.model.response.ForecastResponse
-import com.marklynch.weather.model.response.WeatherResponse
 import com.marklynch.weather.utils.dayFormat
 import com.readystatesoftware.chuck.ChuckInterceptor
 import kotlinx.coroutines.GlobalScope
@@ -19,7 +18,6 @@ import okhttp3.OkHttpClient
 import org.koin.core.parameter.parametersOf
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
-import org.koin.standalone.inject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,7 +59,6 @@ open class WeatherRepository : KoinComponent {
 
             val apiService = retrofit.create(RestApiService::class.java)
 
-//            val call = apiService.getCurrentWeatherData(lat, lon, appId)
             val call = apiService.getForecastWeatherData(lat, lon, appId)
 
             call.enqueue(object : Callback<ForecastResponse> {
@@ -93,12 +90,11 @@ open class WeatherRepository : KoinComponent {
     }
 
     private fun getRetrofitInstance(baseUrl: String): Retrofit {
-        val httpURL: HttpUrl by inject {
+        val httpURL: HttpUrl = get {
             parametersOf(baseUrl)
         }
 
         val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(ChuckInterceptor(get<Application>()))
             .build()
 
         return Retrofit.Builder()
@@ -109,9 +105,6 @@ open class WeatherRepository : KoinComponent {
     }
 
     interface RestApiService {
-        @GET("data/2.5/weather?")
-        fun getCurrentWeatherData(@Query("lat") lat: Double, @Query("lon") lon: Double, @Query("appid") app_id: String): Call<WeatherResponse>
-
         @GET("data/2.5/forecast?")
         fun getForecastWeatherData(@Query("lat") lat: Double, @Query("lon") lon: Double, @Query("appid") app_id: String): Call<ForecastResponse>
     }

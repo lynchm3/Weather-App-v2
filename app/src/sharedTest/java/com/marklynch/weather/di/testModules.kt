@@ -2,14 +2,12 @@ package com.marklynch.weather.di
 
 import androidx.room.Room
 import com.marklynch.weather.data.WeatherDatabase
-import com.marklynch.weather.generateGetWeatherResponse
-import com.marklynch.weather.repository.location.GpsState
+import com.marklynch.weather.generateGetForecastResponse
 import com.marklynch.weather.repository.location.CurrentLocationInformation
+import com.marklynch.weather.repository.location.GpsState
 import com.marklynch.weather.repository.location.LocationRepository
 import com.marklynch.weather.repository.network.ConnectionType
 import com.marklynch.weather.repository.network.NetworkInfoLiveData
-import com.marklynch.weather.repository.weather.WeatherRepository
-import com.marklynch.weather.model.response.WeatherResponse
 import com.marklynch.weather.utils.AppPermissionState
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -28,21 +26,21 @@ val testWeatherDatabase = module(override = true) {
 lateinit var testWebServer: MockWebServer
 val testModuleHttpUrl = module(override = true) {
     factory { (_: String) ->
-        testWebServer.enqueue(MockResponse().setBody(generateGetWeatherResponse().toString()))
+        testWebServer.enqueue(MockResponse().setBody(generateGetForecastResponse().toString()))
     }
 }
 
 
-var testWeatherResponse: WeatherResponse? = null
-val testWeatherLiveData = module(override = true) {
-    factory<WeatherRepository> {
-        object : WeatherRepository() {
-            override fun postValue(value: WeatherResponse?) {
-                super.postValue(testWeatherResponse)
-            }
-        }
-    }
-}
+//var testWeatherResponse: ForecastResponse? = null
+//val testWeatherLiveData = module(override = true) {
+//    factory<WeatherRepository> {
+//        object : WeatherRepository() {
+//            override fun postValue(value: ForecastResponse?) {
+//                super.postValue(testWeatherResponse)
+//            }
+//        }
+//    }
+//}
 
 lateinit var testLocationPermissionState: AppPermissionState
 lateinit var testGpsState: GpsState

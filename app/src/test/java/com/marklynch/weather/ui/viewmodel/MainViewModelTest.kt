@@ -20,37 +20,12 @@ class MainViewModelTest : KoinTest {
 
     @Before
     fun setup() {
-        val moduleList = appModules + activityModules + mockModuleApplication +
-                mockModuleUse24hrClockSharedPreferenceLiveData +
-                mockModuleUseCelsiusSharedPreferenceLiveData +
-                mockModuleUseKmSharedPreferenceLiveData
+        val moduleList = appModules + activityModules + mockModuleApplication
         loadKoinModules(moduleList)
     }
 
     @After
     fun after() {
         stopKoin()
-    }
-
-    @Test
-    fun testSetUseCelsius() {
-        val mainViewModel = MainViewModel(get())
-
-        mainViewModel.setUseCelsius(true)
-        assertTrue(mainViewModel.isUseCelsius() ?: false)
-
-        mainViewModel.setUseCelsius(false)
-        assertFalse(mainViewModel.isUseCelsius() ?: true)
-    }
-
-    @Test
-    fun testSetUseKm() {
-        val mainViewModel = MainViewModel(get())
-
-        mainViewModel.setUseKm(true)
-        assertTrue(mainViewModel.isUseKm() ?: false)
-
-        mainViewModel.setUseKm(false)
-        assertFalse(mainViewModel.isUseKm() ?: true)
     }
 }

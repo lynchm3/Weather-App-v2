@@ -1,4 +1,4 @@
-package com.marklynch.weather.data.manuallocation
+package com.marklynch.weather.data.searchedlocation
 
 import androidx.room.*
 import com.marklynch.weather.model.db.SearchedLocation

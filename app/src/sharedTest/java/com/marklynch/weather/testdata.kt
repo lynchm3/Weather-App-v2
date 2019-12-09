@@ -1,84 +1,52 @@
 package com.marklynch.weather
 
-import com.marklynch.weather.di.testWeatherResponse
-import com.marklynch.weather.model.response.WeatherResponse
-import com.marklynch.weather.utils.randomAlphaNumeric
+import com.marklynch.weather.model.response.ForecastResponse
 import com.squareup.moshi.Moshi
-import kotlin.random.Random
 
-var testLon = Random.nextDouble(-180.0, 180.0)
-var testLat = Random.nextDouble(-90.0, 90.0)
-var testLocationName = randomAlphaNumeric(5)
-var testDescription = randomAlphaNumeric(5)
-var testTemperature = Random.nextDouble(253.0, 323.0)
-var testHumidity = Random.nextDouble(0.0, 100.0)
-var testTemperatureMin = Random.nextDouble(253.0, 323.0)
-var testTemperatureMax = Random.nextDouble(253.0, 323.0)
-var testWindSpeed = Random.nextDouble(0.0, 100.0)
-var testWindDeg = Random.nextDouble(0.0, 359.0)
-var testCloudiness = Random.nextDouble(0.0, 100.0)
-
-fun randomiseTestWeatherData() {
-    testLon = Random.nextDouble(-180.0, 180.0)
-    testLat = Random.nextDouble(-90.0, 90.0)
-    testLocationName = randomAlphaNumeric(5)
-    testDescription = randomAlphaNumeric(5)
-    testTemperature = Random.nextDouble(253.0, 323.0)
-    testHumidity = Random.nextDouble(0.0, 100.0)
-    testTemperatureMin = Random.nextDouble(253.0, 323.0)
-    testTemperatureMax = Random.nextDouble(253.0, 323.0)
-    testWindSpeed = Random.nextDouble(0.0, 100.0)
-    testWindDeg = Random.nextDouble(0.0, 359.0)
-    testCloudiness = Random.nextDouble(0.0, 100.0)
-    testWeatherResponse = generateGetWeatherResponse()
-    println("randomiseTestWeatherData() - testWeatherResponse = $testWeatherResponse")
-}
-
-
-
-
-fun generateGetWeatherResponse(): WeatherResponse? = Moshi.Builder().build().adapter(
-    WeatherResponse::class.java).fromJson(
+fun generateGetForecastResponse(): ForecastResponse? = Moshi.Builder().build().adapter(
+    ForecastResponse::class.java
+).fromJson(
     """{
-   "coord":{
-      "lon":$testLon,
-      "lat":$testLat
-   },
-   "weather":[
-      {
-         "id":800,
-         "main":"Clear",
-         "description":"$testDescription",
-         "icon":"01d"
-      }
-   ],
-   "base":"stations",
-   "main":{
-      "temp":$testTemperature,
-      "pressure":1017,
-	  "humidity":$testHumidity,
-	  "temp_min":$testTemperatureMin,
-	  "temp_max":$testTemperatureMax
-   },
-   "visibility":16093,
-   "wind":{
-	  "speed":$testWindSpeed,
-	  "deg":$testWindDeg
-   },
-   "clouds":{
-      "all":$testCloudiness
-   },
-   "dt":1563212122,
-   "sys":{
-      "type":1,
-      "id":5122,
-      "message":0.0134,
-      "country":"US",
-      "sunrise":1563195547,
-      "sunset":1563247741
-   },
-   "timezone":-25200,
-   "id":5375480,
-   "name":"$testLocationName",
-   "cod":200
-}""")
+		"id": 1851632,
+		"name": "Shuzenji",
+		"coord": {
+			"lon": 138.933334,
+			"lat": 34.966671
+		},
+		"country": "JP",
+		"timezone": 32400,
+		"cod": "200",
+		"message": 0.0045,
+		"cnt": 38,
+		"list": [{
+			"dt": 1406106000,
+			"main": {
+				"temp": 298.77,
+				"temp_min": 298.77,
+				"temp_max": 298.774,
+				"pressure": 1005.93,
+				"sea_level": 1018.18,
+				"grnd_level": 1005.93,
+				"humidity": 87,
+				"temp_kf": 0.26
+			},
+			"weather": [{
+				"id": 804,
+				"main": "Clouds",
+				"description": "overcast clouds",
+				"icon": "04d"
+			}],
+			"clouds": {
+				"all": 88
+			},
+			"wind": {
+				"speed": 5.71,
+				"deg": 229.501
+			},
+			"sys": {
+				"pod": "d"
+			},
+			"dt_txt": "2014-07-23 09:00:00"
+		}]
+}"""
+)

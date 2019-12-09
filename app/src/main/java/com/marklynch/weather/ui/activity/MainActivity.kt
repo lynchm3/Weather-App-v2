@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.marklynch.weather.R
 import com.marklynch.weather.data.WeatherDatabase
 import com.marklynch.weather.model.db.SearchedLocation
@@ -47,28 +48,39 @@ import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), DataBindingComponent, KoinComponent {
 
-    private var alertDialog: AlertDialog? = null
     lateinit var viewModel: MainViewModel
     lateinit var searchView: SearchView
+    private lateinit var recyclerViewAdapter: ForecastListAdapter
+    lateinit var placesClient: PlacesClient
+    private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             window.decorView.systemUiVisibility =
                 (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
         } else {
             window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
         }
-
-        //View Model
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         setSupportActionBar(toolbar)
+        setupSearchView()
+        setupRecyclerView()
+        setupSwipeToRefresh()
+        observeLiveData()
+    }
 
+    override fun onPause() {
+        super.onPause()
+        alertDialog?.dismiss()
+    }
+
+    private fun setupSearchView() {
         //Init places api
         if (!Places.isInitialized()) {
+            @Suppress("DEPRECATION")
             Places.initialize(
                 applicationContext,
                 getString(R.string.places_api_key),
@@ -77,24 +89,21 @@ class MainActivity : AppCompatActivity(), DataBindingComponent, KoinComponent {
 
         }
 
-        //SearchView
-        val placesClient = Places.createClient(this)
+        val cursorAdapter = SimpleCursorAdapter(
+            this,
+            R.layout.suggestion_list_item,
+            null,
+            arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1),
+            intArrayOf(R.id.item_label),
+            CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER
+        )
+
+        placesClient = Places.createClient(this)
         val autocompleteSessionToken = AutocompleteSessionToken.newInstance()
         searchView = findViewById(R.id.search_view)
         val searchAutoCompleteTextView =
             searchView.findViewById(androidx.appcompat.R.id.search_src_text) as AutoCompleteTextView
         searchAutoCompleteTextView.threshold = 0
-
-        val from = arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1)
-        val to = intArrayOf(R.id.item_label)
-        val cursorAdapter = SimpleCursorAdapter(
-            this,
-            R.layout.suggestion_list_item,
-            null,
-            from,
-            to,
-            CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER
-        )
 
         searchView.suggestionsAdapter = cursorAdapter
         searchView.setIconifiedByDefault(false)
@@ -164,37 +173,47 @@ class MainActivity : AppCompatActivity(), DataBindingComponent, KoinComponent {
                 )
             }
         }
+    }
 
-        //Recycler view
+    private fun setupRecyclerView() {
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
-        val recyclerViewAdapter =
+        recyclerViewAdapter =
             ForecastListAdapter(this)
         recyclerView.adapter = recyclerViewAdapter
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+    }
 
-        //Suggestions livedata
+    private fun setupSwipeToRefresh() {
+
+        //Swipe to refresh
+        swipe_refresh_layout.isEnabled = false
+        swipe_refresh_layout.setOnRefreshListener {
+            viewModel.fetchLocation()
+        }
+        swipe_refresh_layout.setProgressViewOffset(true, 0, 200)
+    }
+
+    private fun observeLiveData() {
+
+        //Location Suggestions livedata
         viewModel.getSuggestionsLiveData().observe(this,
             Observer<Cursor> { suggestionsCursor ->
                 searchView.suggestionsAdapter.changeCursor(suggestionsCursor)
             })
 
-
-        //Network
+        //Network status livedata
         viewModel.networkInfoLiveData.observe(this,
             Observer<ConnectionType> { connectionType ->
                 if (connectionType == ConnectionType.CONNECTED) {
-                    swipe_refresh_layout.isRefreshing = true
-//                    viewModel.fetchWeather(viewModel.getCurrentlySelectedLocation())
                 } else {
                     showNoNetworkConnectionDialog()
                     swipe_refresh_layout.isRefreshing = false
                 }
             })
 
-        //Location
+        //Location livedata
         viewModel.locationRepository.observe(this,
             Observer<CurrentLocationInformation> { locationInformation ->
-
                 when {
                     locationInformation.locationPermission != AppPermissionState.Granted -> {
                         showLocationPermissionNeededDialog()
@@ -207,7 +226,7 @@ class MainActivity : AppCompatActivity(), DataBindingComponent, KoinComponent {
                 }
             })
 
-        //Weather
+        //Weather livedata
         viewModel.getWeatherLiveData().observe(this,
             Observer<List<ForecastEvent>> { forecast ->
                 if ((forecast == null || forecast.isEmpty()) && swipe_refresh_layout.isRefreshing) {
@@ -222,17 +241,6 @@ class MainActivity : AppCompatActivity(), DataBindingComponent, KoinComponent {
                     recycler_view.visibility = View.VISIBLE
                 }
             })
-
-        swipe_refresh_layout.setOnRefreshListener {
-            viewModel.fetchLocation()
-        }
-        swipe_refresh_layout.setProgressViewOffset (true, 0, 200)
-        swipe_refresh_layout.isRefreshing = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        alertDialog?.dismiss()
     }
 
     private fun showNoNetworkConnectionDialog() {

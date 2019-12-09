@@ -2,7 +2,7 @@ package com.marklynch.weather.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.marklynch.weather.model.db.SearchedLocation
-import com.marklynch.weather.data.manuallocation.SearchedLocationDAO
+import com.marklynch.weather.data.searchedlocation.SearchedLocationDAO
 import com.marklynch.weather.di.testWeatherDatabase
 import com.marklynch.weather.utils.randomAlphaNumeric
 import kotlinx.coroutines.GlobalScope

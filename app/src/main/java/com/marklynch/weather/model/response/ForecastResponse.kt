@@ -6,14 +6,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ForecastResponse(
-    @Json(name = "city")
-    val city: City,
-    @Json(name = "cnt")
-    val cnt: Int,
-    @Json(name = "cod")
-    val cod: String,
     @Json(name = "list")
-    val list: List<ForecastData>,
-    @Json(name = "message")
-    val message: Int
+    val list: List<ForecastData>
 )

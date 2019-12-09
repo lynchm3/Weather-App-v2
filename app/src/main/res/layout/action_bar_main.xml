@@ -50,7 +50,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/spinner_with_shadow"
-                app:queryHint="@string/locations_query_hint" />
+                app:queryHint="@string/weather_query_hint" />
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
