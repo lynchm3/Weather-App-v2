@@ -10,7 +10,7 @@ val currentLocation = SearchedLocation(
     "Current Location"
 )
 
-@Entity(tableName = "manualLocation")
+@Entity(tableName = "searchedLocation")
 data class SearchedLocation(
     @PrimaryKey @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "displayName") val displayName: String

@@ -72,6 +72,11 @@ class MainActivity : AppCompatActivity(), DataBindingComponent, KoinComponent {
         observeLiveData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        tv_messaging.visibility = View.GONE
+    }
+
     override fun onPause() {
         super.onPause()
         alertDialog?.dismiss()

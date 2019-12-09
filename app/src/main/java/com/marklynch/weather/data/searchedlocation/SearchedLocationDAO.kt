@@ -15,9 +15,9 @@ interface SearchedLocationDAO {
     @Delete
     fun delete(searchedLocation: SearchedLocation)
 
-    @Query("SELECT * FROM ManualLocation ORDER BY displayName ASC")
+    @Query("SELECT * FROM SearchedLocation ORDER BY displayName ASC")
     fun getSearchedLocations(): List<SearchedLocation>
 
-    @Query("SELECT * FROM ManualLocation WHERE id = :id")
-    fun getManualLocationById(id: Long): SearchedLocation
+    @Query("SELECT * FROM SearchedLocation WHERE id = :id")
+    fun getSearchedLocationById(id: String): SearchedLocation
 }

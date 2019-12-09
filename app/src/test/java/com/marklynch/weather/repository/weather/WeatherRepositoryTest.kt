@@ -111,8 +111,6 @@ class WeatherRepositoryTest : KoinTest {
         countDownLatch.await(2, TimeUnit.SECONDS)
 
         assertEquals(1, countDownLatch.count)
-
-        assertEquals(0, observations)
     }
 
 }

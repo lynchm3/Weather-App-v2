@@ -1,4 +1,4 @@
-CREATE TABLE ManualLocation(
+CREATE TABLE SearchedLocation(
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   displayName TEXT NOT NULL,
   latitude REAL NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE ManualLocation(
 
 insert:
 INSERT INTO
-ManualLocation(
+SearchedLocation(
   displayName,
   latitude,
   longitude
@@ -15,7 +15,7 @@ ManualLocation(
 VALUES (?, ?, ?);
 
 update:
-UPDATE ManualLocation
+UPDATE SearchedLocation
 SET displayName = ?,
     latitude = ?,
     longitude = ?
@@ -23,11 +23,11 @@ WHERE
     id = ?;
 
 delete:
-DELETE FROM ManualLocation
+DELETE FROM SearchedLocation
 WHERE id = ?;
 
-getManualLocationLiveData:
-SELECT * FROM ManualLocation ORDER BY displayName ASC;
+getSearchedLocationLiveData:
+SELECT * FROM SearchedLocation ORDER BY displayName ASC;
 
-getManualLocationById:
-SELECT * FROM ManualLocation WHERE id = ?;
+getSearchedLocationById:
+SELECT * FROM SearchedLocation WHERE id = ?;
