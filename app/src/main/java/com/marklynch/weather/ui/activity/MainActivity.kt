@@ -178,6 +178,15 @@ class MainActivity : AppCompatActivity(), DataBindingComponent, KoinComponent {
                 )
             }
         }
+
+        searchAutoCompleteTextView.setOnClickListener{
+            searchView.setQuery("", false)
+            viewModel.fetchSuggestions(
+                "",
+                placesClient,
+                autocompleteSessionToken
+            )
+        }
     }
 
     private fun setupRecyclerView() {
