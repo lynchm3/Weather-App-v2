@@ -1,8 +1,8 @@
 # Weather App v2
-Weather app which displays the weather over 5 days for your selected location
-Location can be current location, searched location or location from history
-Google's places API is used to provide auto-completed location information
-Simple database table is used to provide suggestions from previous searches
+Weather app which displays the weather over 5 days for your selected location. 
+Location can be current location, searched location or location from history. 
+Google's places API is used to provide auto-completed location information. 
+Simple database table is used to provide suggestions from previous searches. 
 
 ## Getting Started
 The app and tests can be built and run using Android Studio
@@ -15,7 +15,7 @@ DB for storing searhc history,
 Viewmodel to connect the back and front
 
 ## Tests
-Unit tests can be found at app/src/test, improving test coverage would be priority 1 going forward
+Unit tests can be found at app/src/test, improving test coverage would be priority 1 going forward. 
 The app has been tested on a Pixel emulator using SDK 29
 
 ## Libraries used
